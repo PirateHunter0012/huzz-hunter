@@ -1,6 +1,7 @@
 # Huzz Hunter app code only. Runtime data lives on the server and is never in git.
 data.json
 data.json.tmp
+data.json.tmp.*
 data.json.broken-*
 data.json.bak-*
 snapshots/

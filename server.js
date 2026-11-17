@@ -33,6 +33,16 @@ if (fs.existsSync(FILE)) {
 }
 db.layout = db.layout || { home: { name: 'Huzz Hunter', text: ['general', 'random'], voice: ['Lounge', 'Gaming'] }, rag: { name: 'Ragdamaxxing', text: ['ragdamaxxing', 'study-wins'], voice: ['Silent study', 'Pomodoro room'] } };
 db.stickers = db.stickers || {};
+/* A hand-edited, half-restored or older data.json must not crash the app on boot: every list the
+   rest of this file iterates is forced into the shape it expects before anything else runs. */
+Object.values(db.layout).forEach(s => {
+  if (!s || typeof s !== 'object') return;
+  if (!Array.isArray(s.text)) s.text = [];
+  if (!Array.isArray(s.voice)) s.voice = [];
+});
+if (!db.channels || typeof db.channels !== 'object') db.channels = {};
+Object.keys(db.channels).forEach(k => { if (!Array.isArray(db.channels[k])) db.channels[k] = []; });
+['sessions', 'duels', 'freqs'].forEach(k => { if (!Array.isArray(db[k])) db[k] = []; });
 // Lock in: a member (or the owner on their behalf) can shut the whole app until set study hours are done.
 db.lockin = db.lockin || {};
 db.voice = {};
@@ -119,6 +129,17 @@ Object.keys(db.layout || {}).forEach(k => { if (db.srvown[k] && !(db.srvjoin[k] 
 Object.keys(db.layout || {}).forEach(k => { db.srvjoin[k] = [...new Set([...(db.srvjoin[k] || []), BOT])]; });
 ['home', 'rag', 'misc'].forEach(k => { if (db.layout && db.layout[k] && !db.srvown[k] && db.accts && db.accts.zoro) db.srvown[k] = db.accts.zoro.name; });
 const fails = {};
+/* Small token buckets for the endpoints that write: keyed by account and window, so a normal
+   fast chat is untouched but a stuck key or a script cannot flood a channel in seconds. */
+const buckets = new Map();
+const allow = (n, key, max, ms) => {
+  const now = Date.now(), k = key + ':' + String(n).toLowerCase();
+  let b = buckets.get(k);
+  if (!b || now - b.at > ms) { b = { at: now, n: 0 }; buckets.set(k, b); }
+  b.n++;
+  if (buckets.size > 4000) buckets.forEach((v, kk) => { if (now - v.at > 600000) buckets.delete(kk); });
+  return b.n <= max;
+};
 const okCh = (ch, n) => !ch.startsWith('dm:') || ch.slice(3).split('|').includes(String(n).toLowerCase());
 const allTo = (ev, d, ch) => { const w = ch && ch.startsWith('dm:') ? ch.slice(3).split('|') : null; clients.forEach((n, res) => { if (!w || w.includes(n.toLowerCase())) send(res, ev, d); }); };
 /* Log and step aside so systemd can start a clean process instead of one in an unknown state. */
@@ -126,16 +147,29 @@ process.on('uncaughtException', e => { console.error('fatal:', (e && e.stack) ||
 process.on('unhandledRejection', e => { console.error('fatal promise:', (e && (e.stack || e.message)) || e); process.exit(1); });
 db.live = {};
 let timer, lastSaveAt = Date.now(), saveQueued = false;
-/* Atomic writes: a crash or power cut mid-save leaves data.json.tmp behind, never a half file. */
+/* Saving is serialised and every write gets its own temp file. Two overlapping writes to the
+   same data.json.tmp could interleave: one would rename the file away while the other was still
+   writing into it, leaving data.json half old and half new (and unreadable on the next boot). */
+let writing = false, dirty = false, gen = 0, tmpSeq = 0;
+const tmpPath = () => FILE + '.tmp.' + process.pid + '.' + (++tmpSeq);
 const writeDb = () => {
   saveQueued = false;
-  try {
-    const tmp = FILE + '.tmp';
-    fs.writeFile(tmp, JSON.stringify(db), err => {
-      if (err) return console.error('save failed:', err.message);
-      fs.rename(tmp, FILE, e => { if (e) console.error('save rename failed:', e.message); else lastSaveAt = Date.now(); });
+  if (writing) { dirty = true; return; }
+  let body;
+  try { body = JSON.stringify(db); } catch (e) { console.error('save failed:', e.message); return; }
+  writing = true;
+  const my = ++gen, tmp = tmpPath();
+  fs.writeFile(tmp, body, err => {
+    if (err) { writing = false; console.error('save failed:', err.message); return fs.unlink(tmp, () => {}); }
+    fs.rename(tmp, FILE, e => {
+      writing = false;
+      // A saveNow() landed while this write was in flight: its copy is newer, so drop ours.
+      if (my !== gen) { fs.unlink(tmp, () => {}); }
+      else if (e) console.error('save rename failed:', e.message);
+      else lastSaveAt = Date.now();
+      if (dirty) { dirty = false; writeDb(); }
     });
-  } catch (e) { console.error('save failed:', e.message); }
+  });
 };
 const save = () => {
   clearTimeout(timer);
@@ -144,7 +178,16 @@ const save = () => {
   timer = setTimeout(writeDb, 300);
 };
 // Login tokens must survive a restart, so write them straight away instead of waiting for the debounce.
-const saveNow = () => { clearTimeout(timer); saveQueued = false; try { const tmp = FILE + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(db)); fs.renameSync(tmp, FILE); lastSaveAt = Date.now(); } catch (e) {} };
+// Bumping gen invalidates any async write already in flight, so it cannot rename stale data over this.
+const saveNow = () => {
+  clearTimeout(timer); saveQueued = false; dirty = false;
+  ++gen;
+  const tmp = tmpPath();
+  try {
+    fs.writeFileSync(tmp, JSON.stringify(db));
+    fs.renameSync(tmp, FILE); lastSaveAt = Date.now();
+  } catch (e) { console.error('save failed:', e.message); fs.unlink(tmp, () => {}); }
+};
 /* Rolling snapshots (every 15 min, last 48) give the boot guard something to fall back on. */
 const snapshot = () => {
   try {
@@ -185,9 +228,13 @@ const sendText = (req, res, file, type, noStore) => {
 const clients = new Map();
 const send = (res, ev, d) => res.write(`event: ${ev}\ndata: ${JSON.stringify(d)}\n\n`);
 const all = (ev, d) => clients.forEach((_, res) => send(res, ev, d));
+/* Drop a person's live streams (used when they are banned: the socket has to stop feeding them). */
+const disconnect = n => clients.forEach((cn, res) => { if (cn === n) { try { res.end(); } catch (e) {} clients.delete(res); } });
 const online = () => [...new Set([BOT, ...clients.values()])];
 const clean = (s, n) => String(s || '').trim().slice(0, n);
-const nm = b => clean(b.name, 24) || 'anon';
+/* A display name has to stay on one line: a newline breaks the member list and the chat header,
+   and control characters have no business being in an account name. */
+const nm = b => clean(b.name, 24).replace(/[\u0000-\u001f\u007f]+/g, ' ').trim().slice(0, 24) || 'anon';
 // ---- friends: DMs are friends-only, so a request has to be accepted first ----
 const friendsOf = n => (db.friends[n] = db.friends[n] || []);
 const isFr = (a, b) => (db.friends[a] || []).some(x => x.toLowerCase() === String(b).toLowerCase());
@@ -222,6 +269,16 @@ const toOf = (k, n) => {
   return t;
 };
 const srvOfChannel = ch => Object.keys(db.layout).find(k => [...(db.layout[k].text || []), ...(db.layout[k].voice || [])].includes(ch)) || '';
+/* Can this account use this channel at all? A DM needs to be one of its two people; a server
+   channel needs membership in the server that owns it. Channels from an older layout that no
+   server lists stay open, so nothing that used to work suddenly stops. */
+const inCh = (ch, n) => {
+  const c = String(ch || '');
+  if (!c) return false;
+  if (c.startsWith('dm:')) return okCh(c, n);
+  const k = srvOfChannel(c);
+  return !k || inSrv(k, n);
+};
 // A timeout counts wherever the person tries to talk: the channel’s own server first, then any
 // server that has them timed out, so a rename or a moved channel cannot slip past it.
 const timeoutFor = (ch, n) => {
@@ -276,6 +333,9 @@ function post(channel, name, text, bot, extra) {
   if (!bot && lockInfo(name)) return false;
   // Timed out in this server: the messages stay blocked until the clock runs out.
   if (!bot && timeoutFor(channel, name)) return false;
+  // A channel belongs to a server: a non-member (a kicked account, or a stranger who guessed
+  // the channel name) must not be able to post into it.
+  if (!bot && !inCh(channel, name)) return false;
   if (channel.startsWith('dm:')) {
     const w = channel.slice(3).split('|');
     if (w.length !== 2 || !w.includes(name.toLowerCase()) || !w.every(x => Object.hasOwn(db.accts, x))) return false;
@@ -651,21 +711,32 @@ function prof(name, viewer) {
 
 function settle() {
   const now = Date.now();
+  let done = 0;
   db.duels.forEach(d => {
     if (d.st !== 'live' || now < d.end) return;
     d.sa = sum(d.a, d.start, d.end); d.sb = sum(d.b, d.start, d.end);
     d.win = d.sa === d.sb ? 'draw' : d.sa > d.sb ? d.a : d.b;
     d.st = 'done';
     if (d.win !== 'draw') db.bonus[d.win] = (db.bonus[d.win] || 0) + 150;
-    save();
+    done++;
   });
+  return done;
 }
+/* Duels used to settle only when somebody opened the Arena, so a finished duel could sit
+   "live" for days and the winner never got the 150 XP. Settle on a timer instead. */
+setInterval(() => { if (settle()) save(); }, 30000);
 
 const H = {
   'POST /api/send': b => {
     const ch = clean(b.channel, 80), n = nm(b), t = timeoutFor(ch, n);
     if (t) return { error: 'You are timed out here for ' + Math.max(1, Math.round((t.until - Date.now()) / 60000)) + ' more minutes.' };
-    return { ok: post(ch, n, clean(b.text, 2000), false, { ...(b.st ? { st: clean(b.st, 40) } : {}), ...(b.rp && b.rp.id ? { rp: { id: clean(b.rp.id, 40), n: clean(b.rp.n, 24), t: clean(b.rp.t, 80) } } : {}) }) };
+    if (!ch) return { error: 'Pick a channel first.' };
+    if (!inCh(ch, n)) return { error: 'That channel is not available to your account.' };
+    if (!db.channels[ch] && !ch.startsWith('dm:')) return { error: 'That channel no longer exists.' };
+    if (!allow(n, 'chat:burst', 12, 5000) || !allow(n, 'chat:min', 90, 60000)) return { error: 'Slow down a little — that is a lot of messages.' };
+    const ok = post(ch, n, clean(b.text, 2000), false, { ...(b.st ? { st: clean(b.st, 40) } : {}), ...(b.rp && b.rp.id ? { rp: { id: clean(b.rp.id, 40), n: clean(b.rp.n, 24), t: clean(b.rp.t, 80) } } : {}) });
+    // A bare { ok: false } looked like a dead button in the client; say what went wrong instead.
+    return ok ? { ok } : { error: lockInfo(n) ? 'Locked in — finish your study hours first.' : 'That message could not be sent.' };
   },
   /* ---- moderation endpoints (server owner only) ---- */
   'POST /api/mod/kick': b => {
@@ -692,12 +763,16 @@ const H = {
     const u = clean(b.user, 24), me2 = nm(b);
     if (!runsServer(me2)) return { error: 'Only a server owner can ban someone.' };
     if (!u || u === me2) return { error: 'You cannot ban yourself.' };
-    if (Object.values(db.srvown).includes(u)) return { error: 'A server owner cannot be banned.' };
-    db.bans[u.toLowerCase()] = { name: u, by: me2, at: Date.now(), reason: clean(b.reason, 120) };
-    Object.keys(db.tokens).forEach(t => { if (db.tokens[t] === u) { delete db.tokens[t]; delete db.tokexp[t]; } });
-    Object.keys(db.srvjoin || {}).forEach(s => { db.srvjoin[s] = (Array.isArray(db.srvjoin[s]) ? db.srvjoin[s] : []).filter(x => x !== u); });
-    Object.keys(db.voice).forEach(c => db.voice[c] = (db.voice[c] || []).filter(x => x !== u));
+    // Use the account's real spelling: a ban on "Zoro" must still find the token stored for "zoro".
+    const acct = acctOf(u), target = acct ? acct.name : u;
+    if (Object.values(db.srvown).includes(target) || target === me2) return { error: 'A server owner cannot be banned.' };
+    db.bans[target.toLowerCase()] = { name: target, by: me2, at: Date.now(), reason: clean(b.reason, 120) };
+    Object.keys(db.tokens).forEach(t => { if (db.tokens[t] === target) { delete db.tokens[t]; delete db.tokexp[t]; } });
+    Object.keys(db.srvjoin || {}).forEach(s => { db.srvjoin[s] = (Array.isArray(db.srvjoin[s]) ? db.srvjoin[s] : []).filter(x => x !== target); });
+    Object.keys(db.voice).forEach(c => db.voice[c] = (db.voice[c] || []).filter(x => x !== target));
     save(); all('voice', db.voice);
+    // The ban has to bite now, not on their next reload: close the live streams too.
+    disconnect(target); all('online', online());
     return { ok: true, bans: db.bans };
   },
   'POST /api/mod/unban': b => {
@@ -707,7 +782,7 @@ const H = {
     delete db.bans[u]; save();
     return { ok: true, bans: db.bans };
   },
-  'GET /api/friends': b => frState(db.accts[String(clean(b.user, 24)).toLowerCase()]?.name || nm(b)),
+  'GET /api/friends': b => frState(nm(b)),
   'POST /api/friends/req': b => {
     const me = nm(b), to = clean(b.user, 24), acct = acctOf(to);
     if (!acct) return { error: 'No account with that name.' };
@@ -740,11 +815,16 @@ const H = {
     return { ok: true, state: frState(me) };
   },
   'POST /api/channel': b => {
-    if (!canMgr(clean(b.srv, 16) || 'home', nm(b))) return { error: 'Only the server owner can add channels.' };
+    const k = clean(b.srv, 16) || 'home', s = db.layout[k];
+    if (!s) return { error: 'No such server.' };
+    if (!canMgr(k, nm(b))) return { error: 'Only the server owner can add channels.' };
     // b.name is the signed-in user (the dispatcher sets it), so the channel name comes in as b.ch
     const n = clean(b.ch || b.title, 24).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '');
-    if (n && !Object.values(db.layout).some(s => s.text.includes(n) || s.voice.includes(n))) { const s = db.layout[b.srv] || db.layout.home; if (b.kind === 'voice') s.voice.push(n); else { s.text.push(n); db.channels[n] = []; } save(); pushLayout(); }
-    return {};
+    if (!n) return { error: 'Give the channel a name (letters and numbers).' };
+    if (Object.values(db.layout).some(x => x.text.includes(n) || x.voice.includes(n))) return { error: 'A channel with that name already exists.' };
+    if (b.kind === 'voice') s.voice.push(n); else { s.text.push(n); db.channels[n] = []; }
+    save(); pushLayout();
+    return { ok: true, channel: n };
   },
   // Server name and icon: the round buttons down the far left.
   'POST /api/server': b => {
@@ -788,8 +868,10 @@ const H = {
     if (!s[kind].includes(ch)) return { error: 'No such channel.' };
     if (kind === 'text' && s.text.length <= 1) return { error: 'A server needs at least one text channel.' };
     s[kind] = s[kind].filter(x => x !== ch);
-    if (kind === 'text') delete db.channels[ch];
-    save(); pushLayout();
+    if (kind === 'text') { delete db.channels[ch]; delete db.read[ch]; }
+    // A deleted voice room must not leave people "in" it or keep its text/TTS state forever.
+    else { delete db.voice[ch]; delete db.vtext[ch]; delete db.vtts[ch]; }
+    save(); pushLayout(); all('voice', db.voice);
     return { ok: true, layout: db.layout };
   },
   // Invites: any member can make a code and hand the link to whoever they want in the server.
@@ -928,10 +1010,14 @@ const H = {
   },
   // The server keeps the clock, so study time can't be faked from the browser.
   'POST /api/study/start': b => {
-    db.live[nm(b)] = { s: clean(b.subject, 30) || 'General', t: Date.now(), acc: 0, hold: 0 };
+    const n = nm(b), cur = db.live[n];
+    /* A second tab, a refresh or a phone picking up the same account used to restart the clock
+       and silently throw the running session away. Keep the session that is already going. */
+    if (cur && !b.restart) return { t: cur.t, acc: cur.acc || 0, hold: cur.hold || 0, s: cur.s, now: Date.now(), resumed: 1 };
+    db.live[n] = { s: clean(b.subject, 30) || 'General', t: Date.now(), acc: 0, hold: 0 };
     liveCast();
-    const l = db.live[nm(b)];
-    return { t: l.t, acc: 0, hold: 0, now: Date.now() };
+    const l = db.live[n];
+    return { t: l.t, acc: 0, hold: 0, s: l.s, now: Date.now(), resumed: 0 };
   },
   // Pause / resume: the clock stops where it is, and resumes from that same second.
   'POST /api/study/pause': b => {
@@ -1079,17 +1165,37 @@ const H = {
     const names = [...new Set([...db.sessions.map(x => x.n), ...Object.keys(db.live)])];
     return { week, need: NEED, rows: names.map(p => ({ n: p, week: sum(p, weekStart()), total: sum(p), xp: xp(p), live: db.live[p] ? db.live[p].s : null })), duels: db.duels.slice(-20) };
   },
+  /* Search the channels this account can actually see. Newest first and capped, so a common
+     word cannot turn into a megabyte of JSON on a phone. */
+  'GET /api/search': b => {
+    const n = nm(b), q = clean(b.q, 80).toLowerCase();
+    if (q.length < 2) return { ok: true, q, hits: [] };
+    const mine = new Set(mySrvs(n).flatMap(k => [...(db.layout[k].text || [])]));
+    const hits = [], low = n.toLowerCase();
+    for (const ch of Object.keys(db.channels)) {
+      const dm = ch.startsWith('dm:');
+      if (dm ? !ch.slice(3).split('|').includes(low) : !mine.has(ch)) continue;
+      const list = db.channels[ch] || [];
+      for (let i = list.length - 1; i >= 0 && hits.length < 120; i--) {
+        const m = list[i];
+        if (m && typeof m.text === 'string' && m.text.toLowerCase().includes(q)) hits.push({ ch, id: m.id, name: m.name, text: m.text.slice(0, 240), ts: m.ts });
+      }
+    }
+    hits.sort((a, c) => c.ts - a.ts);
+    return { ok: true, q, hits: hits.slice(0, 40) };
+  },
   'POST /api/ma/toggle': () => maToggle(),
   'POST /api/duel': b => {
-    const a = nm(b), c = clean(b.to, 24);
-    if (!c || c === a || sum(a, weekStart()) < NEED) return { error: 'You need the weekly study hours to start a duel.' };
+    const a = nm(b), acct = acctOf(clean(b.to, 24)), c = acct ? acct.name : '';
+    if (!c || c === a) return { error: 'Pick someone with an account to duel.' };
+    if (sum(a, weekStart()) < NEED) return { error: 'You need the weekly study hours to start a duel.' };
     if (db.duels.some(d => d.st !== 'done' && [d.a, d.b].includes(a) && [d.a, d.b].includes(c))) return { error: 'You already have a duel with them.' };
     db.duels.push({ id: crypto.randomUUID().slice(0, 8), a, b: c, st: 'pending' });
     save();
     return { ok: true };
   },
   'POST /api/edit': b => {
-    const ch = clean(b.channel, 80), n = nm(b), m = okCh(ch, n) ? (db.channels[ch] || []).find(x => x.id === b.id) : null;
+    const ch = clean(b.channel, 80), n = nm(b), m = inCh(ch, n) ? (db.channels[ch] || []).find(x => x.id === b.id) : null;
     if (!m || m.name !== n) return {};
     if (b.del) { db.channels[ch] = db.channels[ch].filter(x => x !== m); save(); allTo('del', { channel: ch, id: m.id }, ch); return {}; }
     const t = clean(b.text, 2000);
@@ -1097,12 +1203,12 @@ const H = {
     m.text = t; m.edited = true; save(); allTo('edit', { channel: ch, id: m.id, text: t }, ch);
     return {};
   },
-  'POST /api/typing': b => { const ch = clean(b.channel, 80); if (okCh(ch, nm(b))) allTo('typing', { channel: ch, name: nm(b) }, ch); return {}; },
+  'POST /api/typing': b => { const ch = clean(b.channel, 80), n = nm(b); if (inCh(ch, n) && allow(n, 'typing', 40, 10000)) allTo('typing', { channel: ch, name: n }, ch); return {}; },
   // "Seen by …": a person marks how far they have read in a channel, and everyone in that
   // channel gets the receipt, so the sender can see exactly who has read their message.
   'POST /api/read': b => {
     const ch = clean(b.channel, 80), n = nm(b);
-    if (!okCh(ch, n)) return {};
+    if (!inCh(ch, n)) return {};
     const ts = Math.min(Date.now() + 5000, Math.max(1, Math.round(+b.ts || 0) || Date.now()));
     const map = (db.read[ch] = db.read[ch] || {});
     if (ts - (map[n] || 0) > 2500) { map[n] = ts; save(); allTo('read', { channel: ch, name: n, ts }, ch); }
@@ -1110,13 +1216,14 @@ const H = {
   },
   'POST /api/notes/read': b => { db.seen[nm(b)] = Date.now(); save(); return {}; },
   'POST /api/react': b => {
-    const m = okCh(clean(b.channel, 80), nm(b)) ? (db.channels[b.channel] || []).find(x => x.id === b.id) : null, e = clean(b.emoji, 8), n = nm(b);
+    const ch = clean(b.channel, 80), n = nm(b);
+    const m = inCh(ch, n) ? (db.channels[ch] || []).find(x => x.id === b.id) : null, e = clean(b.emoji, 8);
     if (!m || !e) return {};
     m.re = m.re || {};
     const l = m.re[e] = m.re[e] || [], i = l.indexOf(n);
     if (i < 0) l.push(n); else l.splice(i, 1);
     if (!l.length) delete m.re[e];
-    save(); allTo('react', { channel: b.channel, id: m.id, re: m.re }, b.channel);
+    save(); allTo('react', { channel: ch, id: m.id, re: m.re }, ch);
     return {};
   },
   'POST /api/sticker': b => {
@@ -1137,7 +1244,8 @@ const H = {
   'GET /api/vchat': b => { const ch = clean(b.ch, 32); return { ch, msgs: db.vtext[ch] || [], tts: !!db.vtts[ch] }; },
   'POST /api/vchat': b => {
     const ch = clean(b.ch, 32), t = clean(b.text, 500), n = nm(b);
-    if (!ch || !t) return {};
+    if (!ch || !t || !inCh(ch, n)) return {};
+    if (!allow(n, 'vchat', 20, 10000)) return { error: 'Slow down a little — that is a lot of messages.' };
     const m = { id: crypto.randomUUID().slice(0, 8), name: n, text: t, ts: Date.now() };
     db.vtext[ch] = (db.vtext[ch] || []).concat(m).slice(-80);
     save(); all('vchat', { ch, m });
@@ -1152,11 +1260,12 @@ const H = {
     return { ok: true, on };
   },
   'POST /api/voice': b => {
-    const n = nm(b);
-    const to = timeoutFor(clean(b.channel, 32), n);
+    const n = nm(b), ch = clean(b.channel, 32);
+    const to = timeoutFor(ch, n);
     if (to) return { error: 'You are timed out here for ' + Math.max(1, Math.round((to.until - Date.now()) / 60000)) + ' more minutes.' };
+    if (ch && !mySrvs(n).some(k => (db.layout[k].voice || []).includes(ch))) return { error: 'That voice channel is not available to your account.' };
     leaveVoice(n);
-    const ch = clean(b.channel, 32), peers = ch ? [...(db.voice[ch] || [])] : [];
+    const peers = ch ? [...(db.voice[ch] || [])] : [];
     if (ch) { db.voice[ch] = db.voice[ch] || []; db.voice[ch].push(n); }
     all('voice', db.voice);
     return { peers };
@@ -1255,10 +1364,24 @@ const planClean = p => ({
   }))
 });
 
+/* Bodies are collected as bytes and decoded once. Concatenating chunks as strings split every
+   multi-byte character that landed on a chunk boundary, so Hindi/Japanese/emoji text arrived
+   corrupted. Oversized bodies are drained and flagged instead of destroying the socket, which
+   used to leave the route hanging with no response at all. */
+const BODY_LIMIT = 9e5;
 const readBody = req => new Promise(resolve => {
-  let b = '';
-  req.on('data', c => { b += c; if (b.length > 9e5) req.destroy(); });
-  req.on('end', () => { try { resolve(JSON.parse(b)); } catch { resolve({}); } });
+  const chunks = [];
+  let size = 0;
+  req.on('data', c => {
+    size += c.length;
+    if (size <= BODY_LIMIT) chunks.push(c);
+    else req.tooBig = true;
+  });
+  req.on('end', () => {
+    if (req.tooBig) return resolve({});
+    try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); } catch { resolve({}); }
+  });
+  req.on('error', () => resolve({}));
 });
 
 http.createServer(async (req, res) => {
@@ -1289,7 +1412,19 @@ http.createServer(async (req, res) => {
   const tokLive = !!tok && Object.hasOwn(db.tokens, tok) && (db.tokexp[tok] || 0) > Date.now();
   const who = tokLive ? db.tokens[tok] : null;
   const authed = passOk && !!who;
-  const json = (code, d) => { res.writeHead(code, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(d)); };
+  /* JSON above ~2 KB is gzipped: the lobby, the member list and the channel backlog are big
+     documents, and phones on mobile data feel every uncompressed kilobyte. */
+  const json = (code, d) => {
+    let body = Buffer.from(JSON.stringify(d === undefined ? {} : d));
+    const h = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', Vary: 'Accept-Encoding' };
+    if (body.length > 2048 && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) {
+      body = zlib.gzipSync(body, { level: 5 });
+      h['Content-Encoding'] = 'gzip';
+    }
+    h['Content-Length'] = body.length;
+    res.writeHead(code, h);
+    res.end(body);
+  };
 
   if (u.pathname === '/healthz') {
     let kb = 0; try { kb = Math.round(fs.statSync(FILE).size / 1024); } catch (e) {}
@@ -1313,8 +1448,9 @@ http.createServer(async (req, res) => {
     const bumpIp = () => { ipf.n++; if (ipf.n >= 20) { ipf.n = 0; ipf.until = Date.now() + 60000; } fails[ipk] = ipf; };
     if (!passOk) { bumpIp(); return json(401, { error: 'Wrong server password.' }); }
     const b = await readBody(req), name = clean(b.name, 24), pin = String(b.pin || ''), k = name.toLowerCase(), now = Date.now();
+    if (req.tooBig) return json(413, { error: 'That request was too big.' });
     if (banOf(name)) return json(403, { error: 'That account is banned from this site.' });
-    if (!name || name.includes('|') || /^(__proto__|constructor|prototype)$/i.test(name) || pin.length < 4) return json(400, { error: 'Pick a name (no | symbol) and a PIN of at least 4 characters.' });
+    if (!name || name.includes('|') || /[\u0000-\u001f\u007f]/.test(name) || /^(__proto__|constructor|prototype)$/i.test(name) || pin.length < 4) return json(400, { error: 'Pick a name (no | symbol, one line) and a PIN of at least 4 characters.' });
     const f = fails[k] || { n: 0, until: 0 }, a = Object.hasOwn(db.accts, k) ? db.accts[k] : null;
     if (a && a.bot) return json(403, { error: 'That name is a bot account. Pick another name.' });
     if (f.until > now) return json(429, { error: 'Too many wrong tries. Wait a minute.' });
@@ -1456,6 +1592,11 @@ http.createServer(async (req, res) => {
     if (!authed) return json(401, { error: 'wrong password' });
     if (banOf(who)) return json(403, { error: 'banned' });
     const name = who;
+    /* A reload loop or a flaky phone can stack streams for one account; keep the newest few and
+       drop the oldest, so memory cannot grow without bound. */
+    let same = 0, oldest = null;
+    clients.forEach((cn, r) => { if (cn === name) { same++; if (!oldest) oldest = r; } });
+    if (same >= 6 && oldest) { try { oldest.end(); } catch (e) {} clients.delete(oldest); }
     res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });
     clients.set(res, name);
     if (!db.users[name]) { db.users[name] = { last: 0 }; save(); all('users', Object.keys(db.users)); }
@@ -1628,7 +1769,11 @@ http.createServer(async (req, res) => {
   let out;
   /* Routes that talk to Music Assistant answer with a promise; without the await the client got
      an empty {} and never learned whether the track paused, so Space looked dead. */
-  try { out = await h({ ...(req.method === 'POST' ? await readBody(req) : Object.fromEntries(u.searchParams)), name: who }); }
+  try {
+    const body = req.method === 'POST' ? await readBody(req) : Object.fromEntries(u.searchParams);
+    if (req.tooBig) return json(413, { error: 'That request was too big.' });
+    out = await h({ ...body, name: who });
+  }
   catch (err) {
     console.error('route failed:', req.method, u.pathname, (err && err.stack) || err);
     return json(500, { error: 'Something went wrong on the server. Try again.' });

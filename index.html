@@ -163,8 +163,25 @@ const rank = xp => { let i = 0; RANKS.forEach((r, j) => { if (xp >= r[0]) i = j;
 let me = localStorage.hn || '', pass = localStorage.hp || '', view = 'chat', cur = 'general', chans = {}, unread = {}, online = [], liveMap = {}, prev = null, es, live = null, skew = 0, board = null, bt = 'week', lock = null;
 
 const tok = () => localStorage.htk || '';
-const get = async u => (await fetch(`${u}${u.includes('?') ? '&' : '?'}name=${enc(me)}&p=${enc(pass)}`, { headers: { 'x-token': tok() } })).json();
-const api = (u, b) => fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-pass': pass, 'x-token': tok() }, body: JSON.stringify({ name: me, ...b }) }).then(r => r.json());
+/* Every caller ends in `r.error` / `r.ok`, so both helpers must always resolve to an object: a
+   dropped connection or an HTML error page used to reject and leave a button stuck forever. */
+const asJson = async (r, what) => {
+  if (r.status === 401) return { error: 'Your session expired — sign in again.' };
+  try { return await r.json(); } catch (e) { return { error: what + ' failed (' + r.status + ').' }; }
+};
+const offline = () => 'Could not reach the server — check your connection and try again.';
+const get = async u => {
+  try {
+    const r = await fetch(`${u}${u.includes('?') ? '&' : '?'}name=${enc(me)}&p=${enc(pass)}`, { headers: { 'x-token': tok() } });
+    return await asJson(r, 'Loading');
+  } catch (e) { return { error: offline() }; }
+};
+const api = async (u, b) => {
+  try {
+    const r = await fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-pass': pass, 'x-token': tok() }, body: JSON.stringify({ name: me, ...b }) });
+    return await asJson(r, 'Saving');
+  } catch (e) { (window.hhToast || alert)(offline()); return { error: 'offline' }; }
+};
 
 /* ---------- chat ---------- */
 function fmt(t) {
@@ -283,6 +300,7 @@ function paintLock() {
 setInterval(() => { if (lock) loadMe(); }, 12000);
 async function loadMe() {
   const m = await get('/huzz-hunter/api/me');
+  if (!m || m.error || typeof m.week !== 'number') return;
   live = m.live ? { s: m.live.s, t: m.live.t, acc: m.live.acc || 0, hold: m.live.hold || 0 } : null; skew = m.now - Date.now();
   $('#wk').textContent = `${hm(m.week)} of ${m.need / 3600}h`;
   $('#wkb').style.width = Math.min(100, m.week / m.need * 100) + '%';
@@ -303,7 +321,10 @@ setInterval(() => {
 }, 500);
 $('#go').onclick = async () => {
   const s = $('#subj').value.trim() || 'General', r = await api('/huzz-hunter/api/study/start', { subject: s });
-  live = { s, t: r.t, acc: r.acc || 0, hold: r.hold || 0 }; skew = r.now - Date.now(); $('#res').textContent = ''; paint();
+  if (r.error) return (window.hhToast || alert)(r.error);
+  // The server keeps a session that is already running: pick it up instead of restarting at 0.
+  if (r.resumed) (window.hhToast || alert)('Your timer was already running — picked it up where it left off.');
+  live = { s: r.s || s, t: r.t, acc: r.acc || 0, hold: r.hold || 0 }; skew = r.now - Date.now(); $('#res').textContent = ''; paint();
 };
 async function stopStudy() {
   if (!live) return;
@@ -361,7 +382,11 @@ const duelRow = x => `<li><span>${esc(x.a)} vs ${esc(x.b)}</span><span>${
   x.st === 'pending' ? (x.b === me ? `<button class="btn" data-acc="${x.id}">Accept</button>` : 'waiting for an answer')
   : x.st === 'live' ? 'ends ' + new Date(x.end).toLocaleString()
   : x.win === 'draw' ? 'draw' : `${esc(x.win)} won (${hm(x.sa)} vs ${hm(x.sb)})`}</span></li>`;
-async function loadArena() { board = await get('/huzz-hunter/api/board'); drawArena(); }
+async function loadArena() {
+  const d = await get('/huzz-hunter/api/board');
+  if (!d || d.error) return;
+  board = d; drawArena();
+}
 function drawArena() {
   const el = $('#v-arena'), d = board;
   if (!d) return;
@@ -387,7 +412,9 @@ function loadDiary() { if (window.hhDrawDiary) window.hhDrawDiary(); }
 /* ---------- stats ---------- */
 let stRange = localStorage.stRange || 'week', stSubj = localStorage.stSubj || 'all';
 async function loadStats() {
-  const s = await get('/huzz-hunter/api/me'), r = rank(s.xp);
+  const s = await get('/huzz-hunter/api/me');
+  if (!s || s.error || s.xp === undefined) return;
+  const r = rank(s.xp);
   const ci = RANKS.reduce((a, x, i) => s.xp >= x[0] ? i : a, 0), nx = RANKS[ci + 1];
   const ladder = RANKS.map(([at, nm], i) => {
     const got = s.xp >= at, here = i === ci, nxt = i === ci + 1, left = Math.max(0, at - s.xp);
@@ -422,7 +449,14 @@ $('#v-stats').onclick = e => {
 $('#login').onsubmit = e => { e.preventDefault(); me = $('#name').value.trim(); pass = $('#pass').value; localStorage.hn = me; localStorage.hp = pass; $('#err').textContent = ''; $('#gate').hidden = true; $('#boot').hidden = false; connect(); };
 $('#send').onsubmit = e => { e.preventDefault(); const t = $('#box').value.trim(); if (!t) return; $('#box').value = ''; api('/huzz-hunter/api/send', { channel: cur, text: t }).then(r => { if (r && r.error && window.hhToast) window.hhToast(r.error); }); };
 $('#box').onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#send').requestSubmit(); } };
-$('#add').onclick = () => { const n = prompt('New channel name'); if (n) api('/huzz-hunter/api/channel', { ch: n }); };
+$('#add').onclick = () => {
+  if (String(cur).startsWith('dm:')) return (window.hhToast || alert)('Open a server first — DMs have no channels.');
+  /* Send the server the channel belongs to: without it the server fell back to `home`, so the
+     button either failed for a non-home owner or created the channel in the wrong place. */
+  const L = window.hhLayout || {}, srv = Object.keys(L).find(k => (L[k].text || []).includes(cur)) || '';
+  const n = prompt('New channel name');
+  if (n) api('/huzz-hunter/api/channel', { ch: n, srv }).then(r => { if (r && r.error && window.hhToast) window.hhToast(r.error); });
+};
 $('#name').value = me; $('#pass').value = pass;
 window.hhAuthed = false;
 window.hhAuthFailed = msg => {
@@ -430,6 +464,12 @@ window.hhAuthFailed = msg => {
   const g = $('#gate'); if (!g) return;
   const b = $('#boot'); if (b) b.hidden = true;
   g.hidden = false;
+  /* A saved token the server no longer accepts (expired after 30 days, or a banned account)
+     looks exactly like a wrong password. Drop it so signing in again actually works. */
+  if (localStorage.htk) {
+    localStorage.removeItem('htk');
+    msg = 'Your session expired — sign in again with your PIN.';
+  }
   if (msg) $('#err').textContent = msg;
 };
 window.hhReconnect = connect;
@@ -438,6 +478,6 @@ else { $('#gate').hidden = false; }
 /* a saved session should never sit on a spinner forever */
 setTimeout(() => { if (!window.hhAuthed && $('#gate').hidden) window.hhAuthFailed('Server se connect nahi ho paya — dobara try karo.'); }, 9000);
 </script>
-<script src="/huzz-hunter/extras.js?v=87"></script>
+<script src="/huzz-hunter/extras.js?v=88"></script>
 </body>
 </html>

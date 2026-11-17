@@ -4311,3 +4311,75 @@
     paintBtns();
   }
 })();
+
+/* ---- part 26: search every channel you can see (Ctrl/Cmd+K) ---- */
+(function () {
+  const head = document.querySelector('#v-chat header');
+  if (!head || document.getElementById('srchbtn')) return;
+
+  const btn = document.createElement('button');
+  btn.id = 'srchbtn'; btn.type = 'button'; btn.className = 'x';
+  btn.title = 'Search messages (Ctrl+K)'; btn.setAttribute('aria-label', 'Search messages'); btn.textContent = '🔍';
+  const title = head.querySelector('#title');
+  if (title && title.after) title.after(btn); else head.append(btn);
+
+  const wrap = document.createElement('div');
+  wrap.id = 'srch'; wrap.hidden = true;
+  wrap.innerHTML = '<div class="srchbox"><input id="srchin" type="search" placeholder="Search every channel you are in…" autocomplete="off" aria-label="Search messages"><button type="button" id="srchx" aria-label="Close search">✕</button></div><div id="srchres" role="listbox" aria-live="polite"></div>';
+  document.body.append(wrap);
+  const inp = wrap.querySelector('#srchin'), out = wrap.querySelector('#srchres');
+
+  const close = () => { wrap.hidden = true; inp.value = ''; out.innerHTML = ''; };
+  const open = () => { wrap.hidden = false; setTimeout(() => inp.focus(), 30); };
+  btn.onclick = open;
+  wrap.querySelector('#srchx').onclick = close;
+  addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && String(e.key).toLowerCase() === 'k') { e.preventDefault(); wrap.hidden ? open() : close(); }
+    else if (e.key === 'Escape' && !wrap.hidden) close();
+  });
+
+  const where = ch => (String(ch).startsWith('dm:') ? '💬' : '#' + ch);
+  let seq = 0;
+  async function run() {
+    const q = inp.value.trim();
+    if (q.length < 2) { out.innerHTML = '<p class="srchempty">Type at least two characters.</p>'; return; }
+    const mine = ++seq;
+    out.innerHTML = '<p class="srchempty">Searching…</p>';
+    const r = await get('/huzz-hunter/api/search?q=' + enc(q));
+    if (mine !== seq) return;
+    if (!r || r.error) { out.innerHTML = `<p class="srchempty">${esc((r && r.error) || 'Search failed.')}</p>`; return; }
+    const hits = r.hits || [];
+    if (!hits.length) { out.innerHTML = '<p class="srchempty">Nothing found in the channels you can see.</p>'; return; }
+    out.innerHTML = hits.map(h => `<button type="button" class="srchhit" data-ch="${esc(h.ch)}" data-id="${esc(h.id)}"><span class="srchmeta">${esc(where(h.ch))} · ${esc(h.name)} · ${new Date(h.ts).toLocaleString()}</span><span class="srchtext">${esc(h.text)}</span></button>`).join('');
+  }
+  let t;
+  inp.addEventListener('input', () => { clearTimeout(t); t = setTimeout(run, 260); });
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); clearTimeout(t); run(); } });
+
+  out.addEventListener('click', e => {
+    const hit = e.target.closest('.srchhit'); if (!hit) return;
+    const ch = hit.dataset.ch, id = hit.dataset.id;
+    close();
+    cur = ch; unread[ch] = 0; show('chat'); renderMsgs();
+    const sel = window.CSS && CSS.escape ? CSS.escape(id) : String(id).replace(/[^\w-]/g, '');
+    const el = document.querySelector(`.m[data-id="${sel}"]`);
+    if (el) { el.scrollIntoView({ block: 'center' }); el.classList.add('srchflash'); setTimeout(() => el.classList.remove('srchflash'), 1800); }
+    else (window.hhToast || alert)('That message is older than the ones loaded here, so it sits above this view.');
+  });
+
+  const css = document.createElement('style');
+  css.textContent = `#srchbtn{font-size:15px}
+#srch{position:fixed;inset:0;z-index:40;background:rgba(10,9,18,.74);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;padding:12vh 16px 16px}
+.srchbox{display:flex;gap:8px;width:min(680px,100%)}
+#srchin{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 16px;font-size:16px;color:var(--text)}
+#srchx{background:var(--raise);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:0 15px;cursor:pointer}
+#srchres{width:min(680px,100%);margin-top:10px;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;max-height:60vh}
+#srchres:empty{display:none}
+.srchhit{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 14px;cursor:pointer;color:var(--text)}
+.srchhit:hover{background:var(--raise)}
+.srchmeta{display:block;font-size:12px;color:var(--mute)}
+.srchtext{display:block;overflow-wrap:anywhere;white-space:pre-wrap}
+.srchempty{padding:14px;color:var(--mute);margin:0}
+.srchflash{outline:2px solid var(--gold);outline-offset:2px;border-radius:10px}`;
+  document.head.append(css);
+})();
