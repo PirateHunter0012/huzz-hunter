@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Huzz Hunter</title>
+<meta name="description" content="Huzz Hunter is a Discord-style study and chat server: text and voice rooms, shared music, focus sessions, diary and an all-time study leaderboard.">
+<meta name="theme-color" content="#0d0f12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d0f12'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' fill='%23c9a86a' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://server.tail6d2374.ts.net/huzz-hunter">
+<style>
+:root{--bg:#14121f;--panel:#1c1930;--raise:#2a2548;--text:#ece9f7;--mute:#9a95b8;--gold:#f5b84b;--teal:#5fd4c4;--line:#2f2a50}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{display:flex;background:var(--bg);color:var(--text);font:15px/1.45 "Avenir Next","Segoe UI",system-ui,sans-serif}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+h2{margin:0 0 8px}
+small{color:var(--mute)}
+ul{list-style:none;padding:0;margin:8px 0 0}
+li{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+table{width:100%;border-collapse:collapse}
+td,th{padding:8px;text-align:left;border-bottom:1px solid var(--line)}
+aside{width:250px;background:var(--panel);display:flex;flex-direction:column;border-right:1px solid var(--line);flex:none;overflow:auto}
+aside h1{margin:0;padding:18px 16px 6px;font-size:21px;letter-spacing:-.02em}
+aside h1 span{color:var(--gold)}
+.sec{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 4px;color:var(--mute);font-size:13px}
+.sec button{background:none;border:0;color:var(--mute);font-size:20px;cursor:pointer;line-height:1}
+.sec button:hover{color:var(--gold)}
+#chs,.nav{padding:0 8px}
+.ch{display:flex;justify-content:space-between;width:100%;text-align:left;background:none;border:0;border-radius:8px;padding:7px 10px;color:var(--mute);cursor:pointer}
+.ch:hover{background:var(--raise);color:var(--text)}
+.ch.on{background:var(--raise);color:var(--text);font-weight:600}
+.ch.un{color:var(--text);font-weight:600}
+.ch i{font-style:normal;background:var(--gold);color:#14121f;border-radius:9px;padding:0 7px;font-size:12px;font-weight:700}
+#on{padding:0 16px;flex:1}
+.who{padding:4px 0}
+.who:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--teal);margin-right:8px}
+#me{padding:12px 16px;border-top:1px solid var(--line);color:var(--mute);font-size:13px}
+main{flex:1;display:flex;flex-direction:column;min-width:0}
+.v{flex:1;min-width:0;overflow:auto;padding:24px}
+.v.chat{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.v[hidden]{display:none}
+header{padding:14px 20px;border-bottom:1px solid var(--line);font-weight:600}
+header span{color:var(--gold);margin-right:2px}
+#msgs{flex:1;overflow:auto;padding:12px 20px}
+.m{display:grid;grid-template-columns:48px 1fr;padding:2px 0;margin-top:12px}
+.m.g{margin-top:0}
+.av{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-weight:700;color:#14121f}
+.m .t{color:var(--mute);font-size:12px;margin-left:6px}
+.m.g .t{visibility:hidden;margin:0;padding-top:3px}
+.m.g:hover .t{visibility:visible}
+.n{font-weight:700}
+.bot{background:var(--raise);color:var(--teal);border-radius:6px;padding:0 6px;font-size:12px;margin-left:6px}
+.b{min-width:0;overflow-wrap:anywhere;white-space:pre-wrap}
+.b a{color:var(--teal)}
+.b code{background:var(--raise);border-radius:5px;padding:1px 5px}
+.b pre{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;margin:6px 0;overflow:auto}
+.b img,.b iframe{display:block;max-width:min(420px,100%);border-radius:10px;margin-top:6px;border:0}
+.b iframe{width:420px;aspect-ratio:16/9}
+form.send{padding:0 20px 20px}
+textarea,.in{width:100%;resize:vertical;background:var(--raise);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.in{width:auto;padding:9px 12px;border-radius:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.big{font-size:26px;font-weight:700}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.bar{height:10px;background:var(--raise);border-radius:6px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--gold)}
+.btn{background:var(--gold);color:#14121f;border:0;border-radius:10px;padding:9px 18px;font-weight:700;cursor:pointer}
+.btn.alt{background:var(--raise);color:var(--text)}
+.x{background:none;border:0;color:var(--mute);cursor:pointer;font-size:18px}
+.tc{text-align:center}
+.tc .row{justify-content:center}
+#clock{font-size:76px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:10px 0}
+.days{display:flex;gap:10px;height:150px;align-items:flex-end;margin-top:8px}
+.days div{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.days i{display:block;background:var(--teal);border-radius:6px 6px 0 0;min-height:2px}
+#gate{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:6}
+#gate[hidden]{display:none}
+#boot{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:5;color:var(--mute);font-size:14px;text-align:center}
+#boot[hidden]{display:none}
+#boot .spin{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--gold);animation:bspin .8s linear infinite;margin:0 auto 10px}
+@keyframes bspin{to{transform:rotate(360deg)}}
+#gate form{width:min(340px,90vw);display:grid;gap:12px}
+#gate h2{font-size:30px;letter-spacing:-.02em}
+#gate input{width:100%;background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+#gate .btn{padding:11px}
+#err{color:#ff8f8f;min-height:1.4em;margin:0}
+@media(max-width:700px){aside{width:84px}aside h1,.sec span,#on,#me{display:none}.ch{padding:7px 6px;font-size:13px}#clock{font-size:52px}}
+</style>
+<link rel="stylesheet" href="/huzz-hunter/extras.css?v=76">
+</head>
+<body>
+<aside>
+  <h1>huzz<span>hunters</span></h1>
+  <div class="sec"><span>Channels</span><button id="add" title="New channel" aria-label="New channel">+</button></div>
+  <div id="chs"></div>
+  <div class="sec"><span>Ragdamaxxing</span></div>
+  <div class="nav">
+    <button class="ch" data-v="timer">Study timer</button>
+    <button class="ch" data-v="arena">Arena</button>
+    <button class="ch" data-v="plans">Plans</button>
+    <button class="ch" data-v="diary">Diary</button>
+    <button class="ch" data-v="stats">Stats</button>
+  </div>
+  <div class="sec"><span>Online</span></div>
+  <div id="on"></div>
+  <div id="me"></div>
+</aside>
+<main>
+  <div id="v-chat" class="v chat">
+    <header><span>#</span><b id="title"></b></header>
+    <div id="msgs" aria-live="polite"></div>
+    <form class="send" id="send"><textarea id="box" rows="1" placeholder="Message this channel. Enter sends, Shift+Enter adds a line." aria-label="Message"></textarea><button type="submit" id="snd" class="only-mobile" title="Send" aria-label="Send message">➤</button></form>
+  </div>
+  <section id="v-timer" class="v" hidden>
+    <div class="card tc">
+      <div class="row">
+        <input class="in" id="subj" value="Maths" maxlength="30" aria-label="Subject">
+        <select class="in" id="mode" aria-label="Mode"><option value="sw">Stopwatch</option><option value="cd">Countdown</option></select>
+        <input class="in" id="mins" type="number" min="1" max="240" value="25" style="width:84px" aria-label="Countdown minutes">
+      </div>
+      <div id="clock">00:00:00</div>
+      <div class="row"><button class="btn" id="go">Start studying</button><button class="btn alt" id="pause" hidden>Pause</button><button class="btn alt" id="stop" hidden>Stop and save</button><button class="btn alt" id="discard" hidden>Discard</button></div>
+      <p id="res"></p>
+      <div class="row lockrow"><small style="min-width:74px">Lock in</small><input class="in" id="lockh" type="number" min="1" max="12" step="0.5" value="2" style="width:86px" aria-label="Lock in hours"><button class="btn alt" id="lockgo">Lock in</button><button class="btn" id="lockoff" hidden>End lock in</button></div>
+      <small class="mut">Lock in itne ghante study hone tak chat aur baaki sab band rakhta hai — sirf timer chalta hai. Server owner kisi ka bhi account lock kar sakta hai (profile ke Lock in button se).</small>
+      <small>1 XP per minute, plus 10 XP for every full 25 minutes. The server keeps the clock.</small>
+    </div>
+    <div class="card" style="margin-top:12px"><b>This week</b> <span id="wk"></span><div class="bar"><i id="wkb"></i></div><small id="wkn"></small></div>
+    <div class="card" style="margin-top:12px"><b>Log an offline session</b>
+      <small>Studied without the timer — library, phone off, no wifi? Add the time here. It pays 1 XP per minute, exactly like the timer, but there is no 25-minute bonus.</small>
+      <div class="row"><input class="in" id="offsubj" value="Offline" maxlength="30" aria-label="Subject" style="flex:1"><input class="in" id="offmins" type="number" min="1" max="720" placeholder="minutes" aria-label="Minutes studied" style="width:110px"><input class="in" id="offday" type="date" aria-label="Day" style="width:160px"><button class="btn" id="offgo">Add session</button></div>
+      <small id="offres"></small></div>
+  </section>
+  <section id="v-arena" class="v" hidden></section>
+  <section id="v-plans" class="v" hidden><div id="plroot"></div></section>
+  <section id="v-diary" class="v" hidden><div id="dyroot"></div></section>
+  <section id="v-stats" class="v" hidden></section>
+</main>
+<div id="lockbar" hidden></div>
+<div id="gate" hidden>
+  <form id="login">
+    <h2>Join Huzz Hunter</h2>
+    <input id="name" placeholder="Your name" maxlength="24" required autocomplete="nickname">
+    <input id="pass" type="password" placeholder="Server password (if there is one)" autocomplete="current-password">
+    <p id="err"></p>
+    <button class="btn">Join</button>
+  </form>
+</div>
+<div id="boot" hidden><div><div class="spin"></div><span>Connecting…</span></div></div>
+<script>
+const $ = s => document.querySelector(s), enc = encodeURIComponent;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const col = n => { if (/^music assistant$/i.test(n)) return 'var(--gold)'; let h = 0; for (const c of n) h = (h * 31 + c.charCodeAt(0)) % 360; return `hsl(${h} 34% 62%)`; };
+const hm = s => `${Math.floor(s / 3600)}h ${Math.floor(s % 3600 / 60)}m`;
+const fmtc = s => { s = Math.max(0, Math.floor(s)); return [s / 3600 | 0, s % 3600 / 60 | 0, s % 60].map(x => String(x).padStart(2, '0')).join(':'); };
+const RANKS = [[0, 'Rookie'], [300, 'Grinder'], [1000, 'Scholar'], [3000, 'Topper'], [7000, 'Ragdamaxxer'], [15000, 'Legend']];
+const rank = xp => { let i = 0; RANKS.forEach((r, j) => { if (xp >= r[0]) i = j; }); return { name: RANKS[i][1], from: RANKS[i][0], to: RANKS[i + 1] && RANKS[i + 1][0] }; };
+let me = localStorage.hn || '', pass = localStorage.hp || '', view = 'chat', cur = 'general', chans = {}, unread = {}, online = [], liveMap = {}, prev = null, es, live = null, skew = 0, board = null, bt = 'week', lock = null;
+
+const tok = () => localStorage.htk || '';
+const get = async u => (await fetch(`${u}${u.includes('?') ? '&' : '?'}name=${enc(me)}&p=${enc(pass)}`, { headers: { 'x-token': tok() } })).json();
+const api = (u, b) => fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-pass': pass, 'x-token': tok() }, body: JSON.stringify({ name: me, ...b }) }).then(r => r.json());
+
+/* ---------- chat ---------- */
+function fmt(t) {
+  let h = esc(t), extra = '';
+  h = h.replace(/```([\s\S]*?)```/g, '<pre>$1</pre>').replace(/`([^`\n]+)`/g, '<code>$1</code>')
+       .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/(^|\W)\*([^*\n]+)\*/g, '$1<i>$2</i>');
+  h = h.replace(/https?:\/\/[^\s<]+/g, u => {
+    const yt = u.match(/(?:youtu\.be\/|v=)([\w-]{11})/);
+    if (/\.(png|jpe?g|gif|webp)(\?.*)?$/i.test(u)) extra += `<img src="${u}" loading="lazy" alt="">`;
+    else if (yt) extra += `<iframe src="https://www.youtube.com/embed/${yt[1]}" allowfullscreen></iframe>`;
+    return `<a href="${u}" target="_blank" rel="noopener noreferrer">${u}</a>`;
+  });
+  return h + extra;
+}
+function addMsg(m) {
+  const box = $('#msgs'), stick = box.scrollHeight - box.scrollTop - box.clientHeight < 80 || m.name === me;
+  const grp = prev && prev.name === m.name && m.ts - prev.ts < 3e5, el = document.createElement('div');
+  const time = new Date(m.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  el.className = 'm' + (grp ? ' g' : '');
+  // the timestamp and the author are kept on the element so read receipts can be painted
+  el.dataset.ts = m.ts; el.dataset.pn = m.name; if (m.id) el.dataset.mid = m.id;
+  el.innerHTML = grp
+    ? `<span class="t">${time}</span><div class="b">${fmt(m.text)}</div>`
+    : `<div class="av" style="background:${col(m.name)}">${esc((m.name || '?')[0].toUpperCase())}</div>
+       <div><span class="n">${esc(m.name)}</span>${m.bot ? '<span class="bot">bot</span>' : ''}<span class="t">${time}</span><div class="b">${fmt(m.text)}</div></div>`;
+  box.append(el); prev = m;
+  if (stick) box.scrollTop = box.scrollHeight;
+}
+function renderChans() {
+  $('#chs').innerHTML = '';
+  Object.keys(chans).forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'ch' + (view === 'chat' && c === cur ? ' on' : '') + (unread[c] ? ' un' : '');
+    b.innerHTML = `<span># ${esc(c)}</span>${unread[c] ? `<i>${unread[c]}</i>` : ''}`;
+    b.onclick = () => { cur = c; unread[c] = 0; show('chat'); renderMsgs(); $('#box').focus(); };
+    $('#chs').append(b);
+  });
+}
+function renderMsgs() {
+  const box = $('#msgs'), all = chans[cur] || [], start = Math.max(0, all.length - 250);
+  $('#title').textContent = cur; prev = null;
+  box.innerHTML = start ? '<div class="older">Earlier messages are hidden — showing the last 250.</div>' : '';
+  all.slice(start).forEach(addMsg);
+  box.scrollTop = 1e9;
+}
+function renderOnline() { $('#on').innerHTML = online.map(n => `<div class="who" data-u="${esc(n)}">${esc(n)}${liveMap[n] ? ` <small>studying ${esc(liveMap[n])}</small>` : ''}</div>`).join(''); }
+
+function show(v) {
+  if (lock && v !== 'timer') v = 'timer';
+  view = v;
+  document.querySelectorAll('.v').forEach(e => { e.hidden = e.id !== 'v-' + v; });
+  document.querySelectorAll('[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  renderChans();
+  const f = { timer: loadMe, arena: loadArena, stats: loadStats, diary: loadDiary, plans: drawT }[v];
+  if (f) f();
+}
+document.querySelectorAll('[data-v]').forEach(b => { b.onclick = () => show(b.dataset.v); });
+
+function connect() {
+  if (es) es.close();
+  es = new EventSource(`/huzz-hunter/events?name=${enc(me)}&p=${enc(pass)}&t=${encodeURIComponent(tok())}`);
+  es.addEventListener('init', e => {
+    const d = JSON.parse(e.data); chans = d.channels; online = d.online; liveMap = d.live || {};
+    if (!chans[cur]) cur = Object.keys(chans)[0];
+    window.hhAuthed = true;
+    $('#gate').hidden = true; $('#boot').hidden = true; $('#me').textContent = `Signed in as ${me}`;
+    show(view); if (view === 'chat') renderMsgs(); renderOnline(); loadMe();
+  });
+  es.addEventListener('msg', e => {
+    const { channel, msg } = JSON.parse(e.data);
+    const list = (chans[channel] ||= []);
+    list.push(msg);
+    if (list.length > 600) list.splice(0, list.length - 600);
+    if (channel === cur && view === 'chat') addMsg(msg); else { unread[channel] = (unread[channel] || 0) + 1; renderChans(); }
+  });
+  es.addEventListener('channel', e => { chans[JSON.parse(e.data)] = []; renderChans(); });
+  es.addEventListener('online', e => { online = JSON.parse(e.data); renderOnline(); });
+  es.addEventListener('live', e => { liveMap = JSON.parse(e.data); renderOnline(); });
+  /* A dropped connection is not a wrong password: only a session that never came up asks again. */
+  es.onerror = () => {
+    if (es.readyState !== 2) return; // the browser is retrying this feed on its own
+    if (window.hhAuthed) { setTimeout(() => { if (!es || es.readyState === 2) connect(); }, 1500); return; }
+    window.hhAuthFailed('That password did not work. Try again.');
+  };
+}
+
+/* ---------- study timer ---------- */
+/* seconds studied so far: paused time is frozen out of the count */
+const liveSecs = l => Math.max(0, (l.acc || 0) + (((l.hold ? l.hold : Date.now() + skew) - l.t) / 1e3));
+const paint = () => {
+  const on = !!live;
+  $('#go').hidden = on;
+  $('#stop').hidden = !on;
+  $('#discard').hidden = !on;
+  $('#pause').hidden = !on;
+  if (on) $('#pause').textContent = live.hold ? 'Resume' : 'Pause';
+  $('#subj').disabled = on;
+  $('#clock').classList.toggle('paused', !!(on && live.hold));
+};
+/* ---- lock in: until the set hours are studied, chat and every other page stay shut ---- */
+function paintLock() {
+  document.body.classList.toggle('lockin', !!lock);
+  const bar = document.querySelector('#lockbar');
+  if (bar) {
+    bar.hidden = !lock;
+    if (lock) {
+      const left = Math.max(0, lock.need - lock.done);
+      bar.innerHTML = `<b>🔒 Locked in</b><span>${hm(left)} left of ${hm(lock.need)}${lock.by && lock.by !== me ? ' · set by ' + esc(lock.by) : ''}</span><div class="lockbar"><i style="width:${Math.min(100, lock.done / lock.need * 100)}%"></i></div>`;
+    }
+  }
+  const lo = document.querySelector('#lockoff'); if (lo) lo.hidden = !lock;
+  const lgo = document.querySelector('#lockgo'); if (lgo) lgo.hidden = !!lock;
+  const lh = document.querySelector('#lockh'); if (lh) lh.disabled = !!lock;
+  if (lock && view !== 'timer') show('timer');
+}
+setInterval(() => { if (lock) loadMe(); }, 12000);
+async function loadMe() {
+  const m = await get('/huzz-hunter/api/me');
+  live = m.live ? { s: m.live.s, t: m.live.t, acc: m.live.acc || 0, hold: m.live.hold || 0 } : null; skew = m.now - Date.now();
+  $('#wk').textContent = `${hm(m.week)} of ${m.need / 3600}h`;
+  $('#wkb').style.width = Math.min(100, m.week / m.need * 100) + '%';
+  $('#wkn').textContent = m.week >= m.need ? 'Arena unlocked for this week.' : `Study ${hm(m.need - m.week)} more this week to unlock the Arena.`;
+  if (live) $('#subj').value = live.s;
+  lock = m.lock || null;
+  paint(); paintLock();
+}
+$('#mode').value = localStorage.hm || 'sw'; $('#mins').value = localStorage.hmn || 25;
+$('#mode').onchange = $('#mins').onchange = () => { localStorage.hm = $('#mode').value; localStorage.hmn = $('#mins').value; };
+setInterval(() => {
+  const cd = $('#mode').value === 'cd', total = (+$('#mins').value || 25) * 60;
+  if (!live) { $('#clock').textContent = cd ? fmtc(total) : '00:00:00'; document.title = 'Huzz Hunter'; return; }
+  const el = liveSecs(live);
+  if (cd && el >= total) return stopStudy();
+  $('#clock').textContent = fmtc(cd ? total - el : el);
+  document.title = $('#clock').textContent + ' | Huzz Hunter';
+}, 500);
+$('#go').onclick = async () => {
+  const s = $('#subj').value.trim() || 'General', r = await api('/huzz-hunter/api/study/start', { subject: s });
+  live = { s, t: r.t, acc: r.acc || 0, hold: r.hold || 0 }; skew = r.now - Date.now(); $('#res').textContent = ''; paint();
+};
+async function stopStudy() {
+  if (!live) return;
+  live = null; paint();
+  const x = await api('/huzz-hunter/api/study/stop', {});
+  $('#res').textContent = x.secs >= 30 ? `Saved ${hm(x.secs)} of ${x.s}. +${x.xp} XP` : 'Too short to count (under 30 seconds).';
+  loadMe();
+}
+$('#stop').onclick = stopStudy;
+$('#pause').onclick = async () => {
+  if (!live) return;
+  const wasPaused = !!live.hold;
+  const r = await api('/huzz-hunter/api/study/' + (wasPaused ? 'resume' : 'pause'), {});
+  if (r && r.t) { live = { s: live.s, t: r.t, acc: r.acc || 0, hold: r.hold || 0 }; skew = r.now - Date.now(); }
+  $('#res').textContent = wasPaused ? 'Back on the clock.' : 'Paused — the clock is frozen until you resume, save or discard.';
+  paint();
+};
+$('#discard').onclick = async () => {
+  if (!live) return;
+  if (!confirm('Discard this timer? The time is thrown away and you get no XP.')) return;
+  await api('/huzz-hunter/api/study/discard', {});
+  live = null;
+  paint();
+  $('#res').textContent = 'Timer discarded — nothing was saved.';
+};
+$('#lockgo').onclick = async () => {
+  const h = Math.min(12, Math.max(1, +$('#lockh').value || 2));
+  if (!confirm(`Lock in for ${h} hours? Chat and every other page stay off until you have studied that much.`)) return;
+  const r = await api('/huzz-hunter/api/lockin', { hours: h });
+  if (r.error) return (window.hhToast || alert)(r.error);
+  await loadMe();
+  $('#res').textContent = `Locked in for ${h}h — the timer is the only thing open now.`;
+  if (!live) $('#go').click();
+};
+$('#lockoff').onclick = async () => {
+  if (!confirm('End lock in early? The time you already studied stays saved.')) return;
+  await api('/huzz-hunter/api/lockin/clear', {});
+  await loadMe();
+  $('#res').textContent = 'Lock in ended — everything is back.';
+};
+$('#offday').value = new Date().toLocaleDateString('en-CA');
+$('#offgo').onclick = async () => {
+  const mins = Math.round(+$('#offmins').value || 0), out = $('#offres');
+  if (!(mins >= 1)) { out.textContent = 'How many minutes did you study?'; return; }
+  out.textContent = 'Saving...';
+  const r = await api('/huzz-hunter/api/study/offline', { mins, subject: $('#offsubj').value.trim(), date: $('#offday').value });
+  if (r.error) { out.textContent = r.error; return; }
+  out.textContent = `Logged ${hm(r.secs)} of ${r.s}. +${r.xp} XP — timer XP without the 25-minute bonus.`;
+  $('#offmins').value = '';
+  loadMe(); if (view === 'stats') loadStats();
+};
+
+/* ---------- arena ---------- */
+const duelRow = x => `<li><span>${esc(x.a)} vs ${esc(x.b)}</span><span>${
+  x.st === 'pending' ? (x.b === me ? `<button class="btn" data-acc="${x.id}">Accept</button>` : 'waiting for an answer')
+  : x.st === 'live' ? 'ends ' + new Date(x.end).toLocaleString()
+  : x.win === 'draw' ? 'draw' : `${esc(x.win)} won (${hm(x.sa)} vs ${hm(x.sb)})`}</span></li>`;
+async function loadArena() { board = await get('/huzz-hunter/api/board'); drawArena(); }
+function drawArena() {
+  const el = $('#v-arena'), d = board;
+  if (!d) return;
+  if (d.locked) { el.innerHTML = `<div class="card"><h2>Arena locked</h2><p>Study ${d.need / 3600} hours this week to see the leaderboard and duel people. You are at ${hm(d.week)}.</p><div class="bar"><i style="width:${d.week / d.need * 100}%"></i></div></div>`; return; }
+  const rows = [...d.rows].sort((a, b) => bt === 'week' ? b.week - a.week : bt === 'total' ? (b.total || 0) - (a.total || 0) : b.xp - a.xp);
+  el.innerHTML = `<div class="row"><button class="btn ${bt === 'week' ? '' : 'alt'}" data-bt="week">This week</button><button class="btn ${bt === 'total' ? '' : 'alt'}" data-bt="total">All-time hours</button><button class="btn ${bt === 'xp' ? '' : 'alt'}" data-bt="xp">All-time XP</button></div>
+  <div class="card"><table><tr><th>#</th><th>Name</th><th>Rank</th><th>${bt === 'week' ? 'Week' : bt === 'total' ? 'All time' : 'XP'}</th><th></th></tr>
+  ${rows.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.n)}${r.live ? ` <small>studying ${esc(r.live)}</small>` : ''}</td><td>${rank(r.xp).name}</td><td>${bt === 'week' ? hm(r.week) : bt === 'total' ? hm(r.total || 0) : r.xp}</td><td>${r.n === me ? '' : `<button class="btn alt" data-to="${esc(r.n)}">Duel</button>`}</td></tr>`).join('')}</table></div>
+  <div class="card" style="margin-top:12px"><b>Duels</b> <small>24 hours, most study time wins 150 XP</small><ul>${d.duels.length ? d.duels.map(duelRow).join('') : '<li>No duels yet.</li>'}</ul></div>`;
+}
+$('#v-arena').onclick = async e => {
+  const t = e.target.dataset;
+  if (t.bt) { bt = t.bt; drawArena(); }
+  if (t.to) { const r = await api('/huzz-hunter/api/duel', { to: t.to }); if (r.error) alert(r.error); loadArena(); }
+  if (t.acc) { await api('/huzz-hunter/api/duel/accept', { id: t.acc }); loadArena(); }
+};
+setInterval(() => { if (view === 'arena') loadArena(); }, 30000);
+
+/* ---------- plans and diary: drawn by extras.js, saved on the server for this account ---------- */
+function drawT() { if (window.hhDrawPlans) window.hhDrawPlans(); }
+function loadDiary() { if (window.hhDrawDiary) window.hhDrawDiary(); }
+
+/* ---------- stats ---------- */
+let stRange = localStorage.stRange || 'week', stSubj = localStorage.stSubj || 'all';
+async function loadStats() {
+  const s = await get('/huzz-hunter/api/me'), r = rank(s.xp);
+  const ci = RANKS.reduce((a, x, i) => s.xp >= x[0] ? i : a, 0), nx = RANKS[ci + 1];
+  const ladder = RANKS.map(([at, nm], i) => {
+    const got = s.xp >= at, here = i === ci, nxt = i === ci + 1, left = Math.max(0, at - s.xp);
+    return `<div class="rk${got ? ' got' : ''}${here ? ' here' : ''}${nxt ? ' nxt' : ''}"><span class="rki">${got ? '✓' : i + 1}</span><span class="rkn"><b>${nm}</b><small>starts at ${at} XP</small></span><span class="rkx">${here ? 'You are here' : got ? 'Reached' : left + ' XP to go'}</span></div>`;
+  }).join('');
+  const series = stRange === 'all' ? (s.months || []) : stRange === 'month' ? (s.days30 || []) : (s.days || []);
+  const peak = Math.max(...series.map(d => d.secs), 1), window_ = series.reduce((a, d) => a + d.secs, 0);
+  const subjSrc = stSubj === 'week' ? (s.subjWeek || {}) : (s.subj || {});
+  const sm = Object.entries(subjSrc).sort((a, b) => b[1] - a[1]), top = sm.length ? sm[0][1] : 1;
+  const since = s.first ? Math.max(1, Math.ceil((Date.now() - s.first) / 864e5)) : 0;
+  $('#v-stats').innerHTML = `<div class="grid">${[['Today', hm(s.today)], ['This week', hm(s.week)], ['This month', hm(s.month || 0)], ['All time', hm(s.total)], ['Streak', (s.streak || 0) + 'd'], ['Days studied', s.activeDays || 0], ['Sessions', s.sessions], ['XP', s.xp]].map(([a, b]) => `<div class="card"><small>${a}</small><div class="big">${b}</div></div>`).join('')}</div>
+  <div class="row" style="margin:12px 0 0"><button class="btn ${stRange === 'week' ? '' : 'alt'}" data-sr="week">Last 7 days</button><button class="btn ${stRange === 'month' ? '' : 'alt'}" data-sr="month">Last 30 days</button><button class="btn ${stRange === 'all' ? '' : 'alt'}" data-sr="all">Last 12 months</button></div>
+  <div class="card" style="margin-top:10px"><b>${stRange === 'all' ? 'All time — last 12 months' : stRange === 'month' ? 'Last 30 days' : 'Last 7 days'}</b> <small>${hm(window_)} in this window · best ${hm(peak)}</small><div class="days${stRange === 'all' ? ' slim' : ''}">${series.map(d => `<div><small>${hm(d.secs)}</small><i style="height:${d.secs / peak * 90}px"></i><small>${d.l}</small></div>`).join('')}</div></div>
+  <div class="card" style="margin-top:12px"><b>Records</b>
+    <div class="statrow"><span>Best day</span><b>${s.best ? hm(s.best.secs) : '—'}</b><small>${s.best ? s.best.d : 'no sessions yet'}</small></div>
+    <div class="statrow"><span>Longest session</span><b>${s.longest ? hm(s.longest.secs) : '—'}</b><small>${s.longest ? esc(s.longest.s) : ''}</small></div>
+    <div class="statrow"><span>Average study day</span><b>${s.avgDay ? hm(s.avgDay) : '—'}</b><small>across ${s.activeDays || 0} days</small></div>
+    <div class="statrow"><span>First session</span><b>${s.first ? new Date(s.first).toLocaleDateString() : '—'}</b><small>${s.first ? since + ' days ago' : ''}</small></div>
+    <div class="statrow"><span>Messages sent</span><b>${s.msgs}</b><small>all time</small></div>
+  </div>
+  <div class="card" style="margin-top:12px"><b>${r.name}</b> <small>${r.to ? `${s.xp} / ${r.to} XP to the next rank` : 'Top rank reached'}</small><div class="bar"><i style="width:${r.to ? (s.xp - r.from) / (r.to - r.from) * 100 : 100}%"></i></div></div>
+  <div class="card" style="margin-top:12px"><b>Rank ladder</b> <small>${nx ? `next up: <b>${nx[1]}</b> at ${nx[0]} XP — ${Math.max(0, nx[0] - s.xp)} XP left` : 'top rank reached — Legend for life'}</small><div class="ranks">${ladder}</div></div>
+  <div class="card" style="margin-top:12px"><div class="row" style="margin:0 0 8px"><b style="flex:1">Subjects</b><button class="btn ${stSubj === 'all' ? '' : 'alt'}" data-ss="all">All time</button><button class="btn ${stSubj === 'week' ? '' : 'alt'}" data-ss="week">This week</button></div>${sm.length ? sm.map(([k, v]) => `<div class="row"><span style="width:110px">${esc(k)}</span><div class="bar" style="flex:1;margin:0"><i style="width:${v / top * 100}%"></i></div><small>${hm(v)}</small></div>`).join('') : '<p>Nothing yet. Start the timer.</p>'}</div>`;
+}
+$('#v-stats').onclick = e => {
+  const t = e.target.dataset;
+  if (t.sr) { stRange = t.sr; localStorage.stRange = stRange; return loadStats(); }
+  if (t.ss) { stSubj = t.ss; localStorage.stSubj = stSubj; return loadStats(); }
+};
+
+/* ---------- boot ---------- */
+$('#login').onsubmit = e => { e.preventDefault(); me = $('#name').value.trim(); pass = $('#pass').value; localStorage.hn = me; localStorage.hp = pass; $('#err').textContent = ''; $('#gate').hidden = true; $('#boot').hidden = false; connect(); };
+$('#send').onsubmit = e => { e.preventDefault(); const t = $('#box').value.trim(); if (!t) return; $('#box').value = ''; api('/huzz-hunter/api/send', { channel: cur, text: t }).then(r => { if (r && r.error && window.hhToast) window.hhToast(r.error); }); };
+$('#box').onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#send').requestSubmit(); } };
+$('#add').onclick = () => { const n = prompt('New channel name'); if (n) api('/huzz-hunter/api/channel', { ch: n }); };
+$('#name').value = me; $('#pass').value = pass;
+window.hhAuthed = false;
+window.hhAuthFailed = msg => {
+  if (window.hhAuthed) return;
+  const g = $('#gate'); if (!g) return;
+  const b = $('#boot'); if (b) b.hidden = true;
+  g.hidden = false;
+  if (msg) $('#err').textContent = msg;
+};
+window.hhReconnect = connect;
+if (me || localStorage.htk) { $('#boot').hidden = false; connect(); }
+else { $('#gate').hidden = false; }
+/* a saved session should never sit on a spinner forever */
+setTimeout(() => { if (!window.hhAuthed && $('#gate').hidden) window.hhAuthFailed('Server se connect nahi ho paya — dobara try karo.'); }, 9000);
+</script>
+<script src="/huzz-hunter/extras.js?v=87"></script>
+</body>
+</html>

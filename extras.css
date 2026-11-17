@@ -1,0 +1,1419 @@
+/* Huzz Hunters extras: themes, server rail, voice list, stickers, reactions, picker */
+:root{--glass:100%}
+html[data-theme=midnight]{--bg:#0b1020;--panel:#111a33;--raise:#1b2750;--line:#243366;--gold:#4da3ff;--teal:#7af0ff}
+html[data-theme=forest]{--bg:#0e1a14;--panel:#14261c;--raise:#1f3a2b;--line:#2a4a38;--gold:#9be15d;--teal:#5fd4c4}
+html[data-theme=sunset]{--bg:#1d1220;--panel:#2a1830;--raise:#43233d;--line:#5a2f4a;--gold:#ff8a5c;--teal:#ffd166}
+html[data-theme=sakura]{--bg:#201424;--panel:#2d1b33;--raise:#46284d;--line:#5f3a66;--gold:#ff9ec4;--teal:#c3a6ff}
+html[data-theme=amoled]{--bg:#000;--panel:#0a0a0a;--raise:#161616;--line:#222}
+html[data-theme=paper]{--bg:#f4f1ea;--panel:#fff;--raise:#ece7dc;--text:#1d1a26;--mute:#6d6880;--line:#ddd6c7;--gold:#d98a00;--teal:#0f8f80}
+
+body{background:var(--wall,var(--bg)) center/cover fixed no-repeat}
+aside,header,.card,#pick{background:color-mix(in srgb,var(--panel) var(--glass),transparent);backdrop-filter:blur(12px)}
+main{background:color-mix(in srgb,var(--bg) var(--glass),transparent)}
+
+#rail{width:72px;flex:none;display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 0;background:color-mix(in srgb,#000 35%,var(--bg))}
+.srv{width:48px;height:48px;border-radius:16px;border:0;background:var(--raise);color:var(--text);font-weight:800;font-size:18px;cursor:pointer;transition:border-radius .15s,background .15s}
+.srv:hover,.srv.on{border-radius:24px;background:var(--gold);color:#14121f}
+.srv.gear{margin-top:auto}
+.cat{display:flex;justify-content:space-between;align-items:center;padding:12px 10px 2px;color:var(--mute);font-size:13px}
+.cat button{background:none;border:0;color:var(--mute);font-size:18px;cursor:pointer}
+.cat button:hover{color:var(--gold)}
+.vm{display:flex;align-items:center;gap:8px;padding:2px 10px 2px 28px;font-size:14px}
+.av.sm{width:22px;height:22px;border-radius:7px;font-size:12px}
+#vp{padding:10px 14px;border-top:1px solid var(--line)}
+
+.m{position:relative}
+.m:hover{background:#ffffff0a}
+.bw{min-width:0}
+.rx{display:flex;gap:6px;flex-wrap:wrap}
+.rc{background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:1px 8px;cursor:pointer;margin-top:4px}
+.rc.me{border-color:var(--gold)}
+.qr{position:absolute;right:12px;top:-14px;display:none;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:2px}
+.m:hover .qr{display:flex}
+.qr button{background:none;border:0;cursor:pointer;font-size:16px;padding:2px 5px;border-radius:6px}
+.qr button:hover{background:var(--raise)}
+.stk{font-size:68px;line-height:1.1;display:block}
+.stk.w{display:inline-block;font:800 34px/1 system-ui,sans-serif;padding:8px 16px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--teal));color:#14121f;transform:rotate(-3deg);margin:4px 0}
+.b img.stk{width:120px;max-height:120px;object-fit:contain}
+.b img.ce,.eg img.ce{display:inline;height:1.4em;width:auto;margin:0;vertical-align:-.3em;border-radius:0}
+
+form.send{position:relative}
+#box{padding-right:50px}
+#eb{position:absolute;right:34px;bottom:30px;background:none;border:0;font-size:22px;cursor:pointer}
+#pick{position:fixed;right:28px;bottom:84px;width:340px;max-height:380px;overflow:auto;border:1px solid var(--line);border-radius:14px;padding:12px;z-index:5;box-shadow:0 10px 40px #0008}
+@media(max-width:780px){#pick{left:8px;right:8px;bottom:74px;width:auto;max-height:48dvh}}
+.eg{display:flex;flex-wrap:wrap;gap:2px;margin:4px 0 10px}
+.eg button{background:none;border:0;font-size:22px;cursor:pointer;border-radius:8px;padding:3px 5px}
+.eg button:hover{background:var(--raise)}
+.eg.st button{width:calc(33% - 4px)}
+.eg .stk{font-size:36px}
+.eg .stk.w{font-size:15px;padding:5px 8px;border-radius:10px}
+.eg img.stk{width:56px;height:56px;margin:auto}
+
+.modal{position:fixed;inset:0;background:#000a;display:grid;place-items:center;place-content:center;z-index:10}
+.modal .card{width:min(520px,92vw);max-height:90vh;overflow:auto}
+.cf{position:fixed;top:-30px;font-size:26px;pointer-events:none;z-index:20;animation:fall 2.2s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media(max-width:700px){#rail{width:56px}.srv{width:40px;height:40px}}
+
+/* part 2: media, chat background, studying now */
+#v-chat header{display:flex;align-items:center;gap:2px}
+#box{padding-right:92px}
+#ub{position:absolute;right:68px;bottom:30px;background:none;border:0;font-size:20px;cursor:pointer}
+.b img.med,.b video.med{display:block;max-width:min(420px,100%);max-height:360px;border-radius:12px;margin-top:6px}
+.b audio{display:block;margin-top:6px;max-width:100%}
+.b a.file{display:inline-block;background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:6px;color:var(--text);text-decoration:none}
+#v-chat.drag{outline:3px dashed var(--gold);outline-offset:-8px}
+#msgs.hasbg .m{text-shadow:0 1px 3px #000b}
+#sn .sr{padding:3px 16px;display:flex;flex-direction:column}
+#sn .pad{display:block;padding:2px 16px}
+
+/* part 3: replies, mentions, notifications, member list, studying-now only in Ragdamaxxing */
+.nav[hidden] ~ #sn{display:none!important}
+aside:has(.nav[hidden]) .vm small{display:none}
+#me{margin-top:auto}
+#bell{background:none;border:0;font-size:17px;line-height:1;cursor:pointer;padding:2px 7px;border-radius:8px;color:var(--mute)}
+#bell:hover,#bell.hasn{color:var(--gold)}
+
+/* DMs on the rail: one button above every server, with an unread badge */
+.dmb{font-size:18px;line-height:1;position:relative}
+.dmb.on{box-shadow:0 0 0 2px var(--gold)}
+.dmb .dmn{position:absolute;top:-4px;right:-6px;background:#ff4d6d;color:#fff;font-style:normal;font-size:10px;font-weight:700;border-radius:9px;padding:0 5px;line-height:15px}
+#dmlist,#dmstart{max-height:34vh;overflow:auto;margin:2px 0 8px}
+.dmrow{width:100%}
+.dmrow small{margin-left:auto;font-size:12px}
+#rbar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--raise);border-radius:10px;padding:6px 12px;font-size:13px;color:var(--mute);margin-bottom:6px}
+.rp{font-size:13px;color:var(--mute);border-left:3px solid var(--gold);padding:1px 8px;margin-bottom:2px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px}
+.m.hl{background:color-mix(in srgb,var(--gold) 12%,transparent);box-shadow:inset 3px 0 var(--gold)}
+.m.flash{animation:fl 1.4s}
+@keyframes fl{0%,60%{background:color-mix(in srgb,var(--teal) 25%,transparent)}}
+.mn{background:color-mix(in srgb,var(--gold) 25%,transparent);color:var(--gold);border-radius:5px;padding:0 3px;font-weight:600}
+.nt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:8px;cursor:pointer}
+.nt.new{border-color:var(--gold)}
+.nt span{color:var(--text)}
+.nt span:last-child{color:var(--mute);font-size:13px}
+#ml{width:220px;flex:none;border-left:1px solid var(--line);background:color-mix(in srgb,var(--panel) var(--glass),transparent);overflow:auto;padding-bottom:12px}
+.mr{display:flex;align-items:center;gap:8px;width:calc(100% - 16px);margin:0 8px;background:none;border:0;border-radius:8px;padding:5px 8px;color:var(--text);cursor:pointer;text-align:left}
+.mr:hover{background:var(--raise)}
+.mr.off{opacity:.45}
+@media(max-width:1000px){#ml{display:none}}
+
+/* part 4: DMs, typing, edit marks, member menu */
+#dms .pad{display:block;padding:2px 16px}
+#tb{height:20px;padding:0 20px;font-size:12px;color:var(--mute)}
+.ed{color:var(--mute);font-size:11px}
+#pm{position:fixed;z-index:6;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px;box-shadow:0 8px 24px #0007}
+#pm button{display:block;width:100%;text-align:left;background:none;border:0;border-radius:6px;padding:6px 12px;cursor:pointer}
+#pm button:hover{background:var(--raise)}
+#login small{color:var(--mute)}
+
+/* part 5: profiles */
+.modal.prof .card{width:min(420px,94vw);padding:0;overflow:hidden}
+.pbanner{height:104px;position:relative}
+.pdot{position:absolute;left:10px;bottom:8px;background:#000a;color:#7ef0d0;font-size:11px;font-weight:700;border-radius:8px;padding:2px 8px}
+.pd{position:absolute;top:8px;right:8px}
+.px{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:8px;background:#0007;color:#fff;line-height:1}
+.phead{display:flex;align-items:flex-end;gap:12px;padding:0 16px;margin-top:-40px}
+.pav .av{width:78px;height:78px;border-radius:50%;border:5px solid var(--panel);font-size:30px;box-sizing:border-box}
+.pwho{padding-bottom:6px;min-width:0}
+.pname{font-size:19px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap;line-height:1.2}
+.pron{font-size:11px;font-weight:600;color:var(--mute);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.phandle{color:var(--mute);font-size:13px}
+.pbody{padding:10px 16px 0}
+.pstatus{font-size:14px;background:var(--raise);border-radius:8px;padding:6px 10px;display:inline-block;margin-bottom:6px}
+.plive{font-size:13px;color:var(--teal);margin:2px 0 6px}
+.pbio{white-space:pre-wrap;margin:6px 0 0;font-size:14px;line-height:1.45;overflow-wrap:anywhere}
+.pbio.dim{color:var(--mute)}
+/* now playing: what Music Assistant is playing for this person, Discord style */
+.pnp{display:flex;gap:10px;align-items:center;margin:10px 0 0;padding:8px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(100deg,var(--raise),transparent 65%);position:relative;overflow:hidden}
+.pnp.on{border-color:#7c5cff66}
+.pnp-art{width:54px;height:54px;border-radius:8px;flex:0 0 auto;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--mute);overflow:hidden}
+.pnp-art img{width:100%;height:100%;object-fit:cover;display:block}
+.pnp-main{min-width:0;flex:1}
+.pnp-k{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#a78bfa}
+.pnp-t{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pnp-s{font-size:12px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pnp-bar{height:3px;border-radius:99px;background:var(--line);margin-top:6px;overflow:hidden}
+.pnp-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7c5cff,#a78bfa);border-radius:99px;transition:width .9s linear}
+.pnp-time{display:flex;justify-content:space-between;font-size:10px;color:var(--mute);font-variant-numeric:tabular-nums;margin-top:2px}
+.pnp-open{position:absolute;top:5px;right:7px;font-size:10px;font-weight:700;color:#a78bfa;text-decoration:none;background:#a78bfa1f;border-radius:6px;padding:2px 6px}
+.pbot{font-size:9px;font-weight:800;letter-spacing:.08em;background:#33415a;color:#c3d3ea;border-radius:4px;padding:1px 5px;vertical-align:middle}
+.mnp{font-size:11px;opacity:.85;margin-left:4px}
+.prank{padding:12px 16px 0}
+.pstats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 16px 0}
+.pstats>div{background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:6px 8px;min-width:0}
+.pstats small{display:block;font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pstats b{font-size:15px;font-variant-numeric:tabular-nums}
+.ptags{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px 0}
+.tag{font-size:12px;background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:2px 9px}
+.pfoot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:12px 16px 0;font-size:12px;color:var(--mute)}
+.pactions{padding:12px 16px 16px;margin:0}
+.banset{width:44px;height:30px;border-radius:8px;border:2px solid transparent;cursor:pointer}
+.banset.on{border-color:var(--gold)}
+.editp .row{margin:0 0 6px}
+.editp input.in,.editp textarea{width:100%}
+.editp small{display:block;margin-top:8px}
+.editp .av.pv{width:38px;height:38px;border-radius:50%}
+#me .mecard .av{width:30px;height:30px;border-radius:50%}
+#me .mecard{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;text-align:left;cursor:pointer;padding:6px;border-radius:10px;color:var(--text)}
+#me .mecard:hover{background:var(--raise)}
+#me .mecard b{display:block;font-size:14px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#me .mecard small{display:block;font-size:12px;color:var(--mute);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av.avi{padding:0;overflow:hidden;background:none!important}
+.av.avi img{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
+.m .av,#ml [data-m] .av{cursor:pointer}
+
+/* profile editor: live preview of banner + avatar + name, like Discord's editor */
+.eprev{margin:8px 0 12px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg)}
+.eprev .pbanner{height:92px}
+.eprev .phead{margin-top:-34px;padding:0 14px}
+.eprev .pav .av{width:66px;height:66px;border-width:4px;font-size:24px}
+.eprev .pname{font-size:17px}
+.eprev .pbody{padding:8px 14px 12px;min-height:30px}
+.eprev .pstatus{margin:0;font-size:13px;padding:4px 9px}
+.pemoji{margin-right:6px}
+#pemo{gap:4px;margin:6px 0 0}
+.emo{background:var(--raise);border:1px solid var(--line);border-radius:8px;font-size:16px;cursor:pointer;padding:1px 7px;line-height:1.5}
+.emo.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 18%,var(--raise))}
+.banset-w{background:none;border:1px solid var(--line);border-radius:8px;color:var(--mute);font-size:12px;padding:4px 10px;cursor:pointer}
+.editp .card{max-height:92vh;overflow:auto}
+
+/* part 6: server icon + name editor, and the phone layout (drawers instead of a squeezed sidebar) */
+.only-mobile{display:none}
+#scrim{display:none;position:fixed;inset:0;background:#000000a6;z-index:33}
+.srv{display:grid;place-items:center;overflow:hidden;padding:0}
+.srv-img{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
+.srv.big{width:64px;height:64px;border-radius:18px;font-size:22px}
+.srvedit .card{width:min(420px,94vw)}
+.srvedit .row{align-items:center;gap:10px;flex-wrap:wrap}
+#srvname,#srvtext{width:100%}
+.ch span,#nb span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch{min-width:0}
+#drawerbtn{font-size:20px;line-height:1;padding:2px 6px;margin-right:2px}
+
+@media (max-width:780px){
+  body{height:100dvh;overflow:hidden}
+  /* tighter top: the DM button used to float away from the first server on a phone */
+  #rail{width:58px;gap:6px;padding:6px 0;z-index:40}
+  #rail .srv.dmb{margin-bottom:2px}
+  .srv{width:42px;height:42px;border-radius:14px;font-size:16px}
+  aside{
+    position:fixed;top:0;bottom:0;left:58px;width:min(82vw,300px);z-index:45;
+    /* the 58px rail offset used to leave a sliver of the sidebar visible on the left edge */
+    transform:translateX(calc(-100% - 60px));transition:transform .22s ease;box-shadow:0 0 40px #000a;
+    border-right:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);
+  }
+  body.drawer-open aside{transform:none}
+  body.drawer-open #scrim,body.members-open #scrim{display:block}
+  .only-mobile{display:inline-block}
+  /* the old phone rules hid the server name, the add buttons and your profile card; in a drawer they belong */
+  aside h1,#on,#me,.sec span{display:revert}
+  /* pin the chat to the viewport so the composer can never be pushed off the bottom */
+  main{position:fixed;inset:0 0 0 58px;width:auto;min-width:0}
+  #v-chat{height:100%}
+  #v-chat header{padding:10px 12px;gap:4px}
+  #msgs{padding:8px 12px 4px}
+  .m{grid-template-columns:40px 1fr;gap:8px}
+  .m .av{width:32px;height:32px;border-radius:9px;font-size:13px}
+  form.send{padding:0 12px max(12px,env(safe-area-inset-bottom))}
+  #box{font-size:16px;padding-right:92px}
+  #ta{font-size:16px}
+  #ub,#eb{bottom:28px}
+  .v{padding:16px 12px}
+  .pstats{grid-template-columns:repeat(2,1fr)}
+  /* modals must sit above the drawers, and a tall card scrolls instead of being cut off */
+  #scrim{z-index:44}
+  /* even top/bottom padding keeps every dialog exactly in the middle of the screen */
+  .modal{z-index:70;padding:10px 8px}
+  .modal .card,.modal.prof .card{width:min(560px,96vw);max-height:calc(100dvh - 20px - env(safe-area-inset-bottom))}
+  .modal.prof .card,.editp .card,.modal.crop .card{max-height:calc(100dvh - 20px - env(safe-area-inset-bottom));overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .modal.prof .card{touch-action:pan-y}
+  #ml{
+    display:block;position:fixed;top:0;bottom:0;right:0;width:min(82vw,300px);z-index:46;
+    transform:translateX(105%);transition:transform .22s ease;box-shadow:0 0 40px #000a;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  body.members-open #ml{transform:none}
+  #dms .pad,.cat{padding-left:12px}
+  .ch{padding:9px 10px}
+}
+
+/* part 7: live coinflip room */
+.crow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.csub{color:var(--mute);font-size:12px}
+.clive{font-size:11px;font-weight:700;color:var(--teal);border:1px solid var(--line);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.clive:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--teal);margin-right:5px}
+.cstage{display:grid;place-items:center;padding:24px 0 8px;perspective:900px}
+.coin{width:132px;height:132px;position:relative;transform-style:preserve-3d;transform:rotateY(0deg);will-change:transform}
+.coin i{position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;font:800 52px/1 system-ui,sans-serif;font-style:normal;backface-visibility:hidden;color:#3d2a00;background:radial-gradient(circle at 32% 28%,#ffe9a8,#f6c445 55%,#d99a12);box-shadow:inset 0 0 0 7px #ffffff5c, inset 0 0 24px #b9840055, 0 14px 30px #00000066}
+.coin .cft{transform:rotateY(180deg)}
+.cres{text-align:center;font-size:15px;min-height:24px;margin:6px 0 12px}
+.cbtns{justify-content:center}
+.cbtns .btn{min-width:110px}
+.cboard{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;justify-content:center}
+.cchip{font-size:12px;background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.cchip em{color:var(--gold);font-style:normal}
+.chist{list-style:none;padding:0;margin:8px 0 0;font-size:14px}
+.chist li{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--line)}
+.chist li:last-child{border:0}
+.cside{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;font:800 11px/1 system-ui,sans-serif;background:linear-gradient(135deg,#ffd166,#e0a800);color:#3d2a00;flex:none}
+.cwin{color:var(--teal);font-style:normal}
+.closs{color:#ff7a7a;font-style:normal}
+.cs-heads{color:var(--gold)}
+.cs-tails{color:var(--teal)}
+.cmsgs{max-height:220px;overflow:auto;margin:8px 0;display:flex;flex-direction:column;gap:4px}
+.cm{font-size:14px;line-height:1.35;overflow-wrap:anywhere}
+.cm .cmn{font-weight:700;color:var(--gold)}
+.cm small{color:var(--mute);font-size:11px;margin-left:4px}
+.cform{gap:8px;margin:0}
+.cform .in{flex:1;min-width:0}
+@media(max-width:780px){
+  .coin{width:104px;height:104px}
+  .coin i{font-size:42px}
+  .cbtns .btn{min-width:0;flex:1}
+  .cbtns{display:grid;grid-template-columns:1fr 1fr}
+  .cbtns .btn[data-call=""]{grid-column:1/-1}
+}
+
+/* part 8: watch party player + screen share stage */
+.wload{gap:8px;margin:10px 0}
+.wload .in{flex:1;min-width:0}
+.wstage{margin-top:10px}
+.wstage #ytp,.wstage iframe,.wstage video{width:100%;aspect-ratio:16/9;border:0;border-radius:12px;background:#000;display:block}
+.wctl{gap:8px;margin-top:10px}
+/* A shared screen is the whole point of the room, so it opens over everything, full size. */
+#stage{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;background:rgba(5,5,6,.96);overflow:auto}
+#stage[hidden]{display:none}
+.stile{position:relative;width:100%;max-width:1600px;border-radius:14px;overflow:hidden;background:#000;border:1px solid var(--line);box-shadow:0 18px 60px #000c}
+.stile video{width:100%;max-height:calc(100vh - 80px);object-fit:contain;display:block;background:#000}
+.stile b{position:absolute;left:10px;bottom:10px;font-size:12px;background:#000a;padding:3px 10px;border-radius:8px;color:#fff;font-weight:600}
+.stile button{position:absolute;top:8px;right:8px;border:0;border-radius:9px;background:#000a;color:#fff;width:32px;height:32px;cursor:pointer;line-height:1;font-size:15px}
+.stile button:hover{background:#000d}
+@media(max-width:780px){
+  #stage{padding:6px}
+  .stile{border-radius:10px}
+  .stile video{max-height:calc(100vh - 20px)}
+  .wctl{display:grid;grid-template-columns:1fr 1fr}
+}
+
+/* CYBERPUNK OVERDRIVE skin */
+:root,html[data-theme]{color-scheme:dark;--bg:#070a15;--panel:#0c1324;--raise:#111d33;--line:#1b3150;--text:#e8f7ff;--mute:#8ca5bd;--gold:#ff49d6;--teal:#54f3dc;--glass:88%;--neon-cyan:#54f3dc;--neon-pink:#ff49d6;--neon-violet:#a875ff}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{position:relative;isolation:isolate;color:var(--text);background:radial-gradient(ellipse at 14% 12%,rgba(42,226,255,.12),transparent 34%),radial-gradient(ellipse at 88% 20%,rgba(255,48,196,.11),transparent 30%),linear-gradient(145deg,#070a15 0%,#0a1020 52%,#0b0917 100%);background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.24;background-image:linear-gradient(rgba(76,210,255,.22) 1px,transparent 1px),linear-gradient(90deg,rgba(76,210,255,.22) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 92%);animation:cyber-grid-drift 32s linear infinite}
+aside,#rail,#ml{background:color-mix(in srgb,#0a1222 92%,transparent);backdrop-filter:blur(18px) saturate(135%)}
+#rail{border-right:1px solid rgba(84,243,220,.18)}
+aside{border-right-color:rgba(84,243,220,.22);box-shadow:8px 0 32px #0003}
+aside h1{padding-top:22px;color:#f0f8ff;letter-spacing:-.045em;text-shadow:0 0 20px rgba(84,243,220,.15)}
+aside h1 span{color:transparent;background:linear-gradient(100deg,var(--neon-pink),var(--neon-violet),var(--neon-cyan),var(--neon-pink));background-size:220% 100%;background-clip:text;-webkit-background-clip:text;animation:cyber-spectrum 8s linear infinite}
+.sec{letter-spacing:.12em;text-transform:uppercase;font-size:10px;font-weight:800;color:#7f9bb5}
+.sec button:hover{color:var(--neon-cyan);text-shadow:0 0 12px var(--neon-cyan)}
+.ch{border:1px solid transparent;border-radius:10px;transition:background .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s}
+.ch:hover{background:rgba(84,243,220,.07);border-color:rgba(84,243,220,.15);transform:translateX(2px)}
+.ch.on{color:#effcff;background:linear-gradient(100deg,rgba(255,73,214,.15),rgba(84,243,220,.09));border-color:rgba(84,243,220,.28);box-shadow:inset 2px 0 var(--neon-cyan),0 0 22px rgba(84,243,220,.07)}
+.ch.un{color:var(--neon-cyan)}
+.ch i{color:#09101d;background:linear-gradient(135deg,var(--neon-cyan),#a8fff1);box-shadow:0 0 12px rgba(84,243,220,.45)}
+.who{font-size:13px}
+.who:before{box-shadow:0 0 10px var(--neon-cyan);animation:cyber-pulse 2s ease-in-out infinite}
+#me{border-top-color:rgba(84,243,220,.18)}
+main{background:transparent}
+header{background:linear-gradient(90deg,rgba(16,30,52,.92),rgba(10,16,32,.78) 72%,rgba(255,73,214,.035));border-bottom-color:rgba(84,243,220,.2);box-shadow:0 8px 28px #0002}
+header span{color:var(--neon-cyan);text-shadow:0 0 12px rgba(84,243,220,.55)}
+.card{position:relative;background:linear-gradient(145deg,rgba(15,27,48,.94),rgba(9,15,29,.94));border-color:rgba(84,243,220,.17);box-shadow:0 14px 40px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.025);transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+.card::before{content:"";position:absolute;top:0;left:16px;right:16px;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(84,243,220,.65),rgba(255,73,214,.5),transparent);opacity:.65}
+.card:hover{transform:translateY(-2px);border-color:rgba(84,243,220,.34);box-shadow:0 18px 46px rgba(0,0,0,.3),0 0 24px rgba(84,243,220,.06)}
+button,input,textarea,select{font-family:inherit}
+button{transition:color .18s,background-color .18s,border-color .18s,box-shadow .18s,transform .18s}
+button:active:not(:disabled){transform:translateY(1px) scale(.985)}
+.btn{color:#080d19;background:linear-gradient(105deg,#ff49d6 0%,#c467ff 48%,#54f3dc 100%);box-shadow:0 7px 24px rgba(255,73,214,.2),inset 0 1px rgba(255,255,255,.42);letter-spacing:.015em;transition:transform .18s,box-shadow .18s,filter .18s}
+.btn:hover{transform:translateY(-2px);filter:saturate(1.15) brightness(1.08);box-shadow:0 10px 30px rgba(255,73,214,.28),0 0 20px rgba(84,243,220,.16)}
+.btn.alt{color:var(--text);background:linear-gradient(135deg,rgba(17,29,51,.96),rgba(25,28,54,.96));border:1px solid rgba(84,243,220,.27);box-shadow:inset 0 1px rgba(255,255,255,.045)}
+.btn.alt:hover{border-color:var(--neon-cyan);box-shadow:0 0 20px rgba(84,243,220,.12)}
+textarea,.in,#gate input{background:rgba(10,18,34,.88);border:1px solid rgba(84,243,220,.17);box-shadow:inset 0 2px 10px rgba(0,0,0,.2);transition:border-color .18s,box-shadow .18s,background .18s}
+textarea:focus,.in:focus,#gate input:focus{border-color:rgba(84,243,220,.7);background:#0b1729;box-shadow:0 0 0 3px rgba(84,243,220,.09),0 0 22px rgba(84,243,220,.08);outline:none}
+::placeholder{color:#7187a0;opacity:1}
+:focus-visible{outline:2px solid var(--neon-cyan);outline-offset:3px}
+#msgs .m{animation:cyber-message-in .24s ease-out both}
+.m:hover{background:linear-gradient(90deg,rgba(84,243,220,.055),transparent 78%)}
+.av{box-shadow:0 0 0 1px rgba(84,243,220,.16),0 5px 16px #0003}
+.bot,.rc,.cchip,.tag,.nt{border-color:rgba(84,243,220,.19)}
+.bot{color:var(--neon-cyan);background:rgba(84,243,220,.09)}
+.b a{color:var(--neon-cyan);text-decoration-color:rgba(84,243,220,.4);text-underline-offset:3px}
+.b a:hover{color:#b8fff2;text-shadow:0 0 12px rgba(84,243,220,.45)}
+.bar{background:#101d32;border:1px solid rgba(84,243,220,.1)}
+.bar i{background:linear-gradient(90deg,var(--neon-pink),var(--neon-violet),var(--neon-cyan));box-shadow:0 0 14px rgba(84,243,220,.28)}
+.days i{background:linear-gradient(180deg,var(--neon-cyan),#497fff);box-shadow:0 0 14px rgba(84,243,220,.22)}
+#clock{color:#e9faff;text-shadow:0 0 18px rgba(84,243,220,.32),0 0 48px rgba(168,117,255,.2);animation:cyber-clock-glow 4s ease-in-out infinite}
+#gate{z-index:90;padding:20px;background:radial-gradient(ellipse at 50% 35%,rgba(30,96,129,.18),transparent 48%),radial-gradient(ellipse at 50% 80%,rgba(163,45,139,.14),transparent 40%),rgba(5,8,18,.94);backdrop-filter:blur(14px)}
+#gate form{width:min(420px,100%);padding:30px;border:1px solid rgba(84,243,220,.24);border-radius:20px;background:linear-gradient(145deg,rgba(16,30,51,.96),rgba(10,13,28,.97));box-shadow:0 24px 80px #0008,0 0 42px rgba(84,243,220,.09),inset 0 1px rgba(255,255,255,.06)}
+#gate h2{color:#f0fbff;text-shadow:0 0 26px rgba(84,243,220,.18)}
+#gate .btn{width:100%;padding:12px}
+#err{color:#ff84db}
+#pick,#pm{border-color:rgba(84,243,220,.25);background:rgba(10,18,34,.97);box-shadow:0 18px 50px #0008,0 0 26px rgba(84,243,220,.08)}
+.modal{background:rgba(2,5,12,.76);backdrop-filter:blur(10px)}
+#ml{border-left-color:rgba(84,243,220,.2)}
+#rbar{border:1px solid rgba(84,243,220,.12)}
+.nt{background:linear-gradient(110deg,rgba(16,29,50,.96),rgba(12,18,34,.96))}
+.nt.new{border-color:var(--neon-pink);box-shadow:0 0 18px rgba(255,73,214,.1)}
+.mn{background:rgba(255,73,214,.15);color:#ff8de4}
+#sn .sr:hover,.mr:hover{background:rgba(84,243,220,.07)}
+.clive{color:var(--neon-cyan);border-color:rgba(84,243,220,.25)}
+.coin i{color:#111020;background:radial-gradient(circle at 32% 26%,#fff0fc,#ff66da 35%,#ad63ff 70%,#54f3dc);box-shadow:inset 0 0 0 6px #ffffff55,inset 0 0 28px #6a267755,0 0 24px rgba(255,73,214,.3),0 14px 30px #0008}
+.cside{color:#10111d;background:linear-gradient(135deg,var(--neon-pink),var(--neon-cyan))}
+#stage .stile{border-color:rgba(84,243,220,.24);box-shadow:0 12px 42px #0009,0 0 20px rgba(84,243,220,.08)}
+#scrim{backdrop-filter:blur(5px)}
+@keyframes cyber-grid-drift{to{background-position:42px 42px,42px 42px}}
+@keyframes cyber-spectrum{to{background-position:220% 50%}}
+@keyframes cyber-pulse{0%,100%{opacity:.72;box-shadow:0 0 6px var(--neon-cyan)}50%{opacity:1;box-shadow:0 0 15px var(--neon-cyan)}}
+@keyframes cyber-clock-glow{0%,100%{text-shadow:0 0 14px rgba(84,243,220,.25),0 0 38px rgba(168,117,255,.12)}50%{text-shadow:0 0 22px rgba(84,243,220,.46),0 0 54px rgba(255,73,214,.18)}}
+@keyframes cyber-message-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:780px){#gate{padding:16px}#gate form{padding:24px 20px;border-radius:17px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ===== part 7: profile layout fix + Nitro-style customisation (decorations, name styles, banner + profile effects) ===== */
+
+/* layout fix: the banner is position:relative and used to paint OVER the avatar and name.
+   The head now sits above it (z-index) and the name goes under the avatar, like Discord. */
+.pbanner{overflow:hidden}
+.phead{display:block;position:relative;z-index:2;margin-top:-44px;padding:0 16px}
+.pwho{padding:10px 0 0}
+.pbanner .pdot,.pbanner .px{z-index:4}
+.eprev .phead{margin-top:-36px;padding:0 14px}
+.modal.prof .card,.eprev{position:relative}
+
+/* ---- avatar decorations: animated rings (angle animated with @property, so squares and circles both work) ---- */
+@property --a{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes dcang{to{--a:360deg}}
+@keyframes dcpulse{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.07);opacity:.55}}
+@keyframes dcglow{0%,100%{box-shadow:0 0 6px 0 var(--g,#fff3)}50%{box-shadow:0 0 16px 3px var(--g,#fff6)}}
+@keyframes dcflick{0%,100%{opacity:1}45%{opacity:.3}50%{opacity:1}55%{opacity:.55}}
+@keyframes dcfloat{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-3px) rotate(8deg)}}
+@keyframes dcglitch{0%{transform:translate(0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-2px)}80%{transform:translate(1px,2px)}100%{transform:translate(0)}}
+.av.dc{position:relative;overflow:visible;--rt:3px;--ro:-6px;--es:15px;animation:dcglow 2.4s ease-in-out infinite}
+.av.dc.avi img{border-radius:inherit}
+.av.sm.dc,#me .mecard .av.dc{--rt:2px;--ro:-3px;--es:10px}
+.m .av.dc{--rt:2px;--ro:-4px;--es:12px}
+.pav .av.dc{--rt:4px;--ro:-9px;--es:20px}
+.av.dc::before{content:"";position:absolute;inset:var(--ro);padding:var(--rt);border-radius:inherit;pointer-events:none;z-index:2;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+.dc-neon{--g:#00f5ff88}
+.dc-neon::before{background:conic-gradient(from var(--a),#00f5ff,#ff00e5,#00f5ff);animation:dcang 3s linear infinite}
+.dc-fire{--g:#ff6a0099}
+.dc-fire::before{background:conic-gradient(from var(--a),#ff3d00,#ffb300,#ffea00,#ffb300,#ff3d00);animation:dcang 1.6s linear infinite}
+.dc-aurora{--g:#38efb088}
+.dc-aurora::before{background:conic-gradient(from var(--a),#38ef7d,#00c6ff,#9b5cff,#00c6ff,#38ef7d);animation:dcang 5s linear infinite}
+.dc-rainbow{--g:#ffffff44}
+.dc-rainbow::before{background:conic-gradient(from var(--a),#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);animation:dcang 4s linear infinite}
+.dc-sakura{--g:#ff9ec488}
+.dc-sakura::before{background:conic-gradient(from var(--a),#ffb7d5,#fff0f6,#ff9ec4,#fff0f6,#ffb7d5);animation:dcang 6s linear infinite}
+.dc-sakura::after{content:"🌸";position:absolute;right:var(--ro);top:var(--ro);font-size:var(--es);line-height:1;z-index:3;animation:dcfloat 3s ease-in-out infinite}
+.dc-glitch{--g:#ff2bd655}
+.dc-glitch::before{background:conic-gradient(from var(--a),#00ffd5 0 25%,#ff2bd6 25% 50%,#00ffd5 50% 75%,#ff2bd6 75%);animation:dcang 2.5s linear infinite,dcglitch .8s steps(2,end) infinite}
+.dc-halo{--g:#ffe27a55}
+.dc-halo::before{display:none}
+.dc-halo::after{content:"";position:absolute;left:50%;top:calc(var(--ro) - 4px);width:58%;height:calc(var(--rt) * 3 + 4px);margin-left:-29%;border:var(--rt) solid #ffe27a;border-radius:50%;box-shadow:0 0 10px #ffd54a,inset 0 0 6px #ffd54a;z-index:3;animation:dcfloat 3s ease-in-out infinite}
+.dc-electric{--g:#7df9ff77}
+.dc-electric::before{background:repeating-conic-gradient(from var(--a),#7df9ff 0 10deg,#0000 10deg 24deg);animation:dcang 1.1s linear infinite,dcflick .25s steps(2) infinite}
+.dc-pulse{--g:color-mix(in srgb,var(--ac,#f5b84b) 55%,transparent)}
+.dc-pulse::before{background:var(--ac,#f5b84b);animation:dcpulse 1.6s ease-in-out infinite}
+.dc-gold{--g:#f5b84b88}
+.dc-gold::before{background:conic-gradient(from var(--a),#c98a1b,#fff1a8,#f5b84b,#fff1a8,#c98a1b);animation:dcang 5s linear infinite}
+.dc-void{--g:#7b2cff99}
+.dc-void::before{background:conic-gradient(from var(--a),#12001f,#7b2cff,#12001f,#b05cff,#12001f);animation:dcang 6s linear infinite reverse}
+.dc-ice{--g:#7fd4ff88}
+.dc-ice::before{background:conic-gradient(from var(--a),#cdeeff,#fff,#7fd4ff,#fff,#cdeeff);animation:dcang 4.5s linear infinite}
+
+/* live: someone studying right now gets a soft teal pulse around the avatar */
+@keyframes stglow{0%,100%{box-shadow:0 0 0 0 #5fd4c455}50%{box-shadow:0 0 0 6px #5fd4c400,0 0 14px 2px #5fd4c466}}
+.pav.studying .av:not(.dc){animation:stglow 2s ease-in-out infinite}
+
+/* ---- name styles ---- */
+@keyframes nmflow{to{background-position:200% 0}}
+@keyframes nmglow{from{text-shadow:0 0 3px currentColor,0 0 9px currentColor}to{text-shadow:0 0 6px currentColor,0 0 22px currentColor}}
+@keyframes nmflick{0%,19%,21%,60%,62%,100%{opacity:1}20%,61%{opacity:.55}}
+@keyframes nmwave{0%,100%{transform:translateY(0)}50%{transform:translateY(-.22em)}}
+@keyframes nmfire{from{background-position:0 0;filter:drop-shadow(0 0 3px #ff6a00)}to{background-position:0 40%;filter:drop-shadow(0 -2px 8px #ff3d00)}}
+@keyframes nmglitch{0%{clip-path:inset(10% 0 70% 0);transform:translate(-2px)}25%{clip-path:inset(60% 0 10% 0);transform:translate(2px)}50%{clip-path:inset(30% 0 40% 0);transform:translate(-1px)}75%{clip-path:inset(75% 0 5% 0);transform:translate(1px)}100%{clip-path:inset(10% 0 70% 0);transform:translate(-2px)}}
+.nm{display:inline-block;white-space:nowrap}
+.nfx-rainbow,.nfx-gradient,.nfx-shimmer,.nfx-fire{-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent!important}
+.nfx-rainbow{background-image:linear-gradient(90deg,#ff5e62,#ffd86b,#6bff95,#5ec8ff,#c07bff,#ff5e62);background-size:200% 100%;animation:nmflow 4s linear infinite}
+.nfx-gradient{background-image:linear-gradient(90deg,var(--na,#f5b84b),var(--nb,#c07bff),var(--na,#f5b84b));background-size:200% 100%;animation:nmflow 4s linear infinite}
+.nfx-shimmer{background-image:linear-gradient(110deg,#9a95b8 35%,#fff 50%,#9a95b8 65%);background-size:200% 100%;animation:nmflow 2.6s linear infinite}
+.nfx-fire{background-image:linear-gradient(0deg,#ff3d00,#ffb300 55%,#fff3a8);background-size:100% 170%;animation:nmfire .9s ease-in-out infinite alternate}
+.nfx-glow{color:var(--na,#fff)!important;animation:nmglow 2s ease-in-out infinite alternate}
+.nfx-neon{color:#fff!important;text-shadow:0 0 2px #fff,0 0 8px var(--na,#00f5ff),0 0 18px var(--na,#00f5ff),0 0 36px var(--na,#00f5ff);animation:nmflick 3.5s linear infinite}
+.nfx-glitch{position:relative}
+.nfx-glitch::before,.nfx-glitch::after{content:attr(data-t);position:absolute;left:0;top:0;width:100%;overflow:hidden;pointer-events:none;mix-blend-mode:screen}
+.nfx-glitch::before{color:#00ffd5;animation:nmglitch 1.8s steps(1) infinite}
+.nfx-glitch::after{color:#ff2bd6;animation:nmglitch 2.3s steps(1) infinite reverse}
+.nfx-wave i{display:inline-block;font-style:normal;animation:nmwave 1.4s ease-in-out infinite;animation-delay:calc(var(--i) * .08s)}
+
+/* ---- banner effects: animated layers on top of ANY banner (gradient, image or GIF) ---- */
+@keyframes bfdrift{from{transform:translate3d(-8%,-6%,0) scale(1.15)}to{transform:translate3d(8%,6%,0) scale(1.3)}}
+@keyframes bfflow{to{background-position:150% 0}}
+@keyframes bftwk{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes bfrain{to{background-position:0 30px,0 24px}}
+@keyframes bfsweep{0%{transform:translateX(-120%)}60%,100%{transform:translateX(120%)}}
+@keyframes bfwave{to{background-position:70px 0}}
+@keyframes bfwave2{to{background-position:90px 0}}
+@keyframes bfrise{to{background-position:0 -120px}}
+@keyframes bfrise2{to{background-position:0 -140px}}
+.bf{position:relative;overflow:hidden}
+.bf::before,.bf::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1}
+.bf-aurora::before{background:radial-gradient(60% 80% at 20% 30%,#00ffc8aa,#0000 60%),radial-gradient(50% 70% at 80% 20%,#9b5cffaa,#0000 60%);mix-blend-mode:screen;animation:bfdrift 7s ease-in-out infinite alternate}
+.bf-aurora::after{background:radial-gradient(55% 90% at 60% 95%,#38bdf8aa,#0000 60%);mix-blend-mode:screen;animation:bfdrift 9s ease-in-out infinite alternate-reverse}
+.bf-flow::before{background:linear-gradient(115deg,#ff5e6277,#ffd86b55,#5ec8ff77,#c07bff77,#ff5e6277);background-size:300% 100%;animation:bfflow 7s linear infinite}
+.bf-stars::before{background-image:radial-gradient(1.6px 1.6px at 12% 30%,#fff,#0000),radial-gradient(1.2px 1.2px at 28% 70%,#fff,#0000),radial-gradient(1.8px 1.8px at 47% 22%,#fff,#0000),radial-gradient(1.2px 1.2px at 63% 62%,#fff,#0000),radial-gradient(1.6px 1.6px at 78% 28%,#fff,#0000),radial-gradient(1.2px 1.2px at 91% 74%,#fff,#0000),radial-gradient(1px 1px at 38% 48%,#fff,#0000),radial-gradient(1px 1px at 85% 50%,#fff,#0000);animation:bftwk 2.6s ease-in-out infinite}
+.bf-stars::after{background-image:radial-gradient(1.4px 1.4px at 20% 55%,#fff,#0000),radial-gradient(1.8px 1.8px at 55% 38%,#fff,#0000),radial-gradient(1.2px 1.2px at 72% 80%,#fff,#0000),radial-gradient(1.4px 1.4px at 8% 82%,#fff,#0000),radial-gradient(1.2px 1.2px at 95% 20%,#fff,#0000);animation:bftwk 3.4s ease-in-out infinite reverse}
+.bf-rain::before{background-image:radial-gradient(ellipse 1px 9px at 7px 15px,#ffffff99,#0000),radial-gradient(ellipse 1px 7px at 19px 5px,#ffffff77,#0000);background-size:26px 30px,34px 24px;animation:bfrain .6s linear infinite}
+.bf-shimmer::after{background:linear-gradient(105deg,#0000 35%,#ffffff55 50%,#0000 65%);animation:bfsweep 3.2s ease-in-out infinite}
+.bf-waves::before{background-image:radial-gradient(ellipse 70px 20px at 35px 100%,#ffffff33 98%,#0000 100%);background-size:70px 100%;background-repeat:repeat-x;animation:bfwave 5s linear infinite}
+.bf-waves::after{background-image:radial-gradient(ellipse 90px 26px at 45px 100%,#ffffff22 98%,#0000 100%);background-size:90px 100%;background-repeat:repeat-x;animation:bfwave2 8s linear infinite reverse}
+.bf-embers::before{background-image:radial-gradient(3px 3px at 20px 90px,#ffb347,#0000),radial-gradient(2px 2px at 70px 50px,#ff7a2f,#0000),radial-gradient(2.5px 2.5px at 120px 100px,#ffd27a,#0000);background-size:150px 120px;animation:bfrise 4s linear infinite}
+.bf-embers::after{background-image:radial-gradient(2px 2px at 30px 40px,#ff9a3c,#0000),radial-gradient(3px 3px at 80px 110px,#ffcf70,#0000);background-size:90px 140px;animation:bfrise2 6s linear infinite}
+
+/* ---- profile effects canvas, card theme, 3D tilt + glare ---- */
+canvas.pfx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
+.modal.prof .card{transition:transform .18s ease-out}
+.modal.prof .card::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;background:radial-gradient(280px circle at var(--gx,50%) var(--gy,0%),#ffffff1f,#0000 62%);opacity:0;transition:opacity .25s}
+.modal.prof .card:hover::after{opacity:1}
+.card.themed,.eprev.themed{background:linear-gradient(165deg,color-mix(in srgb,var(--ac,#f5b84b) 28%,var(--panel)) 0%,var(--panel) 45%,color-mix(in srgb,var(--ac2,var(--ac,#f5b84b)) 24%,var(--panel)) 100%);box-shadow:0 0 0 1px color-mix(in srgb,var(--ac,#f5b84b) 45%,transparent),0 14px 40px color-mix(in srgb,var(--ac,#f5b84b) 25%,transparent)}
+.themed .pstats>div,.themed .pstatus{background:color-mix(in srgb,var(--ac,#f5b84b) 14%,var(--raise))}
+
+/* ---- editor widgets ---- */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--raise);border:1px solid var(--line);border-radius:10px;color:var(--text);font-size:12px;padding:4px 9px;cursor:pointer}
+.chip.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 16%,var(--raise))}
+.av.cs{width:20px;height:20px;border-radius:50%;background:#6b5fa8;font-size:0;--rt:2px;--ro:-3px;--es:9px}
+.cst{font-size:14px}
+.csb{position:relative;overflow:hidden;display:inline-block;width:34px;height:18px;border-radius:5px;background:linear-gradient(135deg,#3a1c71,#8e2de2)}
+.csi{font-size:15px;line-height:1}
+.colrow{gap:10px;align-items:center;flex-wrap:wrap}
+.colr{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mute)}
+.colr input[type=color]{width:34px;height:26px;padding:0;border:1px solid var(--line);border-radius:6px;background:none;cursor:pointer}
+.editp .mut{color:var(--mute)}
+
+@media (prefers-reduced-motion:reduce){
+  .av.dc,.av.dc::before,.av.dc::after,.bf::before,.bf::after,.nm,.nm i,.nm::before,.nm::after,.pav.studying .av{animation:none!important}
+  .modal.prof .card{transition:none}
+}
+
+/* ===== part 8: crop + zoom editor for avatar / banner pictures ===== */
+.modal.crop .card{width:min(420px,94vw);padding:14px;overflow:auto;max-height:92dvh}
+.crop-stage{position:relative;overflow:hidden;margin:10px auto;background:#0b0a14;border-radius:12px;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;outline:none}
+.crop-stage:focus-visible{outline:2px solid var(--gold)}
+.crop-stage.drag{cursor:grabbing}
+.crop-stage img{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none;will-change:transform}
+.crop-win{position:absolute;pointer-events:none;box-shadow:0 0 0 999px rgba(10,8,20,.66);outline:2px solid #ffffffd9;z-index:2}
+.crop-win.round{border-radius:50%}
+.crop-win:not(.round)::after{content:"";position:absolute;inset:0;background:linear-gradient(#ffffff40,#ffffff40) 33.3% 0/1px 100% no-repeat,linear-gradient(#ffffff40,#ffffff40) 66.6% 0/1px 100% no-repeat,linear-gradient(#ffffff40,#ffffff40) 0 33.3%/100% 1px no-repeat,linear-gradient(#ffffff40,#ffffff40) 0 66.6%/100% 1px no-repeat}
+.crop-zoom{display:flex;align-items:center;gap:10px;margin:6px 0 12px}
+.crop-zoom input{flex:1;accent-color:var(--gold)}
+.crop-zoom .btn{padding:2px 12px;line-height:1.4}
+
+/* server settings: the shared sticker set */
+.stklist{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 10px}
+.stki{display:flex;align-items:center;gap:6px;background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:4px 6px}
+.stki img{width:28px;height:28px;object-fit:contain;border-radius:6px}
+.stki>span{font-size:12px;color:var(--mute);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stki .x{background:none;border:0;color:var(--mute);font-size:14px;line-height:1;padding:2px 4px;border-radius:6px;cursor:pointer}
+.stki .x:hover{color:#ff8080;background:#ff808022}
+
+/* ---- crazy anime / gaming packs: 5 new decorations, name styles, banner effects ---- */
+.dc-fox{--g:#ff7a1899}
+.dc-fox::before{background:conic-gradient(from var(--a),#ff3d00,#ffb300,#fff2a8,#ff7a18,#ff3d00);animation:dcang 1.4s linear infinite}
+.dc-fox::after{content:"🦊";position:absolute;right:var(--ro);top:var(--ro);font-size:var(--es);line-height:1;z-index:3;animation:dcfloat 2.2s ease-in-out infinite}
+.dc-cursed{--g:#ff1f4b99}
+.dc-cursed::before{background:repeating-conic-gradient(from var(--a),#ff1f4b 0 14deg,#2a0010 14deg 22deg,#ff6b8a 22deg 30deg,#0000 30deg 44deg);animation:dcang 2.2s linear infinite,dcflick .4s steps(2) infinite}
+.dc-mecha{--g:#00f5ff88}
+.dc-mecha::before{background:conic-gradient(from var(--a),#00f5ff 0 8deg,#0000 8deg 30deg,#8ef9ff 30deg 34deg,#0000 34deg 45deg);animation:dcang 2.6s linear infinite}
+.dc-mecha::after{content:"";position:absolute;left:var(--ro);bottom:var(--ro);width:var(--es);height:var(--es);border-radius:2px;border:1px solid #00f5ffee;box-shadow:0 0 8px #00f5ffaa;z-index:3;animation:dcfloat 3s ease-in-out infinite}
+.dc-rgb{--g:#ffffff66}
+.dc-rgb::before{background:conic-gradient(from var(--a),#ff004d,#ffb300,#00ff8c,#00d0ff,#7c4dff,#ff00c8,#ff004d);animation:dcang 1.8s linear infinite}
+.dc-blade{--g:#cfe8ff88}
+.dc-blade::before{background:conic-gradient(from var(--a),#eaf6ff,#8ec5ff,#fff,#ffb7d5,#eaf6ff);animation:dcang 3.4s linear infinite}
+.dc-blade::after{content:"⚔";position:absolute;left:var(--ro);bottom:var(--ro);font-size:var(--es);line-height:1;z-index:3;animation:dcfloat 2.6s ease-in-out infinite}
+
+.nfx-arcade{color:#fff!important;text-shadow:2px 2px 0 #ff2bd6,-2px -2px 0 #00f5ff,0 0 12px #ff2bd6aa;animation:nmflick 2.4s steps(3) infinite}
+.nfx-hologram{color:#c8fbff!important;text-shadow:0 0 4px #00f5ff,0 0 14px #00b3ff99;animation:nmflick 4s linear infinite}
+.nfx-blood{background-image:linear-gradient(0deg,#4a0010,#ff1f4b 60%,#ff8fa3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent!important;filter:drop-shadow(0 2px 4px #ff1f4b88)}
+.nfx-outline{color:#fff!important;-webkit-text-stroke:1.4px var(--na,#ff9ec4);text-shadow:0 0 10px var(--na,#ff9ec4),2px 2px 0 #0006}
+.nfx-chrome{background-image:linear-gradient(100deg,#8fa3b8 20%,#fff 45%,#cfd8e3 55%,#7c8a9c 80%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent!important;animation:nmflow 3.4s linear infinite}
+
+@keyframes bfscan{to{background-position:0 6px}}
+@keyframes bfflash{0%,90%,100%{opacity:0}91%{opacity:.9}93%{opacity:.25}95%{opacity:.8}97%{opacity:0}}
+@keyframes bfhex{to{background-position:34px 0,34px 0}}
+@keyframes bfvhs{to{background-position:0 8px}}
+.bf-scan::before{background-image:repeating-linear-gradient(0deg,#00000066 0 1px,#0000 1px 3px);animation:bfscan .5s linear infinite}
+.bf-scan::after{background:linear-gradient(180deg,#0000,#ffffff22 45%,#0000 55%);background-size:100% 45%;background-repeat:no-repeat;animation:bfrise 3s linear infinite}
+.bf-lightning::before{background:linear-gradient(115deg,#0000 42%,#cfe4ff 47%,#fff 48%,#0000 54%);mix-blend-mode:screen;opacity:0;animation:bfflash 5s linear infinite}
+.bf-lightning::after{background:radial-gradient(120% 90% at 30% 0%,#fff,#b8d8ff 26%,#0000 68%);mix-blend-mode:screen;opacity:0;animation:bfflash 5s linear infinite .15s}
+.bf-hex::before{background-image:linear-gradient(60deg,#00f5ff33 1px,#0000 1px),linear-gradient(-60deg,#ff2bd633 1px,#0000 1px);background-size:34px 34px,34px 34px;animation:bfhex 6s linear infinite}
+.bf-vhs::before{background-image:repeating-linear-gradient(0deg,#0000 0 2px,#ffffff14 2px 4px);animation:bfvhs .45s steps(2) infinite}
+.bf-vhs::after{background:linear-gradient(90deg,#ff004c33,#0000 42%,#00f5ff33);mix-blend-mode:screen;animation:bfdrift 9s linear infinite alternate}
+.bf-sparks::before{background-image:linear-gradient(115deg,#0000 45%,#ffd166 46%,#fff 47%,#ff7a18aa 48%,#0000 52%),linear-gradient(115deg,#0000 45%,#ff7a18 46%,#0000 50%);background-size:220px 100%,160px 100%;animation:bfflow 2.6s linear infinite}
+
+.packs{gap:8px;margin-top:6px}
+.pack{width:104px;background:var(--raise);border:1px solid var(--line);border-radius:12px;padding:0 0 6px;cursor:pointer;color:var(--text);font-size:11px;overflow:hidden;text-align:left}
+.pack i{display:block;height:36px;width:100%}
+.pack b{display:block;font-weight:600;padding:5px 7px 0;line-height:1.2}
+.pack:hover{border-color:var(--gold)}
+.pack.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+
+/* ---- DMs: friends-only panel with avatars ---- */
+.dmp .card{width:min(540px,94vw);max-height:88vh;overflow:auto}
+.dph{align-items:center;margin:0 0 6px}
+.dpsec{display:flex;align-items:center;gap:6px;margin:14px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.dpsec i{background:var(--gold);color:#14121f;border-radius:8px;padding:0 6px;font-size:11px;font-style:normal;font-weight:700}
+.dprow{display:flex;align-items:center;gap:8px;width:100%;background:var(--raise);border:1px solid var(--line);border-radius:12px;padding:7px 9px;margin-top:6px;color:var(--text);text-align:left;box-sizing:border-box}
+.dprow.conv{cursor:pointer}
+.dprow.conv:hover{border-color:var(--gold)}
+.dprow.conv.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 14%,var(--raise))}
+.dprow.req{gap:6px}
+.dpmsg{display:flex;align-items:center;gap:9px;flex:1;min-width:0;background:none;border:0;color:var(--text);cursor:pointer;text-align:left;padding:0}
+.dpav{position:relative;flex:none;display:flex}
+.dpav .av{width:34px;height:34px;border-radius:11px;font-size:15px}
+.dpav .dpon{position:absolute;right:-2px;bottom:-2px;width:10px;height:10px;border-radius:50%;background:#43d17a;border:2px solid var(--panel)}
+.dpwho{display:flex;flex-direction:column;min-width:0;flex:1}
+.dpwho b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dpwho small{font-size:12px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dpun{font-style:normal;flex:none;font-size:11px;font-weight:700;background:#ff4d6d;color:#fff;border-radius:8px;padding:1px 6px}
+.dpico{flex:none;font-size:15px;opacity:.55}
+.dpunf{background:none;border:0;color:var(--mute);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:8px;flex:none}
+.dpunf:hover{background:#ff4d6d22;color:#ff8fa3}
+.dpok,.dpno{border:1px solid var(--line);border-radius:9px;padding:4px 10px;font-size:12px;cursor:pointer;flex:none}
+.dpok{background:#43d17a;border-color:#43d17a;color:#08130c;font-weight:700}
+.dpno{background:var(--panel);color:var(--mute)}
+.dpad{display:flex;gap:8px;margin-top:10px}
+.dpad input{flex:1;min-width:0;background:var(--raise);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:8px 10px;font-size:13px}
+.dpnote{display:block;margin-top:12px}
+.csub{color:var(--mute);font-size:12px}
+
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,18px);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-size:13px;box-shadow:0 10px 30px #0008;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:40;max-width:min(420px,90vw)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---- DM view: the server column (name + channels) belongs to servers, so it disappears ---- */
+/* on a phone the DM view keeps its drawer + hamburger, otherwise the drawer can get stuck open */
+@media(min-width:781px){
+  body.dmview aside{display:none!important}
+  body.dmview #drawerbtn{display:none!important}
+}
+
+/* ================= 5 AMV packs: the whole profile breathes, and the member list wears it too ================= */
+.pk-kitsune{--pk1:#ff6a00;--pk2:#ffd166}
+.pk-cursedking{--pk1:#ff1f4b;--pk2:#7b0f2b}
+.pk-neonrunner{--pk1:#00f5ff;--pk2:#ff2bd6}
+.pk-ranked{--pk1:#7c4dff;--pk2:#00ff9d}
+.pk-sakurablade{--pk1:#ff9ec4;--pk2:#8ec5ff}
+
+@keyframes pkAura{0%,100%{box-shadow:0 0 0 1px color-mix(in srgb,var(--pk1) 60%,transparent),0 0 22px color-mix(in srgb,var(--pk1) 38%,transparent),inset 0 0 34px color-mix(in srgb,var(--pk1) 12%,transparent)}50%{box-shadow:0 0 0 2px var(--pk1),0 0 64px color-mix(in srgb,var(--pk1) 70%,transparent),inset 0 0 90px color-mix(in srgb,var(--pk2) 26%,transparent)}}
+@keyframes pkDrift{0%{background-position:0% 0%,100% 60%,0 0}100%{background-position:100% 100%,0% 0%,0 0}}
+@keyframes pkScan{to{background-position:0 0,0 7px,0 0}}
+@keyframes pkScan2{to{background-position:0 6px,0 0}}
+@keyframes pkVeins4{to{background-position:0 0,44px 0,-38px 0,0 -70px}}
+@keyframes pkRise3{to{background-position:0 0,0 -90px,0 -70px}}
+@keyframes pkPixels3{to{background-position:120px 0,-90px 0,80px 0}}
+@keyframes pkBreath{0%,100%{opacity:.45;transform:scale(1)}50%{opacity:1;transform:scale(1.07)}}
+
+/* profile card + editor preview: animated aura, drifting light, banner punch */
+.card.pk-kitsune,.eprev.pk-kitsune{background-image:radial-gradient(75% 60% at 12% 0%,#ff6a0066,#0000 65%),radial-gradient(65% 55% at 92% 100%,#ffd16655,#0000 65%),repeating-linear-gradient(0deg,#ffffff08 0 2px,#0000 2px 6px);background-size:180% 180%,170% 170%,100% 100%;animation:pkAura 2.6s ease-in-out infinite,pkDrift 9s ease-in-out infinite alternate}
+.card.pk-cursedking,.eprev.pk-cursedking{background-image:radial-gradient(80% 60% at 18% 6%,#ff1f4b55,#0000 62%),radial-gradient(70% 60% at 90% 100%,#7b0f2b88,#0000 65%),repeating-linear-gradient(58deg,#ff1f4b0d 0 2px,#0000 2px 22px),repeating-linear-gradient(-58deg,#ff1f4b09 0 2px,#0000 2px 26px);background-size:180% 180%,170% 170%,100% 100%,100% 100%;animation:pkAura 1.7s ease-in-out infinite,pkVeins4 7s linear infinite}
+.card.pk-neonrunner,.eprev.pk-neonrunner{background-image:radial-gradient(70% 60% at 10% 0%,#00f5ff55,#0000 60%),radial-gradient(60% 60% at 95% 100%,#ff2bd655,#0000 62%),repeating-linear-gradient(0deg,#00f5ff1a 0 1px,#0000 1px 4px);background-size:180% 180%,170% 170%,100% 100%;animation:pkAura 3s ease-in-out infinite,pkScan .9s linear infinite}
+.card.pk-ranked,.eprev.pk-ranked{background-image:radial-gradient(70% 60% at 50% 0%,#7c4dff55,#0000 62%),radial-gradient(60% 60% at 10% 100%,#00ff9d44,#0000 65%),repeating-linear-gradient(90deg,#ffffff10 0 6px,#0000 6px 12px);background-size:180% 180%,170% 170%,100% 100%;animation:pkAura 3.2s ease-in-out infinite,pkDrift 7s ease-in-out infinite alternate}
+.card.pk-sakurablade,.eprev.pk-sakurablade{background-image:radial-gradient(70% 55% at 15% 0%,#ff9ec455,#0000 62%),radial-gradient(60% 55% at 92% 95%,#8ec5ff55,#0000 65%),repeating-linear-gradient(0deg,#ffffff0d 0 2px,#0000 2px 7px);background-size:180% 180%,170% 170%,100% 100%;animation:pkAura 3.4s ease-in-out infinite,pkDrift 11s ease-in-out infinite alternate}
+.card[class*="pk-"] .pbanner{filter:saturate(1.25) contrast(1.08)}
+.card[class*="pk-"] .pav .av{box-shadow:0 0 0 2px var(--pk1),0 0 26px color-mix(in srgb,var(--pk1) 65%,transparent)}
+
+/* glow behind the profile modal, coloured by the equipped pack */
+.modal.prof:has(.pk-kitsune){background-image:radial-gradient(46% 46% at 50% 42%,#ff6a0047,#0000 72%)}
+.modal.prof:has(.pk-cursedking){background-image:radial-gradient(46% 46% at 50% 42%,#ff1f4b4d,#0000 72%)}
+.modal.prof:has(.pk-neonrunner){background-image:radial-gradient(46% 46% at 50% 42%,#00f5ff40,#0000 72%)}
+.modal.prof:has(.pk-ranked){background-image:radial-gradient(46% 46% at 50% 42%,#7c4dff4d,#0000 72%)}
+.modal.prof:has(.pk-sakurablade){background-image:radial-gradient(46% 46% at 50% 42%,#ff9ec44d,#0000 72%)}
+
+/* member list rows wear the pack: coloured name, glowing avatar, animated pattern */
+#ml .mr{position:relative;isolation:isolate;overflow:hidden;transition:background .2s}
+#ml .mr::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none}
+#ml .mr[class*="pk-"] .av{box-shadow:0 0 0 2px var(--pk1),0 0 14px color-mix(in srgb,var(--pk1) 70%,transparent)}
+#ml .mr[class*="pk-"] .nm{filter:drop-shadow(0 0 7px currentColor)}
+#ml .mr.pk-kitsune{color:#ffb066;text-shadow:0 0 9px #ff6a0055}
+#ml .mr.pk-kitsune::after{background-image:radial-gradient(70% 120% at 0% 120%,#ff6a0077,#0000 62%),radial-gradient(1.6px 1.6px at 28px 60px,#ffd166,#0000),radial-gradient(1.4px 1.4px at 72px 30px,#ff8c42,#0000);background-size:100% 100%,90px 80px,70px 70px;animation:pkRise3 4s linear infinite}
+#ml .mr.pk-cursedking{color:#ff8fa3;text-shadow:0 0 10px #ff1f4b66}
+#ml .mr.pk-cursedking::after{background-image:radial-gradient(90% 140% at 20% 30%,#ff1f4b55,#0000 70%),repeating-linear-gradient(60deg,#ff1f4b33 0 3px,#0000 3px 12px),repeating-linear-gradient(-58deg,#c4002455 0 2px,#0000 2px 10px),radial-gradient(2px 2px at 40px 18px,#ff7a93,#0000);background-size:100% 100%,100% 100%,100% 100%,120px 60px;animation:pkVeins4 8s linear infinite}
+#ml .mr.pk-neonrunner{color:#8ef9ff;text-shadow:0 0 10px #00f5ff66}
+#ml .mr.pk-neonrunner::after{background-image:repeating-linear-gradient(0deg,#00f5ff22 0 1px,#0000 1px 5px),linear-gradient(90deg,#00f5ff33,#0000 55%,#ff2bd633);background-size:100% 100%,100% 100%;animation:pkScan2 1s linear infinite}
+#ml .mr.pk-ranked{color:#c0aeff;text-shadow:0 0 10px #7c4dff66}
+#ml .mr.pk-ranked::after{background-image:radial-gradient(3px 3px at 10px 30%,#7c4dffcc,#0000),radial-gradient(3px 3px at 40px 70%,#00ff9dcc,#0000),radial-gradient(2px 2px at 70px 20%,#ff2bd6cc,#0000);background-size:80px 60px,90px 70px,70px 50px;animation:pkPixels3 6s linear infinite}
+#ml .mr.pk-sakurablade{color:#ffc2da;text-shadow:0 0 10px #ff9ec466}
+#ml .mr.pk-sakurablade::after{background-image:radial-gradient(3px 2px at 20px 40px,#ffb7d5cc,#0000),radial-gradient(2px 2px at 60px 20px,#cfe3ffbb,#0000),linear-gradient(90deg,#ff9ec42e,#0000 70%);background-size:110px 70px,90px 60px,100% 100%;animation:pkPixels3 9s linear infinite reverse}
+/* ---- servers + roles ---- */
+#rail .srv.plus{border:1px dashed color-mix(in srgb,var(--gold) 55%,transparent);background:transparent;color:var(--gold);font-size:22px;font-weight:400;line-height:1}
+#rail .srv.plus:hover{background:color-mix(in srgb,var(--gold) 16%,transparent)}
+.srvadmin{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.chanlist{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
+.chantag{display:inline-flex;align-items:center;gap:6px;background:var(--raise);border:1px solid var(--line);border-radius:9px;padding:3px 8px;font-size:12px;color:var(--mute)}
+.chantag b{color:var(--text);font-weight:600}
+.chdel{background:none;border:0;color:#ff8fa3;cursor:pointer;font-size:12px;padding:0 2px}
+.chdel:hover{color:#ff4d6d}
+.roleadd{margin:4px 0 8px}
+.roleadd input[type=color]{width:44px;height:32px;background:none;border:1px solid var(--line);border-radius:8px;padding:2px;cursor:pointer}
+.rolelist{display:flex;flex-direction:column;gap:6px;margin:4px 0 10px}
+.rolerow{display:flex;align-items:center;gap:8px;background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:5px 9px}
+.rolerow i{width:10px;height:10px;border-radius:50%;flex:none}
+.rolerow b{font-size:13px;font-weight:600;flex:1}
+.rolerow input[type=color]{width:34px;height:26px;background:none;border:1px solid var(--line);border-radius:7px;padding:1px;cursor:pointer}
+.rl-del{background:none;border:0;color:var(--mute);cursor:pointer;font-size:13px}
+.rl-del:hover{color:#ff8fa3}
+.memroles{max-height:200px;overflow:auto;display:flex;flex-direction:column;gap:5px}
+.memrow{display:flex;align-items:center;gap:8px}
+.memn{flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.memrow select{background:var(--raise);border:1px solid var(--line);border-radius:8px;color:var(--text);font-size:12px;padding:3px 6px;max-width:150px}
+#ml .mr .nm.rolec,#msgs .n.rolec,#msgs .n.rolec .nm{color:var(--role)!important;-webkit-text-fill-color:var(--role)!important;background-image:none!important}
+#ml .mr .nm.rolec,#msgs .n.rolec .nm{text-shadow:0 0 10px var(--role)}
+
+#ml .mr.rolec{color:var(--role)!important}
+
+/* ---- anime backdrop: original anime-character art, low opacity, drifting slowly ---- */
+.card .part,.eprev .part{position:absolute;left:0;right:0;top:104px;bottom:0;z-index:0;pointer-events:none;overflow:hidden;border-radius:0 0 18px 18px;background-repeat:no-repeat;background-size:auto 108%;background-position:86% 2px;opacity:.42;mix-blend-mode:screen;filter:saturate(1.15) contrast(1.04);-webkit-mask-image:linear-gradient(#0000 0,#000 5%,#000 88%,#0000 100%);mask-image:linear-gradient(#0000 0,#000 5%,#000 88%,#0000 100%);animation:partDrift 26s ease-in-out infinite alternate,partBreath 11s ease-in-out infinite}
+.eprev .part{top:92px;background-size:auto 132%;opacity:.34;animation-duration:32s,13s}
+@keyframes partDrift{from{background-position:84% 0}to{background-position:94% 22px}}
+@keyframes partBreath{0%,100%{opacity:.34}50%{opacity:.5}}
+.card .part.w,.eprev .part.w{background-size:cover;background-position:50% 38%;opacity:.3;filter:saturate(1.15);animation:partPan 26s ease-in-out infinite alternate}
+@keyframes partPan{from{background-position:50% 34%}to{background-position:56% 52%}}
+/* user backdrops: fit + zoom picked in the editor, so wide art keeps its framing */
+.card .part.w,.eprev .part.w{background-image:none}
+.part>.partimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;transform:scale(var(--artz,1));animation:artDrift 30s ease-in-out infinite alternate;will-change:transform}
+.card .part.r169,.eprev .part.r169{bottom:auto;height:auto;aspect-ratio:16/9}
+@keyframes artDrift{from{transform:scale(var(--artz,1)) translate3d(-1.2%,-1%,0)}to{transform:scale(var(--artz,1)) translate3d(1.4%,1.2%,0)}}
+.artopts .chip{min-width:0;padding:0 10px}
+.card>.phead,.card>.pbody,.card>.prank,.card>.pstats,.card>.ptags,.card>.pfoot,.card>.pactions,.eprev>.phead,.eprev>.pbody,.eprev>.prank,.eprev>.pstats{position:relative;z-index:2}
+.pk-kitsune .part{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20420%20340%22%20width%3D%22420%22%20height%3D%22340%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22aura%22%20cx%3D%2270%25%22%20cy%3D%2228%25%22%20r%3D%2268%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffd166%22%20stop-opacity%3D%22.48%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23ff6a00%22%20stop-opacity%3D%22.2%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23ff6a00%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%3ClinearGradient%20id%3D%22hair%22%20x1%3D%22.2%22%20y1%3D%220%22%20x2%3D%22.85%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffb066%22%20stop-opacity%3D%22.98%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23ff6a00%22%20stop-opacity%3D%22.9%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23391300%22%20stop-opacity%3D%22.85%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22art%22%20x1%3D%22.15%22%20y1%3D%220%22%20x2%3D%22.9%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff6a00%22%20stop-opacity%3D%22.8%22%2F%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%23391300%22%20stop-opacity%3D%22.9%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23391300%22%20stop-opacity%3D%221%22%2F%3E%3C%2FlinearGradient%3E%3Cfilter%20id%3D%22glow%22%20x%3D%22-40%25%22%20y%3D%22-40%25%22%20width%3D%22180%25%22%20height%3D%22180%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%227%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Crect%20width%3D%22420%22%20height%3D%22340%22%20fill%3D%22url(%23aura)%22%2F%3E%3Ccircle%20cx%3D%22292%22%20cy%3D%22104%22%20r%3D%2296%22%20fill%3D%22%23ffd166%22%20opacity%3D%22.07%22%2F%3E%3Ccircle%20cx%3D%22292%22%20cy%3D%22104%22%20r%3D%2296%22%20fill%3D%22none%22%20stroke%3D%22%23ffd166%22%20stroke-opacity%3D%22.16%22%20stroke-width%3D%221.2%22%2F%3E%3Cg%20stroke%3D%22%23ffd166%22%20stroke-opacity%3D%22.13%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M0%20116%20L186%20168%22%2F%3E%3Cpath%20d%3D%22M0%20188%20L156%20220%22%2F%3E%3Cpath%20d%3D%22M0%2056%20L126%2092%22%2F%3E%3Cpath%20d%3D%22M0%20252%20L100%20272%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22315%22%20r%3D%221.3%22%20fill%3D%22%23fff%22%20opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22306%22%20cy%3D%22190%22%20r%3D%221.4%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.58%22%2F%3E%3Ccircle%20cx%3D%22317%22%20cy%3D%22194%22%20r%3D%222.1%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22343%22%20cy%3D%2297%22%20r%3D%221.4%22%20fill%3D%22%23fff%22%20opacity%3D%220.55%22%2F%3E%3Ccircle%20cx%3D%22293%22%20cy%3D%2237%22%20r%3D%222.1%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.43%22%2F%3E%3Ccircle%20cx%3D%22387%22%20cy%3D%22278%22%20r%3D%220.9%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%22388%22%20cy%3D%22240%22%20r%3D%222.0%22%20fill%3D%22%23fff%22%20opacity%3D%220.49%22%2F%3E%3Ccircle%20cx%3D%22383%22%20cy%3D%22311%22%20r%3D%221.4%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22352%22%20cy%3D%22126%22%20r%3D%221.0%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22114%22%20r%3D%222.6%22%20fill%3D%22%23fff%22%20opacity%3D%220.48%22%2F%3E%3Ccircle%20cx%3D%22306%22%20cy%3D%22301%22%20r%3D%220.8%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%22235%22%20cy%3D%22183%22%20r%3D%221.5%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22382%22%20cy%3D%2238%22%20r%3D%221.4%22%20fill%3D%22%23fff%22%20opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22279%22%20cy%3D%22316%22%20r%3D%221.7%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22170%22%20cy%3D%22111%22%20r%3D%221.4%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%22190%22%20r%3D%221.9%22%20fill%3D%22%23fff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22381%22%20cy%3D%22167%22%20r%3D%222.4%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22266%22%20cy%3D%22185%22%20r%3D%221.7%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.54%22%2F%3E%3Ccircle%20cx%3D%22395%22%20cy%3D%22147%22%20r%3D%222.1%22%20fill%3D%22%23fff%22%20opacity%3D%220.33%22%2F%3E%3Ccircle%20cx%3D%22246%22%20cy%3D%22132%22%20r%3D%221.4%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22334%22%20cy%3D%22301%22%20r%3D%220.9%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.61%22%2F%3E%3Ccircle%20cx%3D%2233%22%20cy%3D%22150%22%20r%3D%221.0%22%20fill%3D%22%23fff%22%20opacity%3D%220.24%22%2F%3E%3Ccircle%20cx%3D%22418%22%20cy%3D%2290%22%20r%3D%222.0%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22192%22%20cy%3D%22210%22%20r%3D%221.0%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.66%22%2F%3E%3Ccircle%20cx%3D%22372%22%20cy%3D%22305%22%20r%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%220.65%22%2F%3E%3Ccircle%20cx%3D%22320%22%20cy%3D%22108%22%20r%3D%220.7%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2221%22%20r%3D%221.9%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22311%22%20cy%3D%22177%22%20r%3D%222.1%22%20fill%3D%22%23fff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22370%22%20cy%3D%2295%22%20r%3D%221.4%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.65%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%22177%22%20r%3D%220.7%22%20fill%3D%22%23ffd166%22%20opacity%3D%220.66%22%2F%3E%3Cg%20filter%3D%22url(%23glow)%22%20opacity%3D%22.5%22%3EM292%2054%20C256%2054%20234%2078%20232%20106%20C230%20128%20224%20150%20210%20168%20C232%20166%20248%20156%20256%20140%20C250%20120%20256%2096%20268%2082%20C278%2070%20288%2066%20296%2066%20C322%2064%20342%2082%20346%20108%20C350%20130%20352%20156%20360%20182%20C374%20168%20382%20140%20380%20112%20C378%2078%20344%2054%20292%2054%20Z%3C%2Fg%3E%3Cpath%20d%3D%22M292%20156%20C280%20158%20270%20166%20262%20178%20C244%20184%20214%20194%20200%20210%20C190%20222%20186%20244%20184%20268%20L178%20348%20L406%20348%20L398%20268%20C396%20244%20392%20222%20382%20210%20C368%20194%20340%20184%20322%20178%20C314%20166%20304%20156%20292%20156%20Z%22%20fill%3D%22url(%23art)%22%2F%3E%3Cpath%20d%3D%22M244%20190%20C232%20226%20236%20262%20262%20288%20L300%20306%20C312%20296%20314%20282%20306%20274%20L276%20258%20C266%20240%20268%20216%20276%20196%20Z%22%20fill%3D%22url(%23art)%22%20opacity%3D%22.95%22%2F%3E%3Cpath%20d%3D%22M292%20156%20C280%20158%20270%20166%20262%20178%20C244%20184%20214%20194%20200%20210%20C190%20222%20186%20244%20184%20268%20L178%20348%20L406%20348%20L398%20268%20C396%20244%20392%20222%20382%20210%20C368%20194%20340%20184%20322%20178%20C314%20166%20304%20156%20292%20156%20Z%22%20fill%3D%22none%22%20stroke%3D%22%23ffd166%22%20stroke-opacity%3D%22.3%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M292%20160%20L268%20196%20L286%20208%20L292%20176%20L300%20208%20L318%20194%20Z%22%20fill%3D%22%23391300%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M262%20178%20C250%20200%20244%20246%20242%20320%20M322%20178%20C334%20200%20340%20246%20342%20320%22%20fill%3D%22none%22%20stroke%3D%22%23ffd166%22%20stroke-opacity%3D%22.25%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M276%20142%20C278%20156%20282%20162%20292%20164%20C302%20162%20306%20156%20308%20142%20Z%22%20fill%3D%22url(%23art)%22%2F%3E%3Cpath%20d%3D%22M292%2066%20C274%2066%20263%2082%20263%20104%20C263%20124%20274%20141%20289%20149%20C292%20151%20294%20151%20297%20149%20C312%20141%20323%20124%20323%20104%20C323%2082%20310%2066%20292%2066%20Z%22%20fill%3D%22%23ffb066%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M292%2066%20C274%2066%20263%2082%20263%20104%20C263%20124%20274%20141%20289%20149%20C292%20151%20294%20151%20297%20149%20C312%20141%20323%20124%20323%20104%20C323%2082%20310%2066%20292%2066%20Z%22%20fill%3D%22none%22%20stroke%3D%22%23ffd166%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%221.2%22%2F%3E%3Cg%20transform%3D%22translate(280%20111)%20scale(0.84%200.84)%22%3E%3Cpath%20d%3D%22M-13%20-2%20C-10%20-9%20-1%20-11%206%20-6%20C9%20-4%2011%200%2012%203%20C4%208%20-8%207%20-13%20-2%20Z%22%20fill%3D%22%23ffd166%22%20opacity%3D%22.92%22%2F%3E%3Cpath%20d%3D%22M-14%20-3%20C-10%20-12%202%20-13%208%20-7%22%20fill%3D%22none%22%20stroke%3D%22%23391300%22%20stroke-width%3D%223.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%223.6%22%20fill%3D%22%23391300%22%20opacity%3D%22.85%22%2F%3E%3Ccircle%20cx%3D%22-2.4%22%20cy%3D%22-0.6%22%20r%3D%221.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.95%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate(306%20109)%20scale(-0.78%200.78)%22%3E%3Cpath%20d%3D%22M-13%20-2%20C-10%20-9%20-1%20-11%206%20-6%20C9%20-4%2011%200%2012%203%20C4%208%20-8%207%20-13%20-2%20Z%22%20fill%3D%22%23ffd166%22%20opacity%3D%22.92%22%2F%3E%3Cpath%20d%3D%22M-14%20-3%20C-10%20-12%202%20-13%208%20-7%22%20fill%3D%22none%22%20stroke%3D%22%23391300%22%20stroke-width%3D%223.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%223.6%22%20fill%3D%22%23391300%22%20opacity%3D%22.85%22%2F%3E%3Ccircle%20cx%3D%22-2.4%22%20cy%3D%22-0.6%22%20r%3D%221.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.95%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M267%2097%20C275%2092%20285%2094%20289%2098%22%20fill%3D%22none%22%20stroke%3D%22%23391300%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M321%2095%20C313%2090%20303%2092%20299%2096%22%20fill%3D%22none%22%20stroke%3D%22%23391300%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M288%20131%20C291%20135%20296%20135%20300%20130%22%20fill%3D%22none%22%20stroke%3D%22%23ffd166%22%20stroke-opacity%3D%22.55%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M292%2054%20C256%2054%20234%2078%20232%20106%20C230%20128%20224%20150%20210%20168%20C232%20166%20248%20156%20256%20140%20C250%20120%20256%2096%20268%2082%20C278%2070%20288%2066%20296%2066%20C322%2064%20342%2082%20346%20108%20C350%20130%20352%20156%20360%20182%20C374%20168%20382%20140%20380%20112%20C378%2078%20344%2054%20292%2054%20Z%22%20fill%3D%22url(%23hair)%22%2F%3E%3Cpath%20d%3D%22M244%2096%20C248%2078%20264%2064%20292%2062%20C316%2060%20336%2070%20344%2088%20C330%2080%20314%2078%20302%2082%20C312%2088%20320%2096%20322%20106%20C312%2096%20300%2092%20288%2092%20C280%20100%20270%20104%20260%20102%20C252%20100%20246%2098%20244%2096%20Z%22%20fill%3D%22url(%23hair)%22%2F%3E%3Cpath%20d%3D%22M244%2096%20C238%20112%20240%20132%20246%20148%20C252%20138%20256%20128%20256%20116%20C256%20106%20252%20100%20244%2096%20Z%22%20fill%3D%22url(%23hair)%22%20opacity%3D%22.95%22%2F%3E%3Cpath%20d%3D%22M263%20104%20C263%20126%20275%20145%20292%20151%20C309%20145%20322%20126%20322%20104%22%20fill%3D%22none%22%20stroke%3D%22%23ffd166%22%20stroke-opacity%3D%22.28%22%20stroke-width%3D%221.4%22%2F%3E%3Cg%20fill%3D%22url(%23hair)%22%3E%3Cpath%20d%3D%22M256%2064%20L222%2024%20L280%2044%20Z%22%2F%3E%3Cpath%20d%3D%22M328%2058%20L378%2026%20L368%2070%20Z%22%2F%3E%3Cpath%20d%3D%22M256%2060%20L232%2032%20L272%2046%20Z%22%20fill%3D%22%23ffd166%22%20opacity%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M334%2054%20L368%2034%20L360%2060%20Z%22%20fill%3D%22%23ffd166%22%20opacity%3D%22.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+.pk-cursedking .part{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20420%20340%22%20width%3D%22420%22%20height%3D%22340%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22aura%22%20cx%3D%2270%25%22%20cy%3D%2228%25%22%20r%3D%2268%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff4d6d%22%20stop-opacity%3D%22.48%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23ff1f4b%22%20stop-opacity%3D%22.2%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23ff1f4b%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%3ClinearGradient%20id%3D%22hair%22%20x1%3D%22.2%22%20y1%3D%220%22%20x2%3D%22.85%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff8fa3%22%20stop-opacity%3D%22.98%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23ff1f4b%22%20stop-opacity%3D%22.9%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%232a0310%22%20stop-opacity%3D%22.85%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22art%22%20x1%3D%22.15%22%20y1%3D%220%22%20x2%3D%22.9%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff1f4b%22%20stop-opacity%3D%22.8%22%2F%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%232a0310%22%20stop-opacity%3D%22.9%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%232a0310%22%20stop-opacity%3D%221%22%2F%3E%3C%2FlinearGradient%3E%3Cfilter%20id%3D%22glow%22%20x%3D%22-40%25%22%20y%3D%22-40%25%22%20width%3D%22180%25%22%20height%3D%22180%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%227%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Crect%20width%3D%22420%22%20height%3D%22340%22%20fill%3D%22url(%23aura)%22%2F%3E%3Ccircle%20cx%3D%22292%22%20cy%3D%22104%22%20r%3D%2296%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%22.07%22%2F%3E%3Ccircle%20cx%3D%22292%22%20cy%3D%22104%22%20r%3D%2296%22%20fill%3D%22none%22%20stroke%3D%22%23ff4d6d%22%20stroke-opacity%3D%22.16%22%20stroke-width%3D%221.2%22%2F%3E%3Cg%20stroke%3D%22%23ff4d6d%22%20stroke-opacity%3D%22.13%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M0%20116%20L186%20168%22%2F%3E%3Cpath%20d%3D%22M0%20188%20L156%20220%22%2F%3E%3Cpath%20d%3D%22M0%2056%20L126%2092%22%2F%3E%3Cpath%20d%3D%22M0%20252%20L100%20272%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22315%22%20r%3D%221.3%22%20fill%3D%22%23fff%22%20opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22306%22%20cy%3D%22190%22%20r%3D%221.4%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.58%22%2F%3E%3Ccircle%20cx%3D%22317%22%20cy%3D%22194%22%20r%3D%222.1%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22343%22%20cy%3D%2297%22%20r%3D%221.4%22%20fill%3D%22%23fff%22%20opacity%3D%220.55%22%2F%3E%3Ccircle%20cx%3D%22293%22%20cy%3D%2237%22%20r%3D%222.1%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.43%22%2F%3E%3Ccircle%20cx%3D%22387%22%20cy%3D%22278%22%20r%3D%220.9%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%22388%22%20cy%3D%22240%22%20r%3D%222.0%22%20fill%3D%22%23fff%22%20opacity%3D%220.49%22%2F%3E%3Ccircle%20cx%3D%22383%22%20cy%3D%22311%22%20r%3D%221.4%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22352%22%20cy%3D%22126%22%20r%3D%221.0%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22114%22%20r%3D%222.6%22%20fill%3D%22%23fff%22%20opacity%3D%220.48%22%2F%3E%3Ccircle%20cx%3D%22306%22%20cy%3D%22301%22%20r%3D%220.8%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%22235%22%20cy%3D%22183%22%20r%3D%221.5%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22382%22%20cy%3D%2238%22%20r%3D%221.4%22%20fill%3D%22%23fff%22%20opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22279%22%20cy%3D%22316%22%20r%3D%221.7%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22170%22%20cy%3D%22111%22%20r%3D%221.4%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%22190%22%20r%3D%221.9%22%20fill%3D%22%23fff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22381%22%20cy%3D%22167%22%20r%3D%222.4%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22266%22%20cy%3D%22185%22%20r%3D%221.7%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.54%22%2F%3E%3Ccircle%20cx%3D%22395%22%20cy%3D%22147%22%20r%3D%222.1%22%20fill%3D%22%23fff%22%20opacity%3D%220.33%22%2F%3E%3Ccircle%20cx%3D%22246%22%20cy%3D%22132%22%20r%3D%221.4%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22334%22%20cy%3D%22301%22%20r%3D%220.9%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.61%22%2F%3E%3Ccircle%20cx%3D%2233%22%20cy%3D%22150%22%20r%3D%221.0%22%20fill%3D%22%23fff%22%20opacity%3D%220.24%22%2F%3E%3Ccircle%20cx%3D%22418%22%20cy%3D%2290%22%20r%3D%222.0%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22192%22%20cy%3D%22210%22%20r%3D%221.0%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.66%22%2F%3E%3Ccircle%20cx%3D%22372%22%20cy%3D%22305%22%20r%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%220.65%22%2F%3E%3Ccircle%20cx%3D%22320%22%20cy%3D%22108%22%20r%3D%220.7%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2221%22%20r%3D%221.9%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22311%22%20cy%3D%22177%22%20r%3D%222.1%22%20fill%3D%22%23fff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22370%22%20cy%3D%2295%22%20r%3D%221.4%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.65%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%22177%22%20r%3D%220.7%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%220.66%22%2F%3E%3Cg%3E%3Cpath%20d%3D%22M158.0%20352.0%20L378.0%2092.0%20L388.0%20100.0%20L168.0%20360.0%20Z%22%20fill%3D%22%23ff8fa3%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M164.0%20350.0%20L384.0%2090.0%22%20stroke%3D%22%23fff%22%20stroke-opacity%3D%22.6%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M150.0%20356.0%20L196.0%20310.0%22%20stroke%3D%22%23ff4d6d%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.85%22%2F%3E%3C%2Fg%3E%3Cg%20filter%3D%22url(%23glow)%22%20opacity%3D%22.5%22%3EM292%2054%20C262%2054%20240%2074%20238%20102%20C236%20120%20232%20138%20222%20152%20C242%20152%20256%20144%20262%20130%20C258%20112%20262%2092%20272%2080%20C280%2070%20288%2066%20298%2066%20C320%2066%20336%2080%20342%20102%20C346%20120%20344%20140%20352%20158%20C366%20146%20372%20122%20370%20100%20C368%2072%20336%2054%20292%2054%20Z%3C%2Fg%3E%3Cpath%20d%3D%22M292%20156%20C280%20158%20270%20166%20262%20178%20C244%20184%20214%20194%20200%20210%20C190%20222%20186%20244%20184%20268%20L178%20348%20L406%20348%20L398%20268%20C396%20244%20392%20222%20382%20210%20C368%20194%20340%20184%20322%20178%20C314%20166%20304%20156%20292%20156%20Z%22%20fill%3D%22url(%23art)%22%2F%3E%3Cpath%20d%3D%22M244%20190%20C232%20226%20236%20262%20262%20288%20L300%20306%20C312%20296%20314%20282%20306%20274%20L276%20258%20C266%20240%20268%20216%20276%20196%20Z%22%20fill%3D%22url(%23art)%22%20opacity%3D%22.95%22%2F%3E%3Cpath%20d%3D%22M292%20156%20C280%20158%20270%20166%20262%20178%20C244%20184%20214%20194%20200%20210%20C190%20222%20186%20244%20184%20268%20L178%20348%20L406%20348%20L398%20268%20C396%20244%20392%20222%20382%20210%20C368%20194%20340%20184%20322%20178%20C314%20166%20304%20156%20292%20156%20Z%22%20fill%3D%22none%22%20stroke%3D%22%23ff4d6d%22%20stroke-opacity%3D%22.3%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M292%20160%20L268%20196%20L286%20208%20L292%20176%20L300%20208%20L318%20194%20Z%22%20fill%3D%22%232a0310%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M262%20178%20C250%20200%20244%20246%20242%20320%20M322%20178%20C334%20200%20340%20246%20342%20320%22%20fill%3D%22none%22%20stroke%3D%22%23ff4d6d%22%20stroke-opacity%3D%22.25%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M276%20142%20C278%20156%20282%20162%20292%20164%20C302%20162%20306%20156%20308%20142%20Z%22%20fill%3D%22url(%23art)%22%2F%3E%3Cpath%20d%3D%22M292%2066%20C274%2066%20263%2082%20263%20104%20C263%20124%20274%20141%20289%20149%20C292%20151%20294%20151%20297%20149%20C312%20141%20323%20124%20323%20104%20C323%2082%20310%2066%20292%2066%20Z%22%20fill%3D%22%23ff8fa3%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M292%2066%20C274%2066%20263%2082%20263%20104%20C263%20124%20274%20141%20289%20149%20C292%20151%20294%20151%20297%20149%20C312%20141%20323%20124%20323%20104%20C323%2082%20310%2066%20292%2066%20Z%22%20fill%3D%22none%22%20stroke%3D%22%23ff4d6d%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%221.2%22%2F%3E%3Cg%20transform%3D%22translate(280%20111)%20scale(0.84%200.84)%22%3E%3Cpath%20d%3D%22M-13%20-2%20C-10%20-9%20-1%20-11%206%20-6%20C9%20-4%2011%200%2012%203%20C4%208%20-8%207%20-13%20-2%20Z%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%22.92%22%2F%3E%3Cpath%20d%3D%22M-14%20-3%20C-10%20-12%202%20-13%208%20-7%22%20fill%3D%22none%22%20stroke%3D%22%232a0310%22%20stroke-width%3D%223.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%223.6%22%20fill%3D%22%232a0310%22%20opacity%3D%22.85%22%2F%3E%3Ccircle%20cx%3D%22-2.4%22%20cy%3D%22-0.6%22%20r%3D%221.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.95%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate(306%20109)%20scale(-0.78%200.78)%22%3E%3Cpath%20d%3D%22M-13%20-2%20C-10%20-9%20-1%20-11%206%20-6%20C9%20-4%2011%200%2012%203%20C4%208%20-8%207%20-13%20-2%20Z%22%20fill%3D%22%23ff4d6d%22%20opacity%3D%22.92%22%2F%3E%3Cpath%20d%3D%22M-14%20-3%20C-10%20-12%202%20-13%208%20-7%22%20fill%3D%22none%22%20stroke%3D%22%232a0310%22%20stroke-width%3D%223.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%223.6%22%20fill%3D%22%232a0310%22%20opacity%3D%22.85%22%2F%3E%3Ccircle%20cx%3D%22-2.4%22%20cy%3D%22-0.6%22%20r%3D%221.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.95%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M267%2097%20C275%2092%20285%2094%20289%2098%22%20fill%3D%22none%22%20stroke%3D%22%232a0310%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M321%2095%20C313%2090%20303%2092%20299%2096%22%20fill%3D%22none%22%20stroke%3D%22%232a0310%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M288%20131%20C291%20135%20296%20135%20300%20130%22%20fill%3D%22none%22%20stroke%3D%22%23ff4d6d%22%20stroke-opacity%3D%22.55%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M292%2054%20C262%2054%20240%2074%20238%20102%20C236%20120%20232%20138%20222%20152%20C242%20152%20256%20144%20262%20130%20C258%20112%20262%2092%20272%2080%20C280%2070%20288%2066%20298%2066%20C320%2066%20336%2080%20342%20102%20C346%20120%20344%20140%20352%20158%20C366%20146%20372%20122%20370%20100%20C368%2072%20336%2054%20292%2054%20Z%22%20fill%3D%22url(%23hair)%22%2F%3E%3Cpath%20d%3D%22M244%2096%20C248%2078%20264%2064%20292%2062%20C316%2060%20336%2070%20344%2088%20C330%2080%20314%2078%20302%2082%20C312%2088%20320%2096%20322%20106%20C312%2096%20300%2092%20288%2092%20C280%20100%20270%20104%20260%20102%20C252%20100%20246%2098%20244%2096%20Z%22%20fill%3D%22url(%23hair)%22%2F%3E%3Cpath%20d%3D%22M244%2096%20C238%20112%20240%20132%20246%20148%20C252%20138%20256%20128%20256%20116%20C256%20106%20252%20100%20244%2096%20Z%22%20fill%3D%22url(%23hair)%22%20opacity%3D%22.95%22%2F%3E%3Cpath%20d%3D%22M263%20104%20C263%20126%20275%20145%20292%20151%20C309%20145%20322%20126%20322%20104%22%20fill%3D%22none%22%20stroke%3D%22%23ff4d6d%22%20stroke-opacity%3D%22.28%22%20stroke-width%3D%221.4%22%2F%3E%3C%2Fsvg%3E")}
+.pk-neonrunner .part{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20420%20340%22%20width%3D%22420%22%20height%3D%22340%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22aura%22%20cx%3D%2270%25%22%20cy%3D%2228%25%22%20r%3D%2268%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff2bd6%22%20stop-opacity%3D%22.48%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%2300f5ff%22%20stop-opacity%3D%22.2%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2300f5ff%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%3ClinearGradient%20id%3D%22hair%22%20x1%3D%22.2%22%20y1%3D%220%22%20x2%3D%22.85%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%238ef9ff%22%20stop-opacity%3D%22.98%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%2300f5ff%22%20stop-opacity%3D%22.9%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2304212b%22%20stop-opacity%3D%22.85%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22art%22%20x1%3D%22.15%22%20y1%3D%220%22%20x2%3D%22.9%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2300f5ff%22%20stop-opacity%3D%22.8%22%2F%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%2304212b%22%20stop-opacity%3D%22.9%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2304212b%22%20stop-opacity%3D%221%22%2F%3E%3C%2FlinearGradient%3E%3Cfilter%20id%3D%22glow%22%20x%3D%22-40%25%22%20y%3D%22-40%25%22%20width%3D%22180%25%22%20height%3D%22180%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%227%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Crect%20width%3D%22420%22%20height%3D%22340%22%20fill%3D%22url(%23aura)%22%2F%3E%3Ccircle%20cx%3D%22292%22%20cy%3D%22104%22%20r%3D%2296%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%22.07%22%2F%3E%3Ccircle%20cx%3D%22292%22%20cy%3D%22104%22%20r%3D%2296%22%20fill%3D%22none%22%20stroke%3D%22%23ff2bd6%22%20stroke-opacity%3D%22.16%22%20stroke-width%3D%221.2%22%2F%3E%3Cg%20stroke%3D%22%23ff2bd6%22%20stroke-opacity%3D%22.13%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M0%20116%20L186%20168%22%2F%3E%3Cpath%20d%3D%22M0%20188%20L156%20220%22%2F%3E%3Cpath%20d%3D%22M0%2056%20L126%2092%22%2F%3E%3Cpath%20d%3D%22M0%20252%20L100%20272%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22315%22%20r%3D%221.3%22%20fill%3D%22%23fff%22%20opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22306%22%20cy%3D%22190%22%20r%3D%221.4%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.58%22%2F%3E%3Ccircle%20cx%3D%22317%22%20cy%3D%22194%22%20r%3D%222.1%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22343%22%20cy%3D%2297%22%20r%3D%221.4%22%20fill%3D%22%23fff%22%20opacity%3D%220.55%22%2F%3E%3Ccircle%20cx%3D%22293%22%20cy%3D%2237%22%20r%3D%222.1%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.43%22%2F%3E%3Ccircle%20cx%3D%22387%22%20cy%3D%22278%22%20r%3D%220.9%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%22388%22%20cy%3D%22240%22%20r%3D%222.0%22%20fill%3D%22%23fff%22%20opacity%3D%220.49%22%2F%3E%3Ccircle%20cx%3D%22383%22%20cy%3D%22311%22%20r%3D%221.4%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22352%22%20cy%3D%22126%22%20r%3D%221.0%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22114%22%20r%3D%222.6%22%20fill%3D%22%23fff%22%20opacity%3D%220.48%22%2F%3E%3Ccircle%20cx%3D%22306%22%20cy%3D%22301%22%20r%3D%220.8%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%22235%22%20cy%3D%22183%22%20r%3D%221.5%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22382%22%20cy%3D%2238%22%20r%3D%221.4%22%20fill%3D%22%23fff%22%20opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22279%22%20cy%3D%22316%22%20r%3D%221.7%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22170%22%20cy%3D%22111%22%20r%3D%221.4%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%22190%22%20r%3D%221.9%22%20fill%3D%22%23fff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22381%22%20cy%3D%22167%22%20r%3D%222.4%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22266%22%20cy%3D%22185%22%20r%3D%221.7%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.54%22%2F%3E%3Ccircle%20cx%3D%22395%22%20cy%3D%22147%22%20r%3D%222.1%22%20fill%3D%22%23fff%22%20opacity%3D%220.33%22%2F%3E%3Ccircle%20cx%3D%22246%22%20cy%3D%22132%22%20r%3D%221.4%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22334%22%20cy%3D%22301%22%20r%3D%220.9%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.61%22%2F%3E%3Ccircle%20cx%3D%2233%22%20cy%3D%22150%22%20r%3D%221.0%22%20fill%3D%22%23fff%22%20opacity%3D%220.24%22%2F%3E%3Ccircle%20cx%3D%22418%22%20cy%3D%2290%22%20r%3D%222.0%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22192%22%20cy%3D%22210%22%20r%3D%221.0%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.66%22%2F%3E%3Ccircle%20cx%3D%22372%22%20cy%3D%22305%22%20r%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%220.65%22%2F%3E%3Ccircle%20cx%3D%22320%22%20cy%3D%22108%22%20r%3D%220.7%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2221%22%20r%3D%221.9%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22311%22%20cy%3D%22177%22%20r%3D%222.1%22%20fill%3D%22%23fff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22370%22%20cy%3D%2295%22%20r%3D%221.4%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.65%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%22177%22%20r%3D%220.7%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%220.66%22%2F%3E%3Cg%20stroke%3D%22%2300f5ff%22%20stroke-opacity%3D%22.2%22%20stroke-width%3D%221%22%3E%3Cpath%20d%3D%22M0%20250%20L420%20250%22%2F%3E%3Cpath%20d%3D%22M0%20274%20L420%20274%22%2F%3E%3Cpath%20d%3D%22M0%20306%20L420%20306%22%2F%3E%3Cpath%20d%3D%22M60%20340%20L160%20248%22%2F%3E%3Cpath%20d%3D%22M180%20340%20L224%20248%22%2F%3E%3Cpath%20d%3D%22M310%20340%20L280%20248%22%2F%3E%3C%2Fg%3E%3Cg%20filter%3D%22url(%23glow)%22%20opacity%3D%22.5%22%3EM292%2054%20C262%2054%20240%2074%20238%20102%20C236%20120%20232%20138%20222%20152%20C242%20152%20256%20144%20262%20130%20C258%20112%20262%2092%20272%2080%20C280%2070%20288%2066%20298%2066%20C320%2066%20336%2080%20342%20102%20C346%20120%20344%20140%20352%20158%20C366%20146%20372%20122%20370%20100%20C368%2072%20336%2054%20292%2054%20Z%3C%2Fg%3E%3Cpath%20d%3D%22M292%20156%20C280%20158%20270%20166%20262%20178%20C244%20184%20214%20194%20200%20210%20C190%20222%20186%20244%20184%20268%20L178%20348%20L406%20348%20L398%20268%20C396%20244%20392%20222%20382%20210%20C368%20194%20340%20184%20322%20178%20C314%20166%20304%20156%20292%20156%20Z%22%20fill%3D%22url(%23art)%22%2F%3E%3Cpath%20d%3D%22M244%20190%20C232%20226%20236%20262%20262%20288%20L300%20306%20C312%20296%20314%20282%20306%20274%20L276%20258%20C266%20240%20268%20216%20276%20196%20Z%22%20fill%3D%22url(%23art)%22%20opacity%3D%22.95%22%2F%3E%3Cpath%20d%3D%22M292%20156%20C280%20158%20270%20166%20262%20178%20C244%20184%20214%20194%20200%20210%20C190%20222%20186%20244%20184%20268%20L178%20348%20L406%20348%20L398%20268%20C396%20244%20392%20222%20382%20210%20C368%20194%20340%20184%20322%20178%20C314%20166%20304%20156%20292%20156%20Z%22%20fill%3D%22none%22%20stroke%3D%22%23ff2bd6%22%20stroke-opacity%3D%22.3%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M292%20160%20L268%20196%20L286%20208%20L292%20176%20L300%20208%20L318%20194%20Z%22%20fill%3D%22%2304212b%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M262%20178%20C250%20200%20244%20246%20242%20320%20M322%20178%20C334%20200%20340%20246%20342%20320%22%20fill%3D%22none%22%20stroke%3D%22%23ff2bd6%22%20stroke-opacity%3D%22.25%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M276%20142%20C278%20156%20282%20162%20292%20164%20C302%20162%20306%20156%20308%20142%20Z%22%20fill%3D%22url(%23art)%22%2F%3E%3Cpath%20d%3D%22M292%2066%20C274%2066%20263%2082%20263%20104%20C263%20124%20274%20141%20289%20149%20C292%20151%20294%20151%20297%20149%20C312%20141%20323%20124%20323%20104%20C323%2082%20310%2066%20292%2066%20Z%22%20fill%3D%22%238ef9ff%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M292%2066%20C274%2066%20263%2082%20263%20104%20C263%20124%20274%20141%20289%20149%20C292%20151%20294%20151%20297%20149%20C312%20141%20323%20124%20323%20104%20C323%2082%20310%2066%20292%2066%20Z%22%20fill%3D%22none%22%20stroke%3D%22%23ff2bd6%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%221.2%22%2F%3E%3Cg%20transform%3D%22translate(280%20111)%20scale(0.84%200.84)%22%3E%3Cpath%20d%3D%22M-13%20-2%20C-10%20-9%20-1%20-11%206%20-6%20C9%20-4%2011%200%2012%203%20C4%208%20-8%207%20-13%20-2%20Z%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%22.92%22%2F%3E%3Cpath%20d%3D%22M-14%20-3%20C-10%20-12%202%20-13%208%20-7%22%20fill%3D%22none%22%20stroke%3D%22%2304212b%22%20stroke-width%3D%223.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%223.6%22%20fill%3D%22%2304212b%22%20opacity%3D%22.85%22%2F%3E%3Ccircle%20cx%3D%22-2.4%22%20cy%3D%22-0.6%22%20r%3D%221.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.95%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate(306%20109)%20scale(-0.78%200.78)%22%3E%3Cpath%20d%3D%22M-13%20-2%20C-10%20-9%20-1%20-11%206%20-6%20C9%20-4%2011%200%2012%203%20C4%208%20-8%207%20-13%20-2%20Z%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%22.92%22%2F%3E%3Cpath%20d%3D%22M-14%20-3%20C-10%20-12%202%20-13%208%20-7%22%20fill%3D%22none%22%20stroke%3D%22%2304212b%22%20stroke-width%3D%223.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%223.6%22%20fill%3D%22%2304212b%22%20opacity%3D%22.85%22%2F%3E%3Ccircle%20cx%3D%22-2.4%22%20cy%3D%22-0.6%22%20r%3D%221.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.95%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M267%2097%20C275%2092%20285%2094%20289%2098%22%20fill%3D%22none%22%20stroke%3D%22%2304212b%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M321%2095%20C313%2090%20303%2092%20299%2096%22%20fill%3D%22none%22%20stroke%3D%22%2304212b%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M288%20131%20C291%20135%20296%20135%20300%20130%22%20fill%3D%22none%22%20stroke%3D%22%23ff2bd6%22%20stroke-opacity%3D%22.55%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M292%2054%20C262%2054%20240%2074%20238%20102%20C236%20120%20232%20138%20222%20152%20C242%20152%20256%20144%20262%20130%20C258%20112%20262%2092%20272%2080%20C280%2070%20288%2066%20298%2066%20C320%2066%20336%2080%20342%20102%20C346%20120%20344%20140%20352%20158%20C366%20146%20372%20122%20370%20100%20C368%2072%20336%2054%20292%2054%20Z%22%20fill%3D%22url(%23hair)%22%2F%3E%3Cpath%20d%3D%22M244%2096%20C248%2078%20264%2064%20292%2062%20C316%2060%20336%2070%20344%2088%20C330%2080%20314%2078%20302%2082%20C312%2088%20320%2096%20322%20106%20C312%2096%20300%2092%20288%2092%20C280%20100%20270%20104%20260%20102%20C252%20100%20246%2098%20244%2096%20Z%22%20fill%3D%22url(%23hair)%22%2F%3E%3Cpath%20d%3D%22M244%2096%20C238%20112%20240%20132%20246%20148%20C252%20138%20256%20128%20256%20116%20C256%20106%20252%20100%20244%2096%20Z%22%20fill%3D%22url(%23hair)%22%20opacity%3D%22.95%22%2F%3E%3Cpath%20d%3D%22M263%20104%20C263%20126%20275%20145%20292%20151%20C309%20145%20322%20126%20322%20104%22%20fill%3D%22none%22%20stroke%3D%22%23ff2bd6%22%20stroke-opacity%3D%22.28%22%20stroke-width%3D%221.4%22%2F%3E%3Cpath%20d%3D%22M292%2054%20C250%2054%20220%2086%20218%20132%20C216%20160%20208%20178%20196%20190%20C218%20196%20240%20190%20252%20178%20C248%20140%20260%20100%20292%2088%20C324%20100%20336%20140%20332%20178%20C344%20190%20366%20196%20388%20190%20C376%20178%20368%20160%20366%20132%20C364%2086%20334%2054%20292%2054%20Z%22%20fill%3D%22url(%23hair)%22%20opacity%3D%22.9%22%2F%3E%3Cg%3E%3Cpath%20d%3D%22M260%20104%20C270%2096%20284%2094%20296%2098%20L326%20100%20C334%20101%20336%20108%20330%20112%20L268%20116%20C258%20116%20254%20110%20260%20104%20Z%22%20fill%3D%22%2304212b%22%20opacity%3D%22.85%22%2F%3E%3Cpath%20d%3D%22M262%20106%20L330%20102%22%20stroke%3D%22%23ff2bd6%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Cellipse%20cx%3D%22282%22%20cy%3D%22107%22%20rx%3D%229%22%20ry%3D%224%22%20fill%3D%22%23ff2bd6%22%20opacity%3D%22.9%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%22250%22%20cy%3D%22116%22%20r%3D%2210%22%20fill%3D%22%2304212b%22%20stroke%3D%22%2300f5ff%22%20stroke-width%3D%222.5%22%2F%3E%3Ccircle%20cx%3D%22336%22%20cy%3D%22112%22%20r%3D%2210%22%20fill%3D%22%2304212b%22%20stroke%3D%22%2300f5ff%22%20stroke-width%3D%222.5%22%2F%3E%3C%2Fsvg%3E")}
+.pk-ranked .part{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20420%20340%22%20width%3D%22420%22%20height%3D%22340%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22aura%22%20cx%3D%2270%25%22%20cy%3D%2228%25%22%20r%3D%2268%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2300ff9d%22%20stop-opacity%3D%22.48%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%237c4dff%22%20stop-opacity%3D%22.2%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%237c4dff%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%3ClinearGradient%20id%3D%22hair%22%20x1%3D%22.2%22%20y1%3D%220%22%20x2%3D%22.85%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23c0aeff%22%20stop-opacity%3D%22.98%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%237c4dff%22%20stop-opacity%3D%22.9%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23120a33%22%20stop-opacity%3D%22.85%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22art%22%20x1%3D%22.15%22%20y1%3D%220%22%20x2%3D%22.9%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%237c4dff%22%20stop-opacity%3D%22.8%22%2F%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%23120a33%22%20stop-opacity%3D%22.9%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23120a33%22%20stop-opacity%3D%221%22%2F%3E%3C%2FlinearGradient%3E%3Cfilter%20id%3D%22glow%22%20x%3D%22-40%25%22%20y%3D%22-40%25%22%20width%3D%22180%25%22%20height%3D%22180%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%227%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Crect%20width%3D%22420%22%20height%3D%22340%22%20fill%3D%22url(%23aura)%22%2F%3E%3Ccircle%20cx%3D%22292%22%20cy%3D%22104%22%20r%3D%2296%22%20fill%3D%22%2300ff9d%22%20opacity%3D%22.07%22%2F%3E%3Ccircle%20cx%3D%22292%22%20cy%3D%22104%22%20r%3D%2296%22%20fill%3D%22none%22%20stroke%3D%22%2300ff9d%22%20stroke-opacity%3D%22.16%22%20stroke-width%3D%221.2%22%2F%3E%3Cg%20stroke%3D%22%2300ff9d%22%20stroke-opacity%3D%22.13%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M0%20116%20L186%20168%22%2F%3E%3Cpath%20d%3D%22M0%20188%20L156%20220%22%2F%3E%3Cpath%20d%3D%22M0%2056%20L126%2092%22%2F%3E%3Cpath%20d%3D%22M0%20252%20L100%20272%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22315%22%20r%3D%221.3%22%20fill%3D%22%23fff%22%20opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22306%22%20cy%3D%22190%22%20r%3D%221.4%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.58%22%2F%3E%3Ccircle%20cx%3D%22317%22%20cy%3D%22194%22%20r%3D%222.1%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22343%22%20cy%3D%2297%22%20r%3D%221.4%22%20fill%3D%22%23fff%22%20opacity%3D%220.55%22%2F%3E%3Ccircle%20cx%3D%22293%22%20cy%3D%2237%22%20r%3D%222.1%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.43%22%2F%3E%3Ccircle%20cx%3D%22387%22%20cy%3D%22278%22%20r%3D%220.9%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%22388%22%20cy%3D%22240%22%20r%3D%222.0%22%20fill%3D%22%23fff%22%20opacity%3D%220.49%22%2F%3E%3Ccircle%20cx%3D%22383%22%20cy%3D%22311%22%20r%3D%221.4%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22352%22%20cy%3D%22126%22%20r%3D%221.0%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22114%22%20r%3D%222.6%22%20fill%3D%22%23fff%22%20opacity%3D%220.48%22%2F%3E%3Ccircle%20cx%3D%22306%22%20cy%3D%22301%22%20r%3D%220.8%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%22235%22%20cy%3D%22183%22%20r%3D%221.5%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22382%22%20cy%3D%2238%22%20r%3D%221.4%22%20fill%3D%22%23fff%22%20opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22279%22%20cy%3D%22316%22%20r%3D%221.7%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22170%22%20cy%3D%22111%22%20r%3D%221.4%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%22190%22%20r%3D%221.9%22%20fill%3D%22%23fff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22381%22%20cy%3D%22167%22%20r%3D%222.4%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22266%22%20cy%3D%22185%22%20r%3D%221.7%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.54%22%2F%3E%3Ccircle%20cx%3D%22395%22%20cy%3D%22147%22%20r%3D%222.1%22%20fill%3D%22%23fff%22%20opacity%3D%220.33%22%2F%3E%3Ccircle%20cx%3D%22246%22%20cy%3D%22132%22%20r%3D%221.4%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22334%22%20cy%3D%22301%22%20r%3D%220.9%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.61%22%2F%3E%3Ccircle%20cx%3D%2233%22%20cy%3D%22150%22%20r%3D%221.0%22%20fill%3D%22%23fff%22%20opacity%3D%220.24%22%2F%3E%3Ccircle%20cx%3D%22418%22%20cy%3D%2290%22%20r%3D%222.0%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22192%22%20cy%3D%22210%22%20r%3D%221.0%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.66%22%2F%3E%3Ccircle%20cx%3D%22372%22%20cy%3D%22305%22%20r%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%220.65%22%2F%3E%3Ccircle%20cx%3D%22320%22%20cy%3D%22108%22%20r%3D%220.7%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2221%22%20r%3D%221.9%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22311%22%20cy%3D%22177%22%20r%3D%222.1%22%20fill%3D%22%23fff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22370%22%20cy%3D%2295%22%20r%3D%221.4%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.65%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%22177%22%20r%3D%220.7%22%20fill%3D%22%2300ff9d%22%20opacity%3D%220.66%22%2F%3E%3Cg%20filter%3D%22url(%23glow)%22%20opacity%3D%22.5%22%3EM292%2054%20C262%2054%20240%2074%20238%20102%20C236%20120%20232%20138%20222%20152%20C242%20152%20256%20144%20262%20130%20C258%20112%20262%2092%20272%2080%20C280%2070%20288%2066%20298%2066%20C320%2066%20336%2080%20342%20102%20C346%20120%20344%20140%20352%20158%20C366%20146%20372%20122%20370%20100%20C368%2072%20336%2054%20292%2054%20Z%3C%2Fg%3E%3Cpath%20d%3D%22M292%20156%20C280%20158%20270%20166%20262%20178%20C244%20184%20214%20194%20200%20210%20C190%20222%20186%20244%20184%20268%20L178%20348%20L406%20348%20L398%20268%20C396%20244%20392%20222%20382%20210%20C368%20194%20340%20184%20322%20178%20C314%20166%20304%20156%20292%20156%20Z%22%20fill%3D%22url(%23art)%22%2F%3E%3Cpath%20d%3D%22M244%20190%20C232%20226%20236%20262%20262%20288%20L300%20306%20C312%20296%20314%20282%20306%20274%20L276%20258%20C266%20240%20268%20216%20276%20196%20Z%22%20fill%3D%22url(%23art)%22%20opacity%3D%22.95%22%2F%3E%3Cpath%20d%3D%22M292%20156%20C280%20158%20270%20166%20262%20178%20C244%20184%20214%20194%20200%20210%20C190%20222%20186%20244%20184%20268%20L178%20348%20L406%20348%20L398%20268%20C396%20244%20392%20222%20382%20210%20C368%20194%20340%20184%20322%20178%20C314%20166%20304%20156%20292%20156%20Z%22%20fill%3D%22none%22%20stroke%3D%22%2300ff9d%22%20stroke-opacity%3D%22.3%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M292%20160%20L268%20196%20L286%20208%20L292%20176%20L300%20208%20L318%20194%20Z%22%20fill%3D%22%23120a33%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M262%20178%20C250%20200%20244%20246%20242%20320%20M322%20178%20C334%20200%20340%20246%20342%20320%22%20fill%3D%22none%22%20stroke%3D%22%2300ff9d%22%20stroke-opacity%3D%22.25%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M276%20142%20C278%20156%20282%20162%20292%20164%20C302%20162%20306%20156%20308%20142%20Z%22%20fill%3D%22url(%23art)%22%2F%3E%3Cpath%20d%3D%22M292%2066%20C274%2066%20263%2082%20263%20104%20C263%20124%20274%20141%20289%20149%20C292%20151%20294%20151%20297%20149%20C312%20141%20323%20124%20323%20104%20C323%2082%20310%2066%20292%2066%20Z%22%20fill%3D%22%23c0aeff%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M292%2066%20C274%2066%20263%2082%20263%20104%20C263%20124%20274%20141%20289%20149%20C292%20151%20294%20151%20297%20149%20C312%20141%20323%20124%20323%20104%20C323%2082%20310%2066%20292%2066%20Z%22%20fill%3D%22none%22%20stroke%3D%22%2300ff9d%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%221.2%22%2F%3E%3Cg%20transform%3D%22translate(280%20111)%20scale(0.84%200.84)%22%3E%3Cpath%20d%3D%22M-13%20-2%20C-10%20-9%20-1%20-11%206%20-6%20C9%20-4%2011%200%2012%203%20C4%208%20-8%207%20-13%20-2%20Z%22%20fill%3D%22%2300ff9d%22%20opacity%3D%22.92%22%2F%3E%3Cpath%20d%3D%22M-14%20-3%20C-10%20-12%202%20-13%208%20-7%22%20fill%3D%22none%22%20stroke%3D%22%23120a33%22%20stroke-width%3D%223.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%223.6%22%20fill%3D%22%23120a33%22%20opacity%3D%22.85%22%2F%3E%3Ccircle%20cx%3D%22-2.4%22%20cy%3D%22-0.6%22%20r%3D%221.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.95%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate(306%20109)%20scale(-0.78%200.78)%22%3E%3Cpath%20d%3D%22M-13%20-2%20C-10%20-9%20-1%20-11%206%20-6%20C9%20-4%2011%200%2012%203%20C4%208%20-8%207%20-13%20-2%20Z%22%20fill%3D%22%2300ff9d%22%20opacity%3D%22.92%22%2F%3E%3Cpath%20d%3D%22M-14%20-3%20C-10%20-12%202%20-13%208%20-7%22%20fill%3D%22none%22%20stroke%3D%22%23120a33%22%20stroke-width%3D%223.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%223.6%22%20fill%3D%22%23120a33%22%20opacity%3D%22.85%22%2F%3E%3Ccircle%20cx%3D%22-2.4%22%20cy%3D%22-0.6%22%20r%3D%221.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.95%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M267%2097%20C275%2092%20285%2094%20289%2098%22%20fill%3D%22none%22%20stroke%3D%22%23120a33%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M321%2095%20C313%2090%20303%2092%20299%2096%22%20fill%3D%22none%22%20stroke%3D%22%23120a33%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M288%20131%20C291%20135%20296%20135%20300%20130%22%20fill%3D%22none%22%20stroke%3D%22%2300ff9d%22%20stroke-opacity%3D%22.55%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M292%2054%20C262%2054%20240%2074%20238%20102%20C236%20120%20232%20138%20222%20152%20C242%20152%20256%20144%20262%20130%20C258%20112%20262%2092%20272%2080%20C280%2070%20288%2066%20298%2066%20C320%2066%20336%2080%20342%20102%20C346%20120%20344%20140%20352%20158%20C366%20146%20372%20122%20370%20100%20C368%2072%20336%2054%20292%2054%20Z%22%20fill%3D%22url(%23hair)%22%2F%3E%3Cpath%20d%3D%22M244%2096%20C248%2078%20264%2064%20292%2062%20C316%2060%20336%2070%20344%2088%20C330%2080%20314%2078%20302%2082%20C312%2088%20320%2096%20322%20106%20C312%2096%20300%2092%20288%2092%20C280%20100%20270%20104%20260%20102%20C252%20100%20246%2098%20244%2096%20Z%22%20fill%3D%22url(%23hair)%22%2F%3E%3Cpath%20d%3D%22M244%2096%20C238%20112%20240%20132%20246%20148%20C252%20138%20256%20128%20256%20116%20C256%20106%20252%20100%20244%2096%20Z%22%20fill%3D%22url(%23hair)%22%20opacity%3D%22.95%22%2F%3E%3Cpath%20d%3D%22M263%20104%20C263%20126%20275%20145%20292%20151%20C309%20145%20322%20126%20322%20104%22%20fill%3D%22none%22%20stroke%3D%22%2300ff9d%22%20stroke-opacity%3D%22.28%22%20stroke-width%3D%221.4%22%2F%3E%3Cpath%20d%3D%22M264%2054%20L272%2024%20L288%2042%20L300%2014%20L314%2042%20L330%2022%20L338%2054%20Z%22%20fill%3D%22%2300ff9d%22%20opacity%3D%22.75%22%20stroke%3D%22%23c0aeff%22%20stroke-opacity%3D%22.6%22%20stroke-width%3D%221.4%22%2F%3E%3C%2Fsvg%3E")}
+.pk-sakurablade .part{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20420%20340%22%20width%3D%22420%22%20height%3D%22340%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22aura%22%20cx%3D%2270%25%22%20cy%3D%2228%25%22%20r%3D%2268%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%238ec5ff%22%20stop-opacity%3D%22.48%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23ff9ec4%22%20stop-opacity%3D%22.2%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23ff9ec4%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%3ClinearGradient%20id%3D%22hair%22%20x1%3D%22.2%22%20y1%3D%220%22%20x2%3D%22.85%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffc2da%22%20stop-opacity%3D%22.98%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23ff9ec4%22%20stop-opacity%3D%22.9%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%231c0a18%22%20stop-opacity%3D%22.85%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22art%22%20x1%3D%22.15%22%20y1%3D%220%22%20x2%3D%22.9%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff9ec4%22%20stop-opacity%3D%22.8%22%2F%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%231c0a18%22%20stop-opacity%3D%22.9%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%231c0a18%22%20stop-opacity%3D%221%22%2F%3E%3C%2FlinearGradient%3E%3Cfilter%20id%3D%22glow%22%20x%3D%22-40%25%22%20y%3D%22-40%25%22%20width%3D%22180%25%22%20height%3D%22180%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%227%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Crect%20width%3D%22420%22%20height%3D%22340%22%20fill%3D%22url(%23aura)%22%2F%3E%3Ccircle%20cx%3D%22292%22%20cy%3D%22104%22%20r%3D%2296%22%20fill%3D%22%238ec5ff%22%20opacity%3D%22.07%22%2F%3E%3Ccircle%20cx%3D%22292%22%20cy%3D%22104%22%20r%3D%2296%22%20fill%3D%22none%22%20stroke%3D%22%238ec5ff%22%20stroke-opacity%3D%22.16%22%20stroke-width%3D%221.2%22%2F%3E%3Cg%20stroke%3D%22%238ec5ff%22%20stroke-opacity%3D%22.13%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M0%20116%20L186%20168%22%2F%3E%3Cpath%20d%3D%22M0%20188%20L156%20220%22%2F%3E%3Cpath%20d%3D%22M0%2056%20L126%2092%22%2F%3E%3Cpath%20d%3D%22M0%20252%20L100%20272%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22315%22%20r%3D%221.3%22%20fill%3D%22%23fff%22%20opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22306%22%20cy%3D%22190%22%20r%3D%221.4%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.58%22%2F%3E%3Ccircle%20cx%3D%22317%22%20cy%3D%22194%22%20r%3D%222.1%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22343%22%20cy%3D%2297%22%20r%3D%221.4%22%20fill%3D%22%23fff%22%20opacity%3D%220.55%22%2F%3E%3Ccircle%20cx%3D%22293%22%20cy%3D%2237%22%20r%3D%222.1%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.43%22%2F%3E%3Ccircle%20cx%3D%22387%22%20cy%3D%22278%22%20r%3D%220.9%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%22388%22%20cy%3D%22240%22%20r%3D%222.0%22%20fill%3D%22%23fff%22%20opacity%3D%220.49%22%2F%3E%3Ccircle%20cx%3D%22383%22%20cy%3D%22311%22%20r%3D%221.4%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22352%22%20cy%3D%22126%22%20r%3D%221.0%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22114%22%20r%3D%222.6%22%20fill%3D%22%23fff%22%20opacity%3D%220.48%22%2F%3E%3Ccircle%20cx%3D%22306%22%20cy%3D%22301%22%20r%3D%220.8%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%22235%22%20cy%3D%22183%22%20r%3D%221.5%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22382%22%20cy%3D%2238%22%20r%3D%221.4%22%20fill%3D%22%23fff%22%20opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22279%22%20cy%3D%22316%22%20r%3D%221.7%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22170%22%20cy%3D%22111%22%20r%3D%221.4%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%22190%22%20r%3D%221.9%22%20fill%3D%22%23fff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22381%22%20cy%3D%22167%22%20r%3D%222.4%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22266%22%20cy%3D%22185%22%20r%3D%221.7%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.54%22%2F%3E%3Ccircle%20cx%3D%22395%22%20cy%3D%22147%22%20r%3D%222.1%22%20fill%3D%22%23fff%22%20opacity%3D%220.33%22%2F%3E%3Ccircle%20cx%3D%22246%22%20cy%3D%22132%22%20r%3D%221.4%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22334%22%20cy%3D%22301%22%20r%3D%220.9%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.61%22%2F%3E%3Ccircle%20cx%3D%2233%22%20cy%3D%22150%22%20r%3D%221.0%22%20fill%3D%22%23fff%22%20opacity%3D%220.24%22%2F%3E%3Ccircle%20cx%3D%22418%22%20cy%3D%2290%22%20r%3D%222.0%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22192%22%20cy%3D%22210%22%20r%3D%221.0%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.66%22%2F%3E%3Ccircle%20cx%3D%22372%22%20cy%3D%22305%22%20r%3D%222.5%22%20fill%3D%22%23fff%22%20opacity%3D%220.65%22%2F%3E%3Ccircle%20cx%3D%22320%22%20cy%3D%22108%22%20r%3D%220.7%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2221%22%20r%3D%221.9%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22311%22%20cy%3D%22177%22%20r%3D%222.1%22%20fill%3D%22%23fff%22%20opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22370%22%20cy%3D%2295%22%20r%3D%221.4%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.65%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%22177%22%20r%3D%220.7%22%20fill%3D%22%238ec5ff%22%20opacity%3D%220.66%22%2F%3E%3Cellipse%20cx%3D%22263%22%20cy%3D%22288%22%20rx%3D%224.1%22%20ry%3D%222.2%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%20transform%3D%22rotate(324%20263%20288)%22%2F%3E%3Cellipse%20cx%3D%22106%22%20cy%3D%22301%22%20rx%3D%226.3%22%20ry%3D%223.4%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%20transform%3D%22rotate(245%20106%20301)%22%2F%3E%3Cellipse%20cx%3D%22133%22%20cy%3D%2292%22%20rx%3D%224.8%22%20ry%3D%222.7%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%20transform%3D%22rotate(203%20133%2092)%22%2F%3E%3Cellipse%20cx%3D%2258%22%20cy%3D%22245%22%20rx%3D%226.8%22%20ry%3D%223.7%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%20transform%3D%22rotate(257%2058%20245)%22%2F%3E%3Cellipse%20cx%3D%22214%22%20cy%3D%2239%22%20rx%3D%224.4%22%20ry%3D%222.4%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%20transform%3D%22rotate(331%20214%2039)%22%2F%3E%3Cellipse%20cx%3D%2286%22%20cy%3D%22223%22%20rx%3D%227.6%22%20ry%3D%224.2%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%20transform%3D%22rotate(13%2086%20223)%22%2F%3E%3Cellipse%20cx%3D%22349%22%20cy%3D%22271%22%20rx%3D%228.0%22%20ry%3D%224.4%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%20transform%3D%22rotate(344%20349%20271)%22%2F%3E%3Cellipse%20cx%3D%22308%22%20cy%3D%22147%22%20rx%3D%225.0%22%20ry%3D%222.7%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%20transform%3D%22rotate(262%20308%20147)%22%2F%3E%3Cellipse%20cx%3D%22349%22%20cy%3D%22142%22%20rx%3D%224.9%22%20ry%3D%222.7%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%20transform%3D%22rotate(146%20349%20142)%22%2F%3E%3Cellipse%20cx%3D%22350%22%20cy%3D%22186%22%20rx%3D%225.4%22%20ry%3D%223.0%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%20transform%3D%22rotate(224%20350%20186)%22%2F%3E%3Cg%3E%3Cpath%20d%3D%22M158.0%20352.0%20L378.0%2092.0%20L388.0%20100.0%20L168.0%20360.0%20Z%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M164.0%20350.0%20L384.0%2090.0%22%20stroke%3D%22%23fff%22%20stroke-opacity%3D%22.6%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M150.0%20356.0%20L196.0%20310.0%22%20stroke%3D%22%238ec5ff%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.85%22%2F%3E%3C%2Fg%3E%3Cg%20filter%3D%22url(%23glow)%22%20opacity%3D%22.5%22%3EM292%2054%20C256%2054%20234%2078%20232%20106%20C230%20128%20224%20150%20210%20168%20C232%20166%20248%20156%20256%20140%20C250%20120%20256%2096%20268%2082%20C278%2070%20288%2066%20296%2066%20C322%2064%20342%2082%20346%20108%20C350%20130%20352%20156%20360%20182%20C374%20168%20382%20140%20380%20112%20C378%2078%20344%2054%20292%2054%20Z%3C%2Fg%3E%3Cpath%20d%3D%22M292%20156%20C280%20158%20270%20166%20262%20178%20C244%20184%20214%20194%20200%20210%20C190%20222%20186%20244%20184%20268%20L178%20348%20L406%20348%20L398%20268%20C396%20244%20392%20222%20382%20210%20C368%20194%20340%20184%20322%20178%20C314%20166%20304%20156%20292%20156%20Z%22%20fill%3D%22url(%23art)%22%2F%3E%3Cpath%20d%3D%22M244%20190%20C232%20226%20236%20262%20262%20288%20L300%20306%20C312%20296%20314%20282%20306%20274%20L276%20258%20C266%20240%20268%20216%20276%20196%20Z%22%20fill%3D%22url(%23art)%22%20opacity%3D%22.95%22%2F%3E%3Cpath%20d%3D%22M292%20156%20C280%20158%20270%20166%20262%20178%20C244%20184%20214%20194%20200%20210%20C190%20222%20186%20244%20184%20268%20L178%20348%20L406%20348%20L398%20268%20C396%20244%20392%20222%20382%20210%20C368%20194%20340%20184%20322%20178%20C314%20166%20304%20156%20292%20156%20Z%22%20fill%3D%22none%22%20stroke%3D%22%238ec5ff%22%20stroke-opacity%3D%22.3%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M292%20160%20L268%20196%20L286%20208%20L292%20176%20L300%20208%20L318%20194%20Z%22%20fill%3D%22%231c0a18%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M262%20178%20C250%20200%20244%20246%20242%20320%20M322%20178%20C334%20200%20340%20246%20342%20320%22%20fill%3D%22none%22%20stroke%3D%22%238ec5ff%22%20stroke-opacity%3D%22.25%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M276%20142%20C278%20156%20282%20162%20292%20164%20C302%20162%20306%20156%20308%20142%20Z%22%20fill%3D%22url(%23art)%22%2F%3E%3Cpath%20d%3D%22M292%2066%20C274%2066%20263%2082%20263%20104%20C263%20124%20274%20141%20289%20149%20C292%20151%20294%20151%20297%20149%20C312%20141%20323%20124%20323%20104%20C323%2082%20310%2066%20292%2066%20Z%22%20fill%3D%22%23ffc2da%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M292%2066%20C274%2066%20263%2082%20263%20104%20C263%20124%20274%20141%20289%20149%20C292%20151%20294%20151%20297%20149%20C312%20141%20323%20124%20323%20104%20C323%2082%20310%2066%20292%2066%20Z%22%20fill%3D%22none%22%20stroke%3D%22%238ec5ff%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%221.2%22%2F%3E%3Cg%20transform%3D%22translate(280%20111)%20scale(0.84%200.84)%22%3E%3Cpath%20d%3D%22M-13%20-2%20C-10%20-9%20-1%20-11%206%20-6%20C9%20-4%2011%200%2012%203%20C4%208%20-8%207%20-13%20-2%20Z%22%20fill%3D%22%238ec5ff%22%20opacity%3D%22.92%22%2F%3E%3Cpath%20d%3D%22M-14%20-3%20C-10%20-12%202%20-13%208%20-7%22%20fill%3D%22none%22%20stroke%3D%22%231c0a18%22%20stroke-width%3D%223.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%223.6%22%20fill%3D%22%231c0a18%22%20opacity%3D%22.85%22%2F%3E%3Ccircle%20cx%3D%22-2.4%22%20cy%3D%22-0.6%22%20r%3D%221.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.95%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate(306%20109)%20scale(-0.78%200.78)%22%3E%3Cpath%20d%3D%22M-13%20-2%20C-10%20-9%20-1%20-11%206%20-6%20C9%20-4%2011%200%2012%203%20C4%208%20-8%207%20-13%20-2%20Z%22%20fill%3D%22%238ec5ff%22%20opacity%3D%22.92%22%2F%3E%3Cpath%20d%3D%22M-14%20-3%20C-10%20-12%202%20-13%208%20-7%22%20fill%3D%22none%22%20stroke%3D%22%231c0a18%22%20stroke-width%3D%223.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%223.6%22%20fill%3D%22%231c0a18%22%20opacity%3D%22.85%22%2F%3E%3Ccircle%20cx%3D%22-2.4%22%20cy%3D%22-0.6%22%20r%3D%221.5%22%20fill%3D%22%23fff%22%20opacity%3D%22.95%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M267%2097%20C275%2092%20285%2094%20289%2098%22%20fill%3D%22none%22%20stroke%3D%22%231c0a18%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M321%2095%20C313%2090%20303%2092%20299%2096%22%20fill%3D%22none%22%20stroke%3D%22%231c0a18%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M288%20131%20C291%20135%20296%20135%20300%20130%22%20fill%3D%22none%22%20stroke%3D%22%238ec5ff%22%20stroke-opacity%3D%22.55%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M292%2054%20C256%2054%20234%2078%20232%20106%20C230%20128%20224%20150%20210%20168%20C232%20166%20248%20156%20256%20140%20C250%20120%20256%2096%20268%2082%20C278%2070%20288%2066%20296%2066%20C322%2064%20342%2082%20346%20108%20C350%20130%20352%20156%20360%20182%20C374%20168%20382%20140%20380%20112%20C378%2078%20344%2054%20292%2054%20Z%22%20fill%3D%22url(%23hair)%22%2F%3E%3Cpath%20d%3D%22M244%2096%20C248%2078%20264%2064%20292%2062%20C316%2060%20336%2070%20344%2088%20C330%2080%20314%2078%20302%2082%20C312%2088%20320%2096%20322%20106%20C312%2096%20300%2092%20288%2092%20C280%20100%20270%20104%20260%20102%20C252%20100%20246%2098%20244%2096%20Z%22%20fill%3D%22url(%23hair)%22%2F%3E%3Cpath%20d%3D%22M244%2096%20C238%20112%20240%20132%20246%20148%20C252%20138%20256%20128%20256%20116%20C256%20106%20252%20100%20244%2096%20Z%22%20fill%3D%22url(%23hair)%22%20opacity%3D%22.95%22%2F%3E%3Cpath%20d%3D%22M263%20104%20C263%20126%20275%20145%20292%20151%20C309%20145%20322%20126%20322%20104%22%20fill%3D%22none%22%20stroke%3D%22%238ec5ff%22%20stroke-opacity%3D%22.28%22%20stroke-width%3D%221.4%22%2F%3E%3C%2Fsvg%3E")}
+
+/* glyph badge sitting over the pfp */
+.pchar{position:absolute;left:84px;top:66px;z-index:6;pointer-events:none}
+.pchar::before{content:"";width:28px;height:28px;display:grid;place-items:center;font-size:14px;font-weight:800;color:#fff;border-radius:50%;background:linear-gradient(140deg,var(--pk1,#888),var(--pk2,#444));box-shadow:0 0 0 2px #0b0917,0 0 16px var(--pk1,#888);animation:pcharPulse 3.2s ease-in-out infinite}
+.pk-kitsune .pchar::before{content:"狐"}
+.pk-cursedking .pchar::before{content:"呪"}
+.pk-neonrunner .pchar::before{content:"電"}
+.pk-ranked .pchar::before{content:"遊"}
+.pk-sakurablade .pchar::before{content:"刃"}
+@keyframes pcharPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 2px #0b0917,0 0 10px var(--pk1,#888)}50%{transform:scale(1.1);box-shadow:0 0 0 2px #0b0917,0 0 24px var(--pk2,#888)}}
+
+/* ---- animated sticker badge in the picker ---- */
+.eg.st button{position:relative}
+.eg .gifp{position:absolute;top:2px;right:2px;font-size:8px;font-weight:800;letter-spacing:.4px;background:#000a;color:#8ef9ff;border-radius:5px;padding:1px 3px;pointer-events:none;z-index:1}
+/* ---- AMV edit backdrop: a real clip over the card, banner and avatar stay clean ---- */
+.card>.amv,.eprev .amv{position:absolute;left:0;right:0;top:104px;bottom:0;z-index:1;overflow:hidden;pointer-events:none;border-radius:0 0 18px 18px;opacity:var(--amo,.35);mix-blend-mode:screen;filter:saturate(1.12) contrast(1.06);-webkit-mask-image:linear-gradient(#0000 0,#000 7%,#000 88%,#0000 100%);mask-image:linear-gradient(#0000 0,#000 7%,#000 88%,#0000 100%)}
+.eprev .amv{top:92px;border-radius:0 0 14px 14px}
+.amv>video,.amv>iframe{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border:0;pointer-events:none;background:#000}
+.amv>video{width:100%;height:100%;object-fit:cover}
+.amv.yt>iframe{width:300%;height:300%}
+.amvsnd{position:absolute;top:112px;right:10px;z-index:3;width:30px;height:30px;padding:0;border-radius:50%;border:1px solid #ffffff2e;background:#0a0f18d9;color:#e7eefc;font-size:14px;line-height:1;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(4px)}
+.amvsnd.on{border-color:color-mix(in srgb,var(--gold) 55%,transparent);color:var(--gold);box-shadow:0 0 14px color-mix(in srgb,var(--gold) 35%,transparent)}
+.eprev .amvsnd{top:99px}
+.card[class*="pk-"]>.amvsnd{top:112px}
+
+/* ---- Cursed Edit: ink + manga halftone + crimson lightning ---- */
+.pk-sukunaedit{--pk1:#ff2233;--pk2:#f2efe9}
+.card.pk-sukunaedit,.eprev.pk-sukunaedit{background-color:#08080b;background-image:radial-gradient(85% 65% at 22% 2%,#ff223344,#0000 62%),radial-gradient(70% 60% at 94% 96%,#f2efe920,#0000 66%),repeating-linear-gradient(0deg,#ffffff12 0 1px,#0000 1px 3px),repeating-linear-gradient(90deg,#ffffff0a 0 1px,#0000 1px 4px);background-size:180% 180%,170% 170%,100% 100%,100% 100%;animation:pkAura 1.6s ease-in-out infinite,pkScan 9s linear infinite}
+.pk-sukunaedit .part{background-image:linear-gradient(102deg,#0000 46.4%,#fff 47%,#fff 47.5%,#0000 48.1%),linear-gradient(74deg,#0000 60.8%,#ff2233 61.4%,#ff2233 62.2%,#0000 62.9%),radial-gradient(58% 68% at 74% 32%,#ff223355,#0000 72%),repeating-linear-gradient(0deg,#ffffff0d 0 1px,#0000 1px 3px);background-size:64% 72%,56% 66%,100% 100%,100% 100%;background-position:74% 42%,70% 48%,50% 50%,0 0;background-repeat:no-repeat;opacity:.5;filter:saturate(1.1) contrast(1.08);animation:partDrift 22s ease-in-out infinite alternate,partBreath 9s ease-in-out infinite}
+.card.pk-sukunaedit .pbanner{filter:saturate(1.15) contrast(1.12) brightness(.92)}
+.modal.prof:has(.pk-sukunaedit){background-image:radial-gradient(46% 46% at 50% 42%,#ff22333d,#0000 72%)}
+#ml .mr.pk-sukunaedit{color:#ffb3bb;text-shadow:0 0 10px #ff223366}
+#ml .mr.pk-sukunaedit::after{background-image:radial-gradient(80% 130% at 18% 30%,#ff22334d,#0000 70%),repeating-linear-gradient(58deg,#ffffff1f 0 2px,#0000 2px 12px),radial-gradient(1.8px 1.8px at 42px 20px,#fff,#0000);background-size:100% 100%,100% 100%,110px 60px;animation:pkVeins4 9s linear infinite}
+/* ---- Ragdamaxxing: the full rank ladder (Stats) ---- */
+.ranks{margin-top:10px;display:grid;gap:6px}
+.rk{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--raise);opacity:.62}
+.rk.got{opacity:1}
+.rk.nxt{opacity:.95;border-color:color-mix(in srgb,var(--teal) 55%,transparent)}
+.rk.here{opacity:1;border-color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,var(--raise));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 40%,transparent)}
+.rki{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:12px;font-weight:700;background:#00000033;color:var(--mute)}
+.rk.got .rki{background:color-mix(in srgb,var(--teal) 30%,transparent);color:var(--teal)}
+.rk.here .rki{background:var(--gold);color:#14121f}
+.rkn{display:flex;flex-direction:column;min-width:0}
+.rkn b{font-size:14px}
+.rkn small{font-size:11px}
+.rkx{font-size:12px;color:var(--mute);text-align:right;white-space:nowrap}
+.rk.nxt .rkx{color:var(--teal)}
+.rk.here .rkx{color:var(--gold);font-weight:600}
+@media (max-width:520px){.rkx{font-size:11px;white-space:normal}}
+
+/* ---- voice channel text chat + TTS bot ---- */
+#v-vchat{display:flex;flex-direction:column;padding:0;overflow:hidden}
+#v-vchat>header{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+#v-vchat>header small{flex:1;min-width:140px}
+#vmsgs{flex:1;overflow:auto;padding:10px 16px 6px}
+.vm2{display:grid;grid-template-columns:30px 1fr;gap:10px;padding:5px 0}
+.vm2 .av{width:28px;height:28px;border-radius:9px;font-size:13px}
+.vm2 b{font-size:14px}
+.vm2 small{margin-left:6px;font-size:11px}
+.vb{min-width:0;overflow-wrap:anywhere}
+.vtx{margin-left:auto;font-size:12px;opacity:.5;border-radius:7px;padding:1px 5px;line-height:1}
+.vtx:hover{opacity:1;background:#ffffff1f}
+.vtx i{font-style:normal;background:var(--gold);color:#14121f;border-radius:9px;padding:0 4px;font-size:10px;font-weight:700;margin-left:2px}
+
+/* ===== part 8: 16:9 banner shape + backdrops that always fill the card ===== */
+/* A banner is a wide strip by default, or a real 16:9 picture when the owner picks 16:9. */
+.card.ban169 .pbanner,.eprev.ban169 .pbanner{height:auto;aspect-ratio:16/9;z-index:2}
+/* the 16:9 banner is tall, so its backdrop starts at the very top and slides behind it */
+.card.ban169 .part,.eprev.ban169 .part{top:0;-webkit-mask-image:linear-gradient(#0000 0,#000 14%,#000 88%,#0000 100%);mask-image:linear-gradient(#0000 0,#000 14%,#000 88%,#0000 100%)}
+.card.ban169 .phead,.eprev.ban169 .phead,.card.ban169 .pbody,.eprev.ban169 .pbody{z-index:3}
+/* 16:9 backdrop band: the picture keeps its 16:9 shape at the top and the same art carries on
+   behind the rest of the card, so the band never ends in an empty strip. */
+.card .part.r169,.eprev .part.r169{bottom:0;height:auto;aspect-ratio:auto}
+.card .part.r169>.partimg,.eprev .part.r169>.partimg{inset:0 0 auto 0;height:auto;aspect-ratio:16/9}
+
+/* ===== part 9: the lobby hub (profile card, all servers, full member list) ===== */
+.lobbywrap{display:grid;gap:12px;max-width:820px}
+#v-lobby{padding:16px}
+.lobme{display:flex;align-items:center;gap:12px}
+.lobme .av{width:66px;height:66px;border-radius:50%;font-size:24px}
+.lobrow{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line,rgba(255,255,255,.08));border-radius:10px;margin-bottom:8px;background:var(--panel,#16141f)}
+.lobrow:last-child{margin-bottom:0}
+.lobav{position:relative;flex:0 0 auto;display:flex}
+.lobdot{position:absolute;right:-1px;bottom:0;width:9px;height:9px;border-radius:50%;background:#5c5878;box-shadow:0 0 0 2px var(--panel,#16141f)}
+.lobrow.on .lobdot{background:#3ddc97}
+.lobwho{min-width:0;flex:1;display:flex;flex-direction:column;line-height:1.25}
+.lobwho b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lobwho small{color:var(--mute,#9a97b3);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lobacts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.lobacts .btn{padding:4px 10px;font-size:12px}
+.lobico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--raise,#221f30);font-size:12px;font-weight:800;overflow:hidden;flex:0 0 auto}
+.lobico img{width:100%;height:100%;object-fit:cover}
+.lobtag{font-size:11px;color:var(--mute,#9a97b3);border:1px dashed var(--line,rgba(255,255,255,.14));border-radius:8px;padding:3px 8px}
+#lobmem{max-height:min(52vh,420px);overflow:auto;padding-right:2px}
+@media (max-width:640px){
+  .lobrow{flex-wrap:wrap}
+  .lobacts{width:100%;justify-content:flex-start}
+  .lobme .av{width:52px;height:52px;font-size:20px}
+}
+
+/* ===== part 10: the backdrop fills the card — zoom + drag framing, no empty strips ===== */
+/* The owner's own art replaced the old CSS background, and the picture itself did not cover
+   the whole area, so the card colour showed above and below it (and the 16:9 band was hidden
+   behind a tall banner). The picture now covers the whole backdrop area, and its framing
+   (position + zoom) comes from the editor. */
+.card .part.w,.eprev .part.w{-webkit-mask-image:none;mask-image:none;mix-blend-mode:normal;opacity:.55}
+.card .part.w>.partimg,.eprev .part.w>.partimg{inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--artx,50%) var(--arty,50%);animation:none}
+/* 16:9: the whole picture stays visible in the middle of the card and the same art at cover
+   fills the rest behind it, so the band never ends in an empty strip. */
+.card .part.r169>.partimg,.eprev .part.r169>.partimg{inset:0;height:100%;aspect-ratio:auto;object-fit:contain!important;object-position:center}
+/* dragging the preview in the editor frames the picture, like the avatar cropper */
+#epart{pointer-events:auto;touch-action:none;cursor:grab}
+#epart.dragging{cursor:grabbing}
+
+/* ===== part 11: read receipts ("seen by") + the full DM page ===== */
+.mseen{padding:1px 0 4px 48px;font-size:11px;line-height:1.45;color:var(--mute)}
+.mseen b{color:var(--teal);font-weight:600}
+body.dmview #rail{display:none!important}
+body.dmview main{margin-left:274px}
+#dmside{position:fixed;left:0;top:0;bottom:0;width:274px;display:none;flex-direction:column;gap:8px;background:var(--panel);border-right:1px solid var(--line);z-index:60;padding:14px 10px;overflow:auto;box-sizing:border-box}
+body.dmview #dmside{display:flex}
+.dsh{display:flex;align-items:center;gap:6px;font-weight:800;font-size:15px;padding:0 4px 2px}
+.dsh .x{margin-left:auto}
+.dsn{display:flex;flex-direction:column;gap:6px}
+.dsrow{display:flex;align-items:center;gap:9px;width:100%;background:var(--raise);border:1px solid var(--line);border-radius:12px;padding:7px 9px;color:var(--text);text-align:left;cursor:pointer;box-sizing:border-box}
+.dsrow:hover{border-color:var(--gold)}
+.dsrow.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 14%,var(--raise))}
+.dsf{margin-top:auto;padding-top:10px;border-top:1px solid var(--line)}
+#dmback{font-size:17px;line-height:1;padding:0 8px 0 0}
+#dmstatus{margin-left:auto;font-size:11px}
+@media(max-width:780px){
+  body.dmview main{margin-left:0}
+  /* on a phone the DM list is a drawer, so a second conversation is always one tap away */
+  #dmside{display:flex!important;width:min(84vw,320px);left:calc(-1 * min(84vw,320px) - 12px);transition:left .22s ease;box-shadow:0 0 40px #000a;padding-bottom:env(safe-area-inset-bottom)}
+  body.dmside-open #dmside{left:0}
+  body.dmside-open #scrim{display:block}
+  #dlbtn{font-size:18px}
+}
+body:not(.dmview) #dlbtn{display:none!important}
+/* ===== part 12: the backdrop is framed like an avatar, and the preview never scrolls away ===== */
+.modal.editp .card{max-height:88vh;overflow:auto;overscroll-behavior:contain}
+.modal.editp .eprev{position:sticky;top:0;z-index:6;background:var(--panel);box-shadow:0 8px 22px #0007}
+/* ===== part 13: the editor preview is the real card, scaled down ===== */
+.epwrap{margin:8px 0 12px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg);position:sticky;top:0;z-index:7}
+.epwrap #epprev,.epwrap .epcard{width:420px;max-width:none}
+.epwrap #epprev{transform-origin:top left;padding:0;max-height:none;overflow:hidden;border-radius:0;pointer-events:none}
+.epwrap #epprev .part.w{pointer-events:auto;cursor:grab;touch-action:none}
+.epwrap #epprev .part.dragging{cursor:grabbing}
+.epwrap #epprev .pactions{display:none}
+/* ===== part 14: preview at full width, no scaling or cropping ===== */
+.epwrap #epprev{width:100%;transform:none!important}
+.epwrap #epprev .px{display:none}
+/* ===== part 15: the DM page carries friends, requests and add-friend ===== */
+.dslbl{display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:10px 2px 4px}
+.dslbl i{background:var(--gold);color:#101014;border-radius:999px;padding:0 6px;font-size:10px;font-style:normal;font-weight:800}
+.dsadd{display:flex;gap:6px}
+.dsadd input{flex:1;min-width:0}
+.dsreq{display:flex;align-items:center;gap:6px;padding:3px 2px}
+.dsreq .dpwho{flex:1;min-width:0}
+#dmside .dpwho{min-width:0;overflow:hidden}
+#dmside .dpwho b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#dmside .dpwho small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--mute)}
+.dmhomebox{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:70px 24px;color:var(--mute)}
+.dmhomebox b{color:var(--text);font-size:17px}
+body.dmhome #send,body.dmhome #box{display:none!important}
+/* ===== part 16: the preview can be shrunk, folded and wheel-zoomed ===== */
+.epwrap{display:flex;flex-direction:column}
+.epbar{display:flex;align-items:center;gap:8px;padding:4px 10px;border-bottom:1px solid var(--line);background:var(--panel);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.epbar span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.epbtn{background:none;border:0;color:var(--mute);font-size:16px;line-height:1;cursor:pointer;padding:0 6px;border-radius:6px}
+.epbtn:hover{background:var(--bg);color:var(--text)}
+.epbox{overflow:auto;max-height:300px;overscroll-behavior:contain}
+.epwrap.mini .epbox,.epwrap.mini .epgrip{display:none}
+.epgrip{height:10px;cursor:ns-resize;display:flex;align-items:center;justify-content:center;background:var(--panel);touch-action:none}
+.epgrip::after{content:"";width:40px;height:3px;border-radius:3px;background:var(--mute);opacity:.5}
+.eprange{width:88px;height:14px;accent-color:var(--gold);margin:0 2px}
+/* ===== part 17: a framed backdrop (part.w) must still honour the Zoom slider ===== */
+.card .part.w>.partimg,.eprev .part.w>.partimg,.epcard .part.w>.partimg{transform:scale(var(--artz,1))}
+/* ===== part 19: the music bot chip and its command replies ===== */
+.ch .vbot{margin-left:6px;font-size:12px;line-height:1;padding:2px 4px;border-radius:6px;opacity:.5;cursor:pointer;flex:none}
+.ch .vbot:hover{opacity:1;background:#ffffff1a}
+.ch .vbot.on{opacity:1;background:#7c5cff2e;box-shadow:0 0 0 1px #7c5cff66}
+.bothelp{max-width:520px;font-size:13px;line-height:1.5}
+.bothelp b{display:block;margin:8px 0 4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.bothelp small{display:block;color:var(--mute)}
+.bothelp table{border-collapse:collapse;margin:2px 0 4px;width:100%}
+.bothelp td{padding:2px 2px 2px 0;vertical-align:top;font-size:13px}
+.bothelp td:first-child{white-space:nowrap;color:var(--text);font-family:ui-monospace,monospace;padding-right:10px}
+/* ===== part 20: a video backdrop is framed with the same zoom / fit / position ===== */
+.amv>video{object-fit:var(--amvfit,cover);object-position:var(--artx,50%) var(--arty,50%);transform:translate(-50%,-50%) scale(var(--amvz,1))}
+.amv.yt>iframe{transform:translate(-50%,-50%) scale(var(--amvz,1))}
+
+/* part 21 — big frame window for a video backdrop */
+.modal.amvfw{z-index:12}
+.modal.amvfw .card{max-width:min(560px,94vw);max-height:94vh;overflow:auto}
+.amvfw .fwbox{margin:8px 0 10px;border:1px solid var(--line);border-radius:14px;overflow:hidden auto;max-height:46vh;background:var(--bg)}
+.amvfw .fwbox .card{width:100%;max-width:none;pointer-events:none;border-radius:0;box-shadow:none}
+.amvfw .fwbox .amv{pointer-events:auto!important;cursor:grab}
+.amvfw .fwbox .amv.dragging{cursor:grabbing}
+.amvfw .fwbox .pactions{display:none}
+
+/* part 22 — avatar badge: our own chibi accessories, the person's PNG, or hidden */
+.pchar.has{width:34px;height:34px}
+.pchar.has::before,.pchar.off::before{display:none}
+.pchar.has img,.pchar.has svg{width:34px;height:34px;display:block;border-radius:50%;filter:drop-shadow(0 2px 6px #000b)}
+.pchar.has img{object-fit:contain}
+.epwrap #epprev .pchar.has img,.epwrap #epprev .pchar.has svg{width:28px;height:28px}
+
+/* part 23 — what someone is playing, under their name (member list + DM list + DM header) */
+.mr-t{display:flex;flex-direction:column;min-width:0;flex:1;gap:1px}
+.mr-n{display:flex;align-items:center;gap:4px;min-width:0}
+.mr-n .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mr-np{font-size:11px;line-height:1.3;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
+.mnp.off{opacity:.55}
+.dpwho .dpnp{font-size:11px;line-height:1.3;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+
+/* part 24 — the built-in chibi stickers are full art now, bigger than the old grey dot */
+.pchar.has{width:auto;height:auto;z-index:7;transform:translate(-4px,-46%)}
+.pchar.has img{border-radius:0;width:auto;display:block}
+.pchar.has img.accimg{height:126px;width:auto;max-width:200px;object-fit:contain;filter:drop-shadow(0 8px 14px #000c)}
+.pchar.has img:not(.accimg){height:92px;width:92px;object-fit:contain;border-radius:50%}
+.pchar.has svg{width:58px;height:58px;border-radius:0}
+.epwrap #epprev .pchar.has img.accimg{height:96px;max-width:150px}
+.epwrap #epprev .pchar.has img:not(.accimg){height:64px;width:64px}
+.epwrap #epprev .pchar.has svg{width:44px;height:44px}
+/* part 25 — the daily diary book and the step-by-step plans */
+#v-diary,#v-plans{padding:14px;overflow:auto}
+.dywrap{display:grid;grid-template-columns:minmax(0,1fr) 264px;gap:14px;align-items:start}
+@media(max-width:980px){.dywrap{grid-template-columns:1fr}}
+.dybook{background:linear-gradient(180deg,#191329,#120f1d);border:1px solid #2a2340;padding:16px 18px}
+.dytop{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.dyarw{width:30px;height:30px;border-radius:8px;border:1px solid #2f2848;background:#1b1628;color:var(--text);font-size:16px;cursor:pointer;line-height:1}
+.dyarw:hover{background:#251f3a}
+.dytitle{flex:1;display:flex;flex-direction:column;min-width:0}
+.dytitle b{font-size:18px;line-height:1.25}
+.dytitle small{color:var(--mute);font-size:12px}
+.dymoods{display:flex;gap:6px;margin:10px 0 2px;flex-wrap:wrap}
+.dymo{width:34px;height:34px;border-radius:10px;border:1px solid #2f2848;background:#1b1628;font-size:16px;cursor:pointer;opacity:.6;transition:transform .12s,opacity .12s}
+.dymo:hover{opacity:.9}
+.dymo.on{opacity:1;border-color:var(--gold);background:#2a2340;transform:translateY(-1px)}
+.dylbl{display:block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);margin:14px 0 6px}
+.dylbl small{text-transform:none;letter-spacing:0;opacity:.8}
+.dytext,#dywhy,#dycleared,#dystuck,.plan textarea,#plnotes{width:100%;background:#12101f;border:1px solid #2a2340;border-radius:10px;padding:10px 12px;color:var(--text);font:inherit;resize:vertical;line-height:1.6}
+.dytext{min-height:130px}
+.dycols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.dycols,.dyrev{grid-template-columns:1fr}}
+.dylist{display:flex;flex-direction:column;gap:4px;min-height:24px}
+.dyitem{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;background:#161327;border:1px solid #241e38}
+.dyitem span{flex:1;font-size:14px;min-width:0;overflow-wrap:anywhere}
+.dyitem.done span{text-decoration:line-through;color:var(--mute)}
+.dyx{background:none;border:0;color:var(--mute);cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;border-radius:6px}
+.dyx:hover{color:#ff6b81;background:#2a1b2a}
+.dyadd{display:flex;gap:6px;margin-top:6px}
+.dyadd input{flex:1;min-width:0;background:#12101f;border:1px solid #2a2340;border-radius:8px;padding:7px 9px;color:var(--text);font:inherit;font-size:13px}
+.dyrev{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.dyrev label{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
+.dyrev label textarea{margin-top:6px;text-transform:none;letter-spacing:0}
+.dyfoot{margin-top:10px;text-align:right;min-height:16px}
+.dyfoot small{color:var(--mute);font-size:12px}
+.dypast .row{margin:0 0 8px}
+.dydates{display:flex;flex-direction:column;gap:4px;max-height:70vh;overflow:auto}
+.dydate{display:flex;flex-direction:column;text-align:left;background:#161327;border:1px solid #241e38;border-radius:8px;padding:7px 9px;color:var(--text);cursor:pointer}
+.dydate:hover{border-color:#3a3158}
+.dydate b{font-size:13px;font-weight:600}
+.dydate small{color:var(--mute);font-size:11px}
+.dydate.on{border-color:var(--gold);background:#221b36}
+.dymut{color:var(--mute);font-size:12px;line-height:1.5}
+/* plans */
+.plwrap{display:grid;gap:14px}
+.plhead{margin:0 0 6px}
+.plan{border:1px solid #241e38;border-radius:12px;padding:12px;margin-top:10px;background:#141122}
+.plan.done{border-color:#2f6f4a}
+.plan.blocked{border-color:#6e2a3a}
+.plan.done .pltitle{color:var(--mute)}
+.pltop{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pltitle{flex:1;min-width:170px;font-weight:600}
+.plst{width:110px}
+.pldue{width:150px}
+.plbar{display:flex;align-items:center;gap:10px;margin:10px 0 8px}
+.plbar>span{flex:1;height:6px;border-radius:3px;background:#1e1a30;overflow:hidden;display:block}
+.plbar>span>i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#7c5cff,#54f3dc);transition:width .2s}
+.plbar small{color:var(--mute);font-size:11px;white-space:nowrap}
+.plsteps{display:flex;flex-direction:column;gap:4px}
+
+/* part 26 — the avatar badge follows the size slider (--pchsz) instead of a fixed 126px */
+.pchar.has img.accimg{height:var(--pchsz,126px);max-width:calc(var(--pchsz,126px) * 1.8)}
+.pchar.has img:not(.accimg){height:calc(var(--pchsz,126px) * .73);width:calc(var(--pchsz,126px) * .73)}
+.pchar.has svg{width:calc(var(--pchsz,126px) * .46);height:calc(var(--pchsz,126px) * .46)}
+.epwrap #epprev .pchar.has img.accimg{height:calc(var(--pchsz,126px) * .76);max-width:calc(var(--pchsz,126px) * 1.4)}
+.epwrap #epprev .pchar.has img:not(.accimg){height:calc(var(--pchsz,126px) * .51);width:calc(var(--pchsz,126px) * .51)}
+.epwrap #epprev .pchar.has svg{width:calc(var(--pchsz,126px) * .35);height:calc(var(--pchsz,126px) * .35)}
+.pchrow{align-items:center;gap:8px;margin-top:2px}
+.pchrow input[type=range]{flex:1;min-width:120px;accent-color:var(--gold)}
+.pchrow small{color:var(--mute);font-size:12px;min-width:46px;text-align:right}
+
+/* part 27 — the diary title is yours to name (Day 1, Day 2…) with the date under it */
+.dytitle{gap:0}
+.dyname{width:100%;background:none;border:0;border-bottom:1px dashed transparent;font:inherit;font-size:19px;font-weight:700;color:var(--text);padding:1px 0 2px;line-height:1.25}
+.dyname:hover{border-bottom-color:#332b4d}
+.dyname:focus{outline:none;border-bottom-color:var(--gold)}
+.dyname::placeholder{color:var(--mute);opacity:.75;font-weight:600}
+
+/* part 28 — the badge is pinned by its bottom-left corner, so a bigger size grows upward instead of drifting off the picture */
+.pchar.has{transform:translate(-18px, calc(84px - 100%))}
+.epwrap #epprev .pchar.has{transform:translate(-12px, calc(58px - 100%))}
+@media(max-width:520px){.pchar.has{transform:translate(-14px, calc(70px - 100%))}}
+
+/* part 29 — the chibi is pinned to the avatar centre, so it grows up and down around the picture and never drifts off it */
+.pchar.has{transform:translate(-6px, calc(46px - 50%))}
+.epwrap #epprev .pchar.has{transform:translate(-4px, calc(25px - 50%))}
+@media(max-width:520px){.pchar.has{transform:translate(-4px, calc(40px - 50%))}}
+
+/* part 30 — the chibi leans into the avatar, so there is no daylight between sticker and picture */
+.pchar.has{transform:translate(-30px, calc(34px - 50%))}
+.epwrap #epprev .pchar.has{transform:translate(-36px, calc(23px - 50%))}
+@media(max-width:520px){.pchar.has{transform:translate(-26px, calc(32px - 50%))}}
+
+/* part 31 — a set of badges: each one flies into the picture, the next slides in from the right */
+.pchar.has .pchi{display:block;transform-origin:100% 50%}
+.pchi.poof{animation:pchIntoProfile .34s cubic-bezier(.45,.05,.75,.5) forwards}
+.pchi.drop{animation:pchFromRight .72s cubic-bezier(.18,.9,.24,1.14)}
+@keyframes pchFromRight{0%{opacity:0;transform:translate(58px,-8px) rotate(16deg) scale(.55)}55%{opacity:1;transform:translate(-5px,0) rotate(-7deg) scale(1.07)}80%{transform:translate(2px,0) rotate(2deg) scale(.99)}100%{opacity:1;transform:none}}
+@keyframes pchIntoProfile{0%{opacity:1;transform:none}100%{opacity:0;transform:translate(-34px,26px) rotate(-16deg) scale(.16)}}
+.pav.hit{animation:pavHit .62s ease-out}
+@keyframes pavHit{0%,100%{filter:none}35%{filter:drop-shadow(0 0 12px #fff9) brightness(1.22)}}
+#pchlist .pchone img{width:18px;height:18px;object-fit:contain;border-radius:6px;filter:none}
+#pchlist .pchone{gap:5px}
+@media(prefers-reduced-motion:reduce){.pchi.poof,.pchi.drop,.pav.hit{animation:none!important}}
+
+/* part 32 — ragdamaxxing stats stay covered until the viewer's Arena unlocks */
+.plock{display:flex;align-items:center;gap:7px;margin:2px 0 8px;font-size:12px;color:var(--mute)}
+.plock b{color:#f5b84b;font-size:12px;letter-spacing:.2px}
+.plock small{margin-left:auto;font-size:11px;color:var(--mute);opacity:.8}
+.pstats.locked b{font-size:15px;letter-spacing:1px;opacity:.9;filter:grayscale(.2)}
+.pstats.locked div{opacity:.92}
+
+/* part 33 — a paused study timer reads as paused, not as a slow clock */
+#clock.paused{opacity:.6;animation:none}
+#clock.paused::after{content:" · paused";font-size:.4em;letter-spacing:.5px;color:var(--mute);vertical-align:middle}
+
+/* part 34 — the badge swap is a real flight: it lands from the right, hangs a beat, then dives into the picture */
+.pchi.drop{animation:pchFromRight2 .8s cubic-bezier(.16,.84,.28,1.08)}
+.pchi.poof{animation:pchIntoProfile2 .36s cubic-bezier(.4,0,.9,.5) forwards}
+@keyframes pchFromRight2{0%{opacity:0;transform:translate(74px,-14px) rotate(26deg) scale(.42)}45%{opacity:1;transform:translate(-8px,2px) rotate(-9deg) scale(1.12)}68%{transform:translate(5px,-1px) rotate(4deg) scale(.97)}84%{transform:translate(-2px,0) rotate(-1deg) scale(1.02)}100%{opacity:1;transform:none}}
+@keyframes pchIntoProfile2{0%{opacity:1;transform:none}55%{opacity:.85;transform:translate(-16px,10px) rotate(-10deg) scale(.62)}100%{opacity:0;transform:translate(-40px,30px) rotate(-24deg) scale(.08)}}
+
+/* part 35 — lock in: the app goes quiet until the hours you set are actually studied */
+#lockbar{position:fixed;left:0;right:0;top:0;z-index:9000;display:flex;align-items:center;gap:10px;padding:7px 14px;font-size:13px;color:#e9faff;background:linear-gradient(90deg,#1b1030,#2a1236);border-bottom:1px solid #6c3cff55;box-shadow:0 8px 24px #0008}
+#lockbar b{color:#f5b84b;font-size:13px;letter-spacing:.3px;white-space:nowrap}
+#lockbar span{white-space:nowrap;color:#cfd6ff}
+#lockbar .lockbar{flex:1;max-width:320px;height:6px;border-radius:99px;background:#ffffff1a;overflow:hidden}
+#lockbar .lockbar i{display:block;height:100%;background:linear-gradient(90deg,#54f3dc,#a875ff)}
+body.lockin main{padding-top:42px}
+body.lockin aside .nav,body.lockin #chs,body.lockin #on,body.lockin #me,body.lockin aside .sec button{opacity:.22;pointer-events:none;filter:grayscale(1)}
+body.lockin #v-chat .send,body.lockin #msgs{display:none}
+body.lockin aside{background:#0b0917}
+.lockrow #lockgo,.lockrow #lockoff{min-width:104px}
+
+/* part 36 — study stats: range tabs, records rows and a slim all-time chart */
+.statrow{display:flex;align-items:baseline;gap:8px;padding:7px 0;border-top:1px solid var(--line)}
+.statrow:first-of-type{border-top:0}
+.statrow span{color:var(--mute);font-size:13px;min-width:150px}
+.statrow b{font-size:14px}
+.statrow small{margin-left:auto;color:var(--mute);font-size:11px;text-align:right}
+#v-stats .days.slim{gap:3px;align-items:flex-end}
+#v-stats .days.slim>div{flex:1;min-width:0}
+#v-stats .days.slim small{font-size:8px;line-height:1.2;overflow:hidden;white-space:nowrap}
+#v-stats .days.slim>div small:first-child{visibility:hidden}
+#v-stats .row .btn{padding:6px 10px;font-size:13px}
+
+/* part 37 — the badge carousel: the old sticker spins away into the screen on the left, the new one spins out of the screen on the right, small to big */
+.pchar.has .pchi{transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity}
+.pchi.spinout{animation:pchSpinOut .46s cubic-bezier(.55,.02,.8,.25) forwards}
+.pchi.spinin{animation:pchSpinIn .66s cubic-bezier(.18,.86,.26,1.04)}
+@keyframes pchSpinOut{
+  0%{opacity:1;transform:perspective(760px) rotateY(0deg) scale(1)}
+  40%{opacity:1;transform:perspective(760px) translateX(-14px) rotateY(-42deg) scale(.86)}
+  100%{opacity:0;transform:perspective(760px) translateX(-64px) rotateY(-124deg) scale(.22)}
+}
+@keyframes pchSpinIn{
+  0%{opacity:0;transform:perspective(760px) translateX(78px) rotateY(118deg) scale(.22)}
+  55%{opacity:1;transform:perspective(760px) translateX(-7px) rotateY(-14deg) scale(1.1)}
+  78%{transform:perspective(760px) translateX(3px) rotateY(4deg) scale(.98)}
+  100%{opacity:1;transform:perspective(760px) rotateY(0deg) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .pchi.spinout{animation:pchFadeOut .3s ease forwards!important}
+  .pchi.spinin{animation:pchFadeIn .3s ease!important}
+}
+@keyframes pchFadeOut{to{opacity:0}}
+@keyframes pchFadeIn{from{opacity:0}to{opacity:1}}
+/* ===== part 38: a plan whose name matches the diary page is shown under that page ===== */
+.dylink{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;display:grid;gap:10px}
+.dylink[hidden]{display:none}
+.dylk-h{font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--mute)}
+.dylk{border:1px solid var(--line);border-radius:12px;padding:10px;background:color-mix(in srgb,var(--panel) 65%,transparent)}
+.dylk-t{display:flex;gap:8px;align-items:baseline;font-weight:700;margin-bottom:6px}
+.dylk-t small{font-weight:600;color:var(--mute);font-size:11px}
+.dylk .plbar{margin:4px 0 6px}
+.dylk .dyitem span{font-size:13px}
+.dysmall{font-size:12px;color:var(--mute);margin-top:4px}
+/* ===== part 39: live wallpaper — an animated GIF or a muted looping video behind the app ===== */
+#walllive{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;background:#05070f}
+/* A negative-z-index layer only paints above the page background when the root really is
+   transparent; mobile browsers (and Safari) otherwise keep the opaque root colour on top. */
+html.wallon,html.wallon body{background:transparent!important}
+html.wallon body{position:relative;z-index:0}
+#walllive[hidden]{display:none}
+#walllive .wallvid,#walllive .wallimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#walllive::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,7,15,.34),rgba(5,7,15,.62))}
+/* ===== part 40: now playing card layout ===== */
+.pnp{position:relative}
+/* ===== part 41: look up artist / album / lyrics online + lyrics view ===== */
+.pnp-lyr{position:absolute;top:6px;right:8px;z-index:3;border:1px solid var(--line);background:#000a;color:var(--text);border-radius:8px;width:24px;height:24px;line-height:1;font-size:12px;cursor:pointer;padding:0}
+.pnp-lyr:hover{background:#000d;color:var(--gold)}
+.modal.lyr .card{width:min(520px,94vw);max-height:86vh;overflow:auto}
+.lybody{white-space:pre-wrap;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--text);margin:10px 0 0;max-height:58vh;overflow:auto}
+
+/* ===== part 42: wallpaper sound, per-device hide, and a see-through app ===== */
+:root{--see:46%}
+html body.wallon{background:transparent!important}
+html body.wallon aside,html body.wallon #rail,html body.wallon #ml{
+  background:color-mix(in srgb,#0a1222 var(--see),transparent)!important;
+  backdrop-filter:blur(18px) saturate(130%);
+}
+html body.wallon main{background:transparent!important}
+html body.wallon header,html body.wallon #v-chat header,html body.wallon #v-vchat>header{
+  background:color-mix(in srgb,#0a1222 var(--see),transparent)!important;
+  backdrop-filter:blur(14px)
+}
+html body.wallon .card,html body.wallon #pick,html body.wallon #pm,html body.wallon .modal .card,html body.wallon #dmside{
+  background:color-mix(in srgb,var(--panel) var(--see),transparent)!important;
+  backdrop-filter:blur(16px)
+}
+html body.wallon .modal{background:rgba(2,5,12,.45)}
+/* the wallpaper carries the app, so only a light wash stays over it */
+html body.wallon #walllive::after{background:linear-gradient(180deg,rgba(5,7,15,.10),rgba(5,7,15,.30))}
+html body.wallon #msgs .m:hover{background:#ffffff10}
+#wallctl{position:fixed;left:84px;bottom:14px;z-index:58;display:flex;gap:6px}
+#wallctl[hidden]{display:none}
+#wallctl button{width:30px;height:30px;padding:0;border-radius:50%;border:1px solid #ffffff2e;background:#0a0f18cc;color:#e7eefc;font-size:14px;line-height:1;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(6px)}
+#wallctl button:hover{background:#16233acc;border-color:#54f3dc66}
+@media(max-width:780px){#wallctl{left:66px;bottom:78px}}
+
+/* ===== part 43: quick display name editor (settings button + pencil on the me card) ===== */
+html body #me{display:flex;align-items:center;gap:4px}
+html body #me .mecard{flex:1;min-width:0}
+#me .meedit{flex:none;width:28px;height:28px;border-radius:9px;border:1px solid var(--line);background:var(--raise);color:var(--text);cursor:pointer;font-size:13px;line-height:1;display:grid;place-items:center;padding:0}
+#me .meedit:hover{background:var(--gold);border-color:var(--gold);color:#14121f}
+.modal.qdn .card{max-width:380px;width:100%}
+.modal.qdn .in{width:100%;margin-top:8px}
+
+/* ===== part 44: receipts always visible — sent, or seen by name / time ===== */
+.mseen{display:block}
+.mseen.on{color:#66e0a3}
+.mseen.on b{color:#9df2c4}
+.modal.qdn .card small.mut{display:block;margin-top:2px}
+.pnp-tn{white-space:nowrap}
+.pnp-ro{font-size:11.5px;font-weight:500;color:var(--mute);margin-left:3px;white-space:nowrap}
+
+/* ===== part 45: the music bot answers in the voice channel's text chat ===== */
+.vm2.botline{border-left:2px solid #7c5cff;padding-left:8px}
+.vm2.botline .vb div{color:#ded7ff}
+
+/* ===== part 46: the chat background can also be a clip ===== */
+#v-chat{position:relative;isolation:isolate}
+#v-chat .cbgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}
+#v-chat.hasvid::before{content:"";position:absolute;inset:0;background:#000;opacity:var(--cbd,.35);z-index:0;pointer-events:none}
+#v-chat.hasvid header,#v-chat.hasvid #msgs,#v-chat.hasvid form.send{position:relative;z-index:1}
+#v-chat.hasvid #msgs{background:transparent!important}
+
+/* ===== part 47: profile card body is see-through so the backdrop shows ===== */
+.modal.prof .card{background:linear-gradient(180deg,rgba(11,20,36,.34),rgba(9,15,29,.22))}
+.modal.prof .card .part.w{opacity:.88}
+.modal.prof .pbody,.modal.prof .prank,.modal.prof .ptags,.modal.prof .pfoot{background:transparent}
+.modal.prof .pstats>div{background:rgba(0,0,0,.20);border-color:rgba(255,255,255,.12)}
+.modal.prof .pstatus{background:rgba(0,0,0,.28)}
+.modal.prof .tag{background:rgba(0,0,0,.24)}
+.modal.prof .pnp{background:linear-gradient(100deg,rgba(0,0,0,.26),transparent 65%)}
+.modal.prof .pfoot,.modal.prof .pstats small,.modal.prof .pstats b{text-shadow:0 1px 3px #000c}
+
+/* ===== part 48: receipts live behind a hover ⋯ instead of a line under every message ===== */
+#msgs .m{position:relative}
+#msgs .mmore{position:absolute;top:2px;right:6px;width:26px;height:22px;line-height:1;padding:0;border:1px solid var(--line);border-radius:8px;background:color-mix(in srgb,var(--panel) 85%,transparent);color:var(--mute);font-size:15px;cursor:pointer;opacity:0;transition:opacity .12s,color .12s;z-index:3}
+#msgs .m:hover .mmore,#msgs .mmore:focus-visible{opacity:1;color:var(--text)}
+#msgs .mmore:hover{border-color:var(--teal);color:var(--teal)}
+@media (hover:none){#msgs .mmore{opacity:.55}}
+.seenpop{position:fixed;z-index:90;min-width:170px;max-width:250px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;box-shadow:0 14px 38px #000a}
+.seenpop b{display:block;margin-bottom:6px;font-size:13px}
+.seenpop .sprow{display:flex;justify-content:space-between;gap:12px;padding:2px 0}
+.seenpop small{color:var(--mute)}
+
+/* ===== part 49: profile card buttons are glass, so the backdrop shows through ===== */
+.modal.prof .card .pactions .btn{background:rgba(10,18,32,.34);color:var(--text);border:1px solid rgba(255,255,255,.22);box-shadow:none;backdrop-filter:blur(8px) saturate(1.1)}
+.modal.prof .card .pactions .btn:hover{background:rgba(10,18,32,.54)}
+.modal.prof .card .pactions .btn.alt{background:rgba(10,18,32,.22)}
+
+/* ===== part 50: "Play on Music Assistant" under the profile now-playing card ===== */
+.pnp-play{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin:8px 0 0;padding:9px 12px;border-radius:11px;border:1px solid color-mix(in srgb,var(--teal) 45%,transparent);background:rgba(10,18,32,.34);backdrop-filter:blur(8px);color:var(--text);font:inherit;font-size:13px;cursor:pointer;transition:background .15s,border-color .15s}
+.pnp-play:hover{background:rgba(10,18,32,.55);border-color:var(--teal)}
+.pnp-play span{color:var(--teal)}
+.pnp-play.busy{opacity:.7;cursor:progress}
+
+/* ===== part 51: day dividers, back-to-latest pill, connection notice ===== */
+.dsep{display:flex;align-items:center;gap:10px;margin:14px 4px 8px;color:var(--mute);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.dsep::before,.dsep::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+.tobtm{position:absolute;right:16px;bottom:76px;z-index:6;display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(12,20,34,.8);backdrop-filter:blur(10px);color:var(--text);font-size:12.5px;cursor:pointer;box-shadow:0 8px 22px #0007}
+.tobtm:hover{border-color:var(--teal);color:var(--teal)}
+.tobtm i{font-style:normal;background:var(--teal);color:#04121a;border-radius:999px;padding:1px 6px;font-size:11px;font-weight:700}
+.netbar{position:fixed;left:50%;transform:translateX(-50%);top:10px;z-index:120;display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:rgba(30,16,10,.92);border:1px solid rgba(255,160,80,.45);color:#ffd9b0;font-size:12.5px;box-shadow:0 10px 28px #000a;backdrop-filter:blur(8px)}
+.netbar .ndot{width:7px;height:7px;border-radius:50%;background:#ffa050;animation:npulse 1.1s infinite}
+@keyframes npulse{50%{opacity:.25}}
+@media (max-width:640px){.tobtm{right:12px;bottom:82px;padding:6px 10px}}
+
+/* ===== part 52: calmer, professional look — one accent, no neon gradients ===== */
+:root,html[data-theme]{
+  color-scheme:dark;
+  --bg:#0a0e15;--panel:#0f141e;--raise:#151c27;--line:#232d3b;
+  --text:#e6edf6;--mute:#8b98a9;
+  --gold:#7aa2f7;--teal:#6fbfae;
+  --neon-cyan:#7aa2f7;--neon-pink:#7aa2f7;--neon-violet:#8fb0f5;
+  --glass:94%;
+}
+html[data-theme=paper]{--bg:#f5f7fa;--panel:#fff;--raise:#eef2f7;--text:#111823;--mute:#5b6675;--line:#dce3ec;--gold:#2f6fe0;--teal:#128b78}
+body{background:var(--wall,var(--bg)) center/cover fixed no-repeat}
+body::before{display:none!important}
+
+/* headings and the clock: no glow, no hue cycling */
+aside h1 span{color:var(--text);background:none;-webkit-text-fill-color:currentColor;-webkit-background-clip:border-box;animation:none}
+#clock{color:var(--text);text-shadow:none;animation:none}
+.who:before{box-shadow:none;animation:none;background:var(--teal)}
+
+/* buttons: a light primary and a quiet secondary, no rainbows */
+.btn{background:#e8eef7;color:#0b1119;border:1px solid rgba(255,255,255,.06);box-shadow:0 1px 2px #0006;font-weight:600;filter:none;transform:none}
+.btn:hover{background:#fff;filter:none;transform:none;box-shadow:0 2px 8px #0006}
+.btn:active{transform:translateY(1px)}
+.btn.alt{background:var(--raise);color:var(--text);border:1px solid var(--line);box-shadow:none}
+.btn.alt:hover{background:#1b2330;border-color:#33455f;box-shadow:none}
+
+/* accent surfaces */
+.coin i{background:radial-gradient(circle at 32% 26%,#eef3fa,#a9bbd2 52%,#6e809a);box-shadow:inset 0 0 0 6px #ffffff1f,0 8px 18px #0007}
+.plbar>span>i{background:var(--gold)}
+#lockbar .lockbar i{background:var(--teal)}
+.nfx-gradient{background-image:none;background-color:var(--gold);animation:none}
+.dc-gold::before{background:var(--gold);animation:none}
+
+/* focus + scrollbars: the small things that make it feel finished */
+:focus-visible{outline:2px solid color-mix(in srgb,var(--gold) 65%,transparent);outline-offset:2px}
+*{scrollbar-width:thin;scrollbar-color:#33404f transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#2b3644;border-radius:99px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:#3a4757;background-clip:content-box}
+
+/* part 52b: the channel row and its unread badge follow the single accent */
+.ch:hover{background:rgba(122,162,247,.07);border-color:rgba(122,162,247,.16);transform:none}
+.ch.on{color:var(--text);background:color-mix(in srgb,var(--gold) 13%,var(--raise));border-color:color-mix(in srgb,var(--gold) 28%,transparent);box-shadow:inset 2px 0 var(--gold)}
+.ch.un{color:var(--gold)}
+.ch i{color:#08111c;background:var(--gold);box-shadow:none}
+
+/* part 52c: bot chips sit in the same quiet palette */
+.bot{color:#a9c2dd;background:#1c2634;border:1px solid #2a374b}
+.pbot{background:#33415a!important;color:#c3d3ea!important}
+.pnp.on{border-color:color-mix(in srgb,var(--gold) 42%,transparent)}
+.pnp-bar i{background:var(--gold)}
+.ch .vbot.on{background:color-mix(in srgb,var(--gold) 16%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--gold) 40%,transparent)}
+
+/* part 52d: the theme switcher still tints the page, only the accent stays unified */
+html[data-theme=midnight]{--bg:#0b1020;--panel:#111a33;--raise:#1b2750;--line:#243366}
+html[data-theme=forest]{--bg:#0e1a14;--panel:#14261c;--raise:#1f3a2b;--line:#2a4a38}
+html[data-theme=sunset]{--bg:#1d1220;--panel:#2a1830;--raise:#43233d;--line:#5a2f4a}
+html[data-theme=sakura]{--bg:#201424;--panel:#2d1b33;--raise:#46284d;--line:#5f3a66}
+html[data-theme=amoled]{--bg:#000;--panel:#0a0a0a;--raise:#161616;--line:#222}
+
+/* ===== part 53: who is talking (blue glow) + a mic level you can trust ===== */
+[data-u].talking .av,[data-u].talking .dpav{box-shadow:0 0 0 2px #58a6ff,0 0 14px 3px rgba(88,166,255,.5)}
+.vm.talking{color:#cfe2ff}
+.vm.talking .av{transform:scale(1.06);transition:transform .12s}
+.vm.talking::after{content:"speaking";margin-left:6px;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#58a6ff}
+#ml .who.talking{color:#cfe2ff;box-shadow:inset 2px 0 #58a6ff;padding-left:6px}
+.vmlvl{height:6px;border-radius:99px;background:#1b2330;overflow:hidden;margin:0 0 8px}
+.vmlvl i{display:block;height:100%;width:calc(var(--l,0) * 100%);background:#7aa2f7;transition:width .12s linear}
+.mr.talking{background:rgba(88,166,255,.1)}
+.mr.talking .av{box-shadow:0 0 0 2px #58a6ff,0 0 14px 3px rgba(88,166,255,.45)}
+.mr.talking .mr-n{color:#cfe2ff}
+
+/* ===== part 54: the @mention picker above the message box ===== */
+#send{position:relative}
+.mnp{position:absolute;left:10px;right:10px;bottom:calc(100% + 8px);max-height:230px;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 18px 44px #000b;z-index:20}
+.mnp[hidden]{display:none}
+.mni{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border:0;border-radius:8px;background:none;color:var(--text);font:inherit;font-size:13.5px;text-align:left;cursor:pointer}
+.mni small{color:var(--mute);font-size:11.5px;margin-left:auto}
+.mni.on,.mni:hover{background:color-mix(in srgb,var(--gold) 16%,var(--raise))}
+
+/* ===== part 55: moderation rows in the server admin panel ===== */
+.modrow{gap:6px;flex-wrap:wrap}
+.mbtn{border:1px solid var(--line);background:var(--raise);color:var(--text);border-radius:8px;padding:4px 9px;font:inherit;font-size:11.5px;cursor:pointer}
+.mbtn:hover{border-color:var(--gold);color:var(--gold)}
+.mbtn.on{background:color-mix(in srgb,var(--gold) 18%,var(--raise));border-color:color-mix(in srgb,var(--gold) 45%,transparent);color:var(--gold)}
+.mbtn:disabled{opacity:.45;cursor:not-allowed}
+.msel{background:var(--raise);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:4px 6px;font:inherit;font-size:11.5px;max-width:120px}
+.toleft{font-style:normal;font-size:10px;color:#f0b46a;background:#3a2a12;border-radius:6px;padding:1px 5px}
+.banleft{font-style:normal;font-size:10px;color:#ff9b9b;background:#3a1a1a;border-radius:6px;padding:1px 5px}
+
+/* ===== part 56: black, professional — graphite surfaces, brass accent, no white blocks ===== */
+:root,html[data-theme]{
+  color-scheme:dark;
+  --bg:#08090b;--panel:#0e1013;--raise:#16181c;--line:#2a2d33;
+  --text:#e6e7e9;--mute:#94979e;
+  --gold:#c9a86a;--teal:#8fa8a1;
+  --neon-cyan:#c9a86a;--neon-pink:#c9a86a;--neon-violet:#b79a63;
+  --glass:94%;
+}
+/* every named theme stays black: the picker only nudges the warmth now */
+html[data-theme=aubergine],html[data-theme=midnight],html[data-theme=forest],
+html[data-theme=sunset],html[data-theme=sakura],html[data-theme=amoled],html[data-theme=paper]{
+  --bg:#08090b;--panel:#0e1013;--raise:#16181c;--line:#2a2d33;
+  --text:#e6e7e9;--mute:#94979e;--gold:#c9a86a;--teal:#8fa8a1;
+}
+html[data-theme=amoled]{--bg:#000;--panel:#0a0b0d;--raise:#131519}
+html[data-theme=midnight]{--bg:#07090c;--panel:#0d1116;--raise:#151a21;--line:#252c35}
+html[data-theme=forest]{--bg:#070b09;--panel:#0d1210;--raise:#151c18;--line:#242e28}
+html[data-theme=sunset]{--bg:#0b0807;--panel:#13100d;--raise:#1c1713;--line:#2e2620}
+html[data-theme=sakura]{--bg:#0b080a;--panel:#131013;--raise:#1c171b;--line:#2e262b}
+html[data-theme=paper]{--bg:#0a0a0b;--panel:#101112;--raise:#18191b;--line:#2c2d30;--text:#e7e7e8;--mute:#9a9b9e}
+
+/* primary action: brass on black, never a white slab */
+.btn{background:var(--gold);color:#16130b;border:1px solid var(--gold);box-shadow:0 1px 2px #0009;font-weight:600}
+.btn:hover{background:#d8b87c;border-color:#d8b87c;box-shadow:0 2px 10px #0009}
+.btn.alt{background:var(--raise);color:var(--text);border:1px solid var(--line);box-shadow:none}
+.btn.alt:hover{background:#1e2126;border-color:#3b4049;box-shadow:none}
+.btn:disabled{opacity:.5}
+.srv:hover,.srv.on{background:var(--gold);color:#16130b}
+/* the coin keeps a metal look without going white */
+.coin i{background:radial-gradient(circle at 32% 26%,#e8d7b0,#c2a273 52%,#8a6f45);box-shadow:inset 0 0 0 6px #ffffff14,0 8px 18px #000a}
+b.stk.w,.stk.w{background:linear-gradient(135deg,var(--gold),#a98b52);color:#16130b}
+
+/* part 56b: the old blue-glass surfaces go graphite too, so nothing reads as white or neon */
+aside,#rail,#ml{background:color-mix(in srgb,#0d0f12 92%,transparent);backdrop-filter:blur(18px) saturate(105%)}
+#rail,aside{border-right-color:var(--line)}
+aside h1{color:var(--text);text-shadow:none}
+aside h1 span{color:var(--text);background:none;-webkit-text-fill-color:currentColor}
+.sec{color:var(--mute)}
+.sec button:hover{color:var(--gold);text-shadow:none}
+.ch:hover{background:rgba(255,255,255,.045);border-color:var(--line);transform:none}
+.ch.on{color:var(--text);background:color-mix(in srgb,var(--gold) 12%,transparent);border-color:color-mix(in srgb,var(--gold) 35%,transparent);box-shadow:inset 2px 0 var(--gold)}
+.ch.un{color:var(--gold)}
+.ch i{color:#16130b;background:var(--gold);box-shadow:none}
+#me{border-top-color:var(--line)}
+header{background:color-mix(in srgb,var(--panel) 92%,transparent);border-bottom:1px solid var(--line);box-shadow:none}
+header span{color:var(--gold);text-shadow:none}
+.card{background:color-mix(in srgb,var(--panel) 92%,transparent);border:1px solid var(--line);box-shadow:0 10px 30px #0007}
+.card::before{display:none}
+.card:hover{transform:none;border-color:color-mix(in srgb,var(--gold) 30%,var(--line));box-shadow:0 12px 34px #0008}
+textarea,.in,#gate input{background:var(--raise);border:1px solid var(--line);box-shadow:none}
+textarea:focus,.in:focus,#gate input:focus{border-color:color-mix(in srgb,var(--gold) 55%,var(--line));background:#1a1c20;box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 12%,transparent)}
+::placeholder{color:#7c7f86}
+:focus-visible{outline:2px solid var(--gold)}
+.m:hover{background:rgba(255,255,255,.035)}
+.bot,.rc,.cchip,.tag,.nt{border-color:var(--line)}
+.bot{color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,transparent)}
+.b a{color:var(--gold);text-decoration-color:color-mix(in srgb,var(--gold) 45%,transparent)}
+.b a:hover{color:#dcc08c;text-shadow:none}
+.bar{background:var(--raise);border:1px solid var(--line)}
+.bar i{background:var(--gold);box-shadow:none}
+.days i{background:var(--gold);box-shadow:none}
+#clock{color:var(--text);text-shadow:none;animation:none}
+#gate{background:rgba(4,4,5,.94)}
+#gate form{background:var(--panel);border:1px solid var(--line);box-shadow:0 24px 70px #000a}
+#gate h2{color:var(--text);text-shadow:none}
+#err{color:#e59a86}
+#pick,#pm{background:var(--panel);border-color:var(--line);box-shadow:0 18px 50px #000a}
+.modal{background:rgba(0,0,0,.72)}
+#ml{border-left-color:var(--line)}
+#rbar{border:1px solid var(--line)}
+.nt{background:var(--panel)}
+.nt.new{border-color:var(--gold);box-shadow:none}
+.mn{background:color-mix(in srgb,var(--gold) 20%,transparent);color:#e3c894}
+#sn .sr:hover,.mr:hover{background:rgba(255,255,255,.05)}
+.clive{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 30%,transparent)}
+.cside{color:#16130b;background:var(--gold)}
+#stage .stile{border-color:var(--line);box-shadow:0 12px 40px #000a}
+body::before{display:none}
+
+/* part 57: a quiet note when a long channel only shows its newest messages */
+.older{text-align:center;font-size:12px;color:var(--mute);padding:6px 0 10px;border-bottom:1px dashed var(--line);margin-bottom:8px}
+
+/* part 60: wallpaper text darkening + a tighter, Discord-like phone layout */
+html body.wscrim #walllive::after{background:linear-gradient(180deg,rgba(0,0,0,.62),rgba(0,0,0,.80))}
+html body.wscrim #msgs .m .b,html body.wscrim #msgs .m .n,html body.wscrim #msgs .m .t,html body.wscrim #title,html body.wscrim .cat,html body.wscrim .sec{text-shadow:0 1px 3px #000d}
+html body.wscrim #msgs .m:hover{background:rgba(0,0,0,.30)}
+
+@media (max-width:820px){
+  /* the wallpaper has to stay visible behind the chat instead of being painted over */
+  html body.wallon main,html body.wallon #v-chat,html body.wallon #msgs,html body.wallon .v{background:transparent!important}
+  html body.wallon #msgs .m{border-radius:8px}
+  #v-chat header{height:46px;padding:0 10px;gap:6px}
+  #title{font-size:15px}
+  #msgs{padding:6px 8px 2px}
+  #msgs .m{padding:2px 6px;gap:8px}
+  #msgs .m .av{width:30px;height:30px;border-radius:50%;font-size:13px}
+  #msgs .m .n{font-size:13.5px}
+  #msgs .m .b{font-size:14.5px;line-height:1.35}
+  form.send{padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+  #box{border-radius:18px;min-height:40px}
+  #chs{padding:2px 6px}
+  .ch{border-radius:8px;margin:1px 0}
+  #ml{border-radius:14px 0 0 14px}
+  .card{border-radius:14px}
+}
+
+/* the small play/pause control next to the channel name */
+#v-chat header .mabtn{flex:none;font-size:15px;line-height:1;padding:2px 6px}
+@media (max-width:820px){#dmstatus{display:none}#v-chat header #title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+
+/* part 61: phone composer — a real send button, with room for emoji and upload beside it */
+@media (max-width:820px){
+  #box{padding-right:126px}
+  #ub{right:94px;bottom:16px}
+  #eb{right:58px;bottom:16px}
+  #snd{display:grid;place-items:center;position:absolute;right:8px;bottom:6px;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:var(--gold);color:#14121f;font-size:16px;line-height:1;cursor:pointer;box-shadow:0 2px 10px #0006;transition:transform .12s ease}
+  #snd:active{transform:scale(.93)}
+}
+
